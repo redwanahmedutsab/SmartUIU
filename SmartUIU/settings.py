@@ -11,6 +11,14 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+import pymysql
+import ssl
+
+ssl.get_default_verify_paths()  # Verify default SSL certificate paths
+
+pymysql.install_as_MySQLdb()
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -129,3 +137,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'uiujobbank@gmail.com'
+EMAIL_HOST_PASSWORD = 'uajvwbglayrweath'
+DEFAULT_FROM_EMAIL = 'UIU JOB BANK <uiujobbank@gmail.com>'

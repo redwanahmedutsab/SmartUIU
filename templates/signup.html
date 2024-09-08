@@ -18,9 +18,6 @@
     <link rel="stylesheet" href="{% static 'css/quill.snow.css' %}">
     <link rel="shortcut icon" href="{% static 'images/uiu.jpg' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-
-
 </head>
 <body id="top">
 <div class="messenger-icon" id="messenger-icon" onclick="toggleChatContainer()">
@@ -77,10 +74,8 @@
                 <nav class="mx-auto site-navigation">
                     <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
                         <li><a href="{% url 'index' %}" class="nav-link active">Home</a></li>
-                        <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Academic</a>
-                        </li>
-                        <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Research</a>
-                        </li>
+                        <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Academic</a></li>
+                        <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Research</a></li>
                         <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Blog</a></li>
                         <li><a href="{% url 'developers' %}" class="nav-link active">Developers</a></li>
                         <li><a href="{% url 'contacts' %}" class="nav-link active">Contacts</a></li>
@@ -91,8 +86,8 @@
 
                 <div class="right-cta-menu text-right d-flex aligin-items-center col-6">
                     <div class="ml-auto">
-                        <a href="{% url 'signup' %}" class="btn btn-primary border-width-2 d-none d-lg-inline-block">
-                            <span class="mr-2 icon-lock_outline"></span>Sign Up
+                        <a href="{% url 'login' %}" class="btn btn-primary border-width-2 d-none d-lg-inline-block">
+                            <span class="mr-2 icon-lock_outline"></span>Log In
                         </a>
 {#                        <a href="{% url 'signup' %}"#}
 {#                           class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span#}
@@ -106,7 +101,6 @@
         </div>
     </header>
 
-
     <!-- HOME -->
     <section class="section-hero overlay inner-page bg-image"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');"
@@ -114,44 +108,82 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-7">
-                    <h1 class="text-white font-weight-bold">Login</h1>
+                    <h1 class="text-white font-weight-bold">Sign Up</h1>
                     <div class="custom-breadcrumbs">
                         <a href="#">Home</a> <span class="mx-2 slash">/</span>
-                        <span class="text-white"><strong>Log In</strong></span>
+                        <span class="text-white"><strong>Sign Up</strong></span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <form id="login-form" method="post">
+    <form id="signup-form" method="post" action="{% url 'signup' %}">
         {% csrf_token %}
         <section class="site-section">
             <div class="row align-items-center justify-content-center">
                 <div class="col-md-4">
-                    <h2 class="mb-4">Login</h2>
+                    <h2 class="mb-4">Sign Up</h2>
+
+                    <input type="hidden" id="user_type" name="user_type" value="">
                     <div class="row form-group">
                         <div class="col-md-12 mb-3 mb-md-0">
-                            <label class="text-black" for="email_login">Username</label>
-                            <input type="email" name="username" id="email_login" class="form-control"
-                                   placeholder="Email or username">
-                            <div id="email_warning" class="text-danger"></div> <!-- Warning message for email -->
+                            <label class="text-black" for="username_signup">Username</label>
+                            <input type="text" id="username_signup" name="username" class="form-control"
+                                   placeholder="Username">
+                            <div id="username_warning" class="text-danger"></div>
+                            <!-- Warning message for first name -->
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col-md-12 mb-3 mb-md-0">
-                            <label class="text-black" for="password_login">Password</label>
-                            <input type="password" name="password" id="password_login" class="form-control"
+                            <label class="text-black" for="first_name_signup">First Name</label>
+                            <input type="text" id="first_name_signup" name="first_name" class="form-control"
+                                   placeholder="First Name">
+                            <div id="first_name_warning" class="text-danger"></div>
+                            <!-- Warning message for first name -->
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="last_name_signup">Last Name</label>
+                            <input type="text" id="last_name_signup" name="last_name" class="form-control"
+                                   placeholder="Last Name">
+                            <div id="last_name_warning" class="text-danger"></div>
+                            <!-- Warning message for last name -->
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="email_signup">Email</label>
+                            <input type="email" id="email_signup" name="email" class="form-control" placeholder="Email">
+                            <div id="email_warning" class="text-danger"></div> <!-- Warning message for email -->
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="password_signup">Password</label>
+                            <input type="password" id="password_signup" name="password" class="form-control"
                                    placeholder="Password">
                             <div id="password_warning" class="text-danger"></div> <!-- Warning message for password -->
                         </div>
                     </div>
+
+                    <div class="row form-group">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="retype_password_signup">Retype Password</label>
+                            <input type="password" id="retype_password_signup" name="retype_password"
+                                   class="form-control"
+                                   placeholder="Retype Password">
+                            <div id="retype_password_warning" class="text-danger"></div>
+                            <!-- Warning message for retype password -->
+                        </div>
+                    </div>
+
                     <div class="row form-group">
                         <div class="col-md-12">
-                            <input type="submit" value="Login" class="btn px-4 btn-primary text-white">
-                            <span class="ml-3"><a href="forgot_password.html"
-                                                  id="forgot_password_link">Forgot Password?</a></span>
-
+                            <input type="submit" value="Sign Up" class="btn px-4 btn-primary text-white">
                         </div>
                     </div>
                 </div>
@@ -160,77 +192,142 @@
     </form>
 
     <script>
-        document.getElementById("login-form").addEventListener("submit", function (event) {
-            event.preventDefault();
-            var email = document.getElementById("email_login").value;
-            var password = document.getElementById("password_login").value;
+        document.getElementById("signup-form").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent the default form submission
 
-            var emailInput = document.getElementById("email_login");
-            var passwordInput = document.getElementById("password_login");
+            // Retrieve form values
+            var email = document.getElementById("email_signup").value;
+            var username = document.getElementById("username_signup").value;
+            var fn = document.getElementById("first_name_signup").value;
+            var sn = document.getElementById("last_name_signup").value;
+            var password = document.getElementById("password_signup").value;
+            var rt_password = document.getElementById("retype_password_signup").value;
 
-            emailInput.classList.remove("error-border");
-            passwordInput.classList.remove("error-border");
+            var typet = validateEmail(email);
+            document.getElementById("user_type").value = typet;
 
-            if (email.length < 6 || password.length < 6) {
-                if (email.length < 6) {
-                    emailInput.classList.add("error-border");
-                    document.getElementById("email_warning").textContent = "Email should have at least 6 characters.";
-                }
+            clearWarnings();
 
-                if (password.length < 6) {
-                    passwordInput.classList.add("error-border");
-                    document.getElementById("password_warning").textContent = "Password should have at least 6 characters.";
-                }
-            } else {
-                var formData = new FormData(this);
+            if (fn === "") {
+                showWarning("first_name_warning", "Firstname can't be blank.");
+            }
+            if (sn === "") {
+                showWarning("last_name_warning", "Lastname can't be blank.");
+            }
+            if (username === "") {
+                showWarning("username_warning", "Username can't be blank.");
+            }
+            if (email === "") {
+                showWarning("email_warning", "Enter a valid email.");
+            }
+            if (password !== rt_password) {
+                showWarning("password_warning", "Passwords do not match.");
+                showWarning("retype_password_warning", "Passwords do not match.");
+            }
+            if (password.length <= 6) {
+                showWarning("password_warning", "Password must be more than six characters.");
+            }
+            if (email !== "" && typet === "n") {
+                showWarning("email_warning", "The email you have entered is not a valid UIU email.");
+            }
+            if (rt_password.length <= 6) {
+                showWarning("retype_password_warning", "Password must be more than six characters.");
+            }
+
+            // If all validations pass, submit the form
+            if (fn !== "" && sn !== "" && email !== "" && typet !== "n" && password !== "" && password.length > 6 && password === rt_password) {
+                var formData = new FormData(this); // Capture form data
                 var xhr = new XMLHttpRequest();
-                xhr.open("POST", "{% url 'login' %}", true);  // Replace with the correct URL
-                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");  // Include CSRF token
+                xhr.open("POST", "{% url 'signup' %}", true); // Replace 'signup' with your Django URL pattern name
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}"); // Include CSRF token
 
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
                             var response = JSON.parse(xhr.responseText);
                             if (response.status === 'success') {
-                                window.location.replace("{% url 'homepage' %}");
+                                alert(response.message);
+                                window.location.href = "{% url 'verification' %}";
                             } else {
                                 alert(response.message);
                             }
                         }
                     }
                 };
+
                 xhr.send(formData);
             }
         });
 
-        var emailInput = document.getElementById("email_login");
-        emailInput.addEventListener("input", validateEmail);
+        function validateEmail(email) {
+            var patternBSCSE = /^[A-Za-z0-9._%+-]+@bscse\.uiu\.ac\.bd$/;
+            var patternBSEDS = /^[A-Za-z0-9._%+-]+@bseds\.uiu\.ac\.bd$/;
+            var patternBSMSJ = /^[A-Za-z0-9._%+-]+@bsmsj\.uiu\.ac\.bd$/;
+            var patternBSCE = /^[A-Za-z0-9._%+-]+@bsce\.uiu\.ac\.bd$/;
+            var patternBSEEE = /^[A-Za-z0.9._%+-]+@bseee\.uiu\.ac\.bd$/;
+            var patternBSBBA = /^[A-Za-z0-9._%+-]+@bsbba\.uiu\.ac\.bd$/;
 
-        var passwordInput = document.getElementById("password_login");
-        passwordInput.addEventListener("input", validatePassword);
+            var patternCSE = /^[A-Za-z0-9._%+-]+@cse\.uiu\.ac\.bd$/;
+            var patternEDS = /^[A-Za-z0-9._%+-]+@eds\.uiu\.ac\.bd$/;
+            var patternMSJ = /^[A-Za-z0-9._%+-]+@msj\.uiu\.ac\.bd$/;
+            var patternCE = /^[A-Za-z0-9._%+-]+@ce\.uiu\.ac\.bd$/;
+            var patternEEE = /^[A-Za-z0-9._%+-]+@eee\.uiu\.ac\.bd$/;
+            var patternBBA = /^[A-Za-z0-9._%+-]+@bba\.uiu\.ac\.bd$/;
 
-        function validateEmail() {
-            var email = emailInput.value;
-            var emailWarning = document.getElementById("email_warning");
-            if (email.length >= 6) {
-                emailInput.classList.remove("error-border");
-                emailWarning.textContent = ""; // Clear any previous warning messages
-            } else {
-                emailInput.classList.add("error-border");
-                emailWarning.textContent = "Email should have at least 6 characters.";
-            }
+            var patternUIU = /^[A-Za-z0-9._%+-]+@uiu\.ac\.bd$/;
+            var patternADMIN = /^[A-Za-z0-9._%+-]+@admin\.bscse\.uiu\.ac\.bd$/;
+
+            if (patternBSCSE.test(email) ||
+                patternBSCE.test(email) ||
+                patternBSEDS.test(email) ||
+                patternBSEEE.test(email) ||
+                patternBSMSJ.test(email) ||
+                patternBSBBA.test(email))
+                return "student";
+            else if (patternUIU.test(email) ||
+                patternADMIN.test(email) ||
+                patternCSE.test(email) ||
+                patternCE.test(email) ||
+                patternMSJ.test(email) ||
+                patternEEE.test(email) ||
+                patternEDS.test(email) ||
+                patternBBA.test(email))
+                return "faculty";
+            return "n";
         }
 
-        function validatePassword() {
-            var password = passwordInput.value;
-            var passwordWarning = document.getElementById("password_warning");
-            if (password.length >= 6) {
-                passwordInput.classList.remove("error-border");
-                passwordWarning.textContent = ""; // Clear any previous warning messages
-            } else {
-                passwordInput.classList.add("error-border");
-                passwordWarning.textContent = "Password should have at least 6 characters.";
+        function clearWarnings() {
+            document.getElementById("email_warning").textContent = "";
+            document.getElementById("first_name_warning").textContent = "";
+            document.getElementById("last_name_warning").textContent = "";
+            document.getElementById("password_warning").textContent = "";
+            document.getElementById("retype_password_warning").textContent = "";
+
+            document.getElementById("email_signup").classList.remove("error-border");
+            document.getElementById("first_name_signup").classList.remove("error-border");
+            document.getElementById("last_name_signup").classList.remove("error-border");
+            document.getElementById("password_signup").classList.remove("error-border");
+            document.getElementById("retype_password_signup").classList.remove("error-border");
+        }
+
+        function showWarning(elementId, message) {
+            document.getElementById(elementId).textContent = message;
+            document.getElementById(elementId.replace("_warning", "")).classList.add("error-border");
+        }
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
             }
+            return cookieValue;
         }
     </script>
 
@@ -290,8 +387,7 @@
                         All rights reserved | This template is made with <i class="icon-heart text-danger"
                                                                             aria-hidden="true"></i> by <a
                             href="https://binarybrains.com" target="_blank">BinaryBrains</a>
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    </small>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></small>
                     </p>
                 </div>
             </div>
@@ -299,9 +395,6 @@
     </footer>
 
 </div>
-
-<!-- SCRIPTS -->
-{% load static %}
 
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
@@ -314,9 +407,7 @@
 <script src="{% static 'js/owl.carousel.min.js' %}"></script>
 <script src="{% static 'js/quill.min.js' %}"></script>
 <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
-<script src="{% static 'js/custom.js' %}"></script>
 <script src="{% static 'js/chatbot.js' %}"></script>
-
-
+<script src="{% static 'js/custom.js' %}"></script>
 </body>
 </html>

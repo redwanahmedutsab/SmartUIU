@@ -1,0 +1,221 @@
+.dropdown-item {
+    white-space: nowrap;
+    word-wrap: break-word;
+    max-width: 100%; /* Adjust the value based on your preference */
+    text-align: left; /* Add this line to align the text to the left */
+}
+
+.dropdown-menu {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.button-image {
+    background-color: #fc9f33; /* Set the background color */
+    border: none; /* Remove the border */
+    border-radius: 50%; /* Make the background circular */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow effect */
+}
+
+/* Adjust the styling of the job listing cards */
+.job-listing {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.job-listing:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.job-listing-logo img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.job-listing-about {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.job-listing-position {
+    flex: 1;
+}
+
+.job-position {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.company-name {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.job-listing-location {
+    margin-top: 5px;
+}
+
+.location-icon {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.job-listing-meta {
+    margin-top: 10px;
+}
+
+.job-status {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+}
+
+.messenger-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: #fff;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 9999; /* Ensure it's above other elements */
+}
+
+.chat-container {
+    display: none;
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px;
+    background-color: #fff;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 9998; /* Below the messenger icon */
+}
+
+.chat-header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+.chat-box {
+    height: 300px;
+    padding: 10px;
+    overflow-y: scroll;
+    border-bottom: 1px solid #fff;
+}
+
+.user-msg {
+    text-align: right;
+    margin-bottom: 5px;
+}
+
+.bot-msg {
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+.input-container {
+    display: flex;
+    padding: 10px;
+}
+
+.user-input {
+    flex: 1;
+    padding: 5px;
+}
+
+.send-button {
+    padding: 5px 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+/* Add this CSS to your stylesheet */
+
+.container {
+    position: relative; /* Add this to create a positioning context */
+}
+
+.custom-pagination {
+    position: absolute;
+    right: 0; /* Position on the right side */
+    top: 100%; /* Position below the previous element */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px; /* Add space between the sections */
+}
+
+/* Style the "Prev" and "Next" buttons */
+.custom-pagination a {
+    text-decoration: none;
+    color: #333; /* Or your preferred color */
+    margin: 0 10px; /* Adjust spacing as needed */
+}
+
+/* Style the page numbers */
+.custom-pagination .d-inline-block a {
+    text-decoration: none;
+    color: #333; /* Or your preferred color */
+    margin: 0 5px; /* Adjust spacing as needed */
+}
+
+/* Style the active page number */
+.custom-pagination .d-inline-block a.active {
+    font-weight: bold;
+}
+
+.icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none; /* Remove underline from links */
+    color: #f0f0f0; /* Inherit color from parent */
+}
+
+.icon-container img {
+    display: block; /* Ensure the image is displayed as a block element */
+}
+
+.icon-container:hover {
+    opacity: 0.8; /* Optional: change opacity on hover to indicate clickable area */
+}
+
+.icon-name {
+    color: black; /* Set text color to white */
+    font-size: 14px; /* Adjust font size if needed */
+    margin-top: 8px; /* Space between the image and the text */
+}
+

@@ -62,8 +62,6 @@
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="site-logo col-6">
-                    {% load static %}
-
                     <a href="{% url 'index' %}">
                         <img src="{% static 'images/uiu.jpg' %}" alt="logo" height="70px" width="80px" align="center">
                     </a>
@@ -72,18 +70,15 @@
                         <img src="{% static 'images/smartuiu.png' %}" alt="logo" height="110px" width="130px"
                              align="center">
                     </a>
-
                 </div>
                 <nav class="mx-auto site-navigation">
                     <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
-                        <li><a href="{% url 'index' %}" class="nav-link active">Home</a></li>
-                        <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Academic</a>
-                        </li>
-                        <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Research</a>
-                        </li>
-                        <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Blog</a></li>
-                        <li><a href="{% url 'developers' %}" class="nav-link active">Developers</a></li>
-                        <li><a href="{% url 'contacts' %}" class="nav-link active">Contacts</a></li>
+                        <li><a href="index.html" class="nav-link active">Home</a></li>
+                        <li><a href="login.html">Find Job</a></li>
+                        <li><a href="login.html">Post Job</a></li>
+                        <li><a href="login.html">Blog</a></li>
+                        <li><a href="about.html">Developers</a></li>
+                        <li><a href="contact.html">Contact</a></li>
                         <li class="d-lg-none"><a href="login.html">Log In</a></li>
                         <li class="d-lg-none"><a href="login.html">Sign In</a></li>
                     </ul>
@@ -91,12 +86,10 @@
 
                 <div class="right-cta-menu text-right d-flex aligin-items-center col-6">
                     <div class="ml-auto">
-                        <a href="{% url 'signup' %}" class="btn btn-primary border-width-2 d-none d-lg-inline-block">
-                            <span class="mr-2 icon-lock_outline"></span>Sign Up
-                        </a>
-{#                        <a href="{% url 'signup' %}"#}
-{#                           class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span#}
-{#                                class="mr-2 icon-lock_outline"></span>Sign Up</a>#}
+                        <a href="login.html" class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span
+                                class="mr-2 icon-lock_outline"></span>Log In</a>
+                        <a href="sign%20up.html" class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span
+                                class="mr-2 icon-lock_outline"></span>Sign Up</a>
                     </div>
                     <a href="#" class="site-menu-toggle js-menu-toggle d-inline-block d-xl-none mt-lg-2 ml-3"><span
                             class="icon-menu h3 m-0 p-0 mt-2"></span></a>
@@ -124,33 +117,25 @@
         </div>
     </section>
 
-    <form id="login-form" method="post">
+    <form id="verification-form" method="post">
         {% csrf_token %}
         <section class="site-section">
             <div class="row align-items-center justify-content-center">
-                <div class="col-md-4">
-                    <h2 class="mb-4">Login</h2>
+                <div class="col-md-2">
+                    <h2 class="mb-2">Verification</h2>
                     <div class="row form-group">
                         <div class="col-md-12 mb-3 mb-md-0">
-                            <label class="text-black" for="email_login">Username</label>
-                            <input type="email" name="username" id="email_login" class="form-control"
-                                   placeholder="Email or username">
-                            <div id="email_warning" class="text-danger"></div> <!-- Warning message for email -->
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-12 mb-3 mb-md-0">
-                            <label class="text-black" for="password_login">Password</label>
-                            <input type="password" name="password" id="password_login" class="form-control"
-                                   placeholder="Password">
-                            <div id="password_warning" class="text-danger"></div> <!-- Warning message for password -->
+                            <label class="text-black" for="code">Code</label>
+                            <input type="text" name="code" id="code" class="form-control"
+                                   placeholder="Enter the verification code">
+                            <div id="email_warning" class="text-danger"></div>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col-md-12">
-                            <input type="submit" value="Login" class="btn px-4 btn-primary text-white">
+                            <input type="submit" value="Verify" class="btn px-4 btn-primary text-white">
                             <span class="ml-3"><a href="forgot_password.html"
-                                                  id="forgot_password_link">Forgot Password?</a></span>
+                                                  id="forgot_password_link">Resend Code</a></span>
 
                         </div>
                     </div>
@@ -160,78 +145,28 @@
     </form>
 
     <script>
-        document.getElementById("login-form").addEventListener("submit", function (event) {
+        document.getElementById("verification-form").addEventListener("submit", function (event) {
             event.preventDefault();
-            var email = document.getElementById("email_login").value;
-            var password = document.getElementById("password_login").value;
+            var formData = new FormData(this);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{% url 'verification' %}", true);
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
 
-            var emailInput = document.getElementById("email_login");
-            var passwordInput = document.getElementById("password_login");
-
-            emailInput.classList.remove("error-border");
-            passwordInput.classList.remove("error-border");
-
-            if (email.length < 6 || password.length < 6) {
-                if (email.length < 6) {
-                    emailInput.classList.add("error-border");
-                    document.getElementById("email_warning").textContent = "Email should have at least 6 characters.";
-                }
-
-                if (password.length < 6) {
-                    passwordInput.classList.add("error-border");
-                    document.getElementById("password_warning").textContent = "Password should have at least 6 characters.";
-                }
-            } else {
-                var formData = new FormData(this);
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "{% url 'login' %}", true);  // Replace with the correct URL
-                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");  // Include CSRF token
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        if (xhr.status === 200) {
-                            var response = JSON.parse(xhr.responseText);
-                            if (response.status === 'success') {
-                                window.location.replace("{% url 'homepage' %}");
-                            } else {
-                                alert(response.message);
-                            }
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.status === 'success') {
+                            window.location.href = "{% url 'login' %}";
+                        } else {
+                            alert(response.message);
                         }
                     }
-                };
-                xhr.send(formData);
-            }
+                }
+            };
+            xhr.send(formData);
         });
 
-        var emailInput = document.getElementById("email_login");
-        emailInput.addEventListener("input", validateEmail);
-
-        var passwordInput = document.getElementById("password_login");
-        passwordInput.addEventListener("input", validatePassword);
-
-        function validateEmail() {
-            var email = emailInput.value;
-            var emailWarning = document.getElementById("email_warning");
-            if (email.length >= 6) {
-                emailInput.classList.remove("error-border");
-                emailWarning.textContent = ""; // Clear any previous warning messages
-            } else {
-                emailInput.classList.add("error-border");
-                emailWarning.textContent = "Email should have at least 6 characters.";
-            }
-        }
-
-        function validatePassword() {
-            var password = passwordInput.value;
-            var passwordWarning = document.getElementById("password_warning");
-            if (password.length >= 6) {
-                passwordInput.classList.remove("error-border");
-                passwordWarning.textContent = ""; // Clear any previous warning messages
-            } else {
-                passwordInput.classList.add("error-border");
-                passwordWarning.textContent = "Password should have at least 6 characters.";
-            }
-        }
     </script>
 
 
