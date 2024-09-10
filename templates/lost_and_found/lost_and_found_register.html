@@ -1,25 +1,43 @@
 {% load static %}
-
 <!doctype html>
 <html lang="en">
-<head>
-    <title>JobBoard &mdash; Website Template by Colorlib</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>UIU Job Bank</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<meta name="author" content="Free-Template.co"/>
 
-    <link rel="shortcut icon" href="{% static 'images/uiu.jpg' %}">
-    <link rel="stylesheet" href="{% static 'css/custom-bs.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-    <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
-    <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
-    <link rel="stylesheet" href="{% static 'fonts/line-icons/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+<link rel="shortcut icon" href="{% static 'images/uiu.jpg' %}">
+<link rel="stylesheet" href="{% static 'css/custom-bs.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+<link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+<link rel="stylesheet" href="{% static 'fonts/line-icons/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/style.css' %}"><!-- MAIN CSS -->
 </head>
+
 <body id="top">
+<div class="messenger-icon" id="messenger-icon" onclick="toggleChatContainer()">
+    <span class="icon-chat"></span>
+</div>
+<div class="chat-container" id="chat-container">
+    <div class="chat-header">
+        UIU Chatbot
+    </div>
+    <div class="chat-box" id="chat-box">
+        <div class="bot-msg">Hello! How can I help you?</div>
+    </div>
+    <div class="input-container">
+        <input type="text" class="user-input" id="user-input" placeholder="Type your message...">
+        <button class="send-button" onclick="sendMessage()">Send</button>
+    </div>
+</div>
 
 <div id="overlayer"></div>
 <div class="loader">
@@ -100,104 +118,66 @@
 
     <!-- HOME -->
     <section class="section-hero overlay inner-page bg-image"
-             style="background-image: url('{% static "images/hero_1.jpg" %}');" id="home-section">
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
         <div class="container">
             <div class="row">
                 <div class="col-md-7">
-                    <h1 class="text-white font-weight-bold">About Us</h1>
+                    <h1 class="text-white font-weight-bold">Post an item</h1>
                     <div class="custom-breadcrumbs">
                         <a href="#">Home</a> <span class="mx-2 slash">/</span>
-                        <span class="text-white"><strong>About Us</strong></span>
+                        <a href="{% url 'lost_and_found' %}">Lost & Found</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Post an item</strong></span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="site-section pb-0">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-3">
-                    <img src="{% static 'images/redwan.jpg' %}" alt="Image" class="img-fluid img-shadow">
-                </div>
-                <div class="col-lg-6">
-                    <h2 class="section-title mb-3">Redwan Ahmed Utsab</h2>
-                    <p class="lead">Machine Learning & Software Engineer</p>
-                    <p>Ipsum harum assumenda in eum vel eveniet numquam, cumque vero vitae enim cupiditate deserunt
-                        eligendi officia modi consectetur. Expedita tempora quos nobis earum hic ex asperiores quisquam
-                        optio nostrum sit!</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="site-section pt-0">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-5 mb-lg-0 order-md-2">
-                    <img src="{% static 'images/anik.jpg' %}" alt="Image" class="img-fluid img-shadow">
-                </div>
-                <div class="col-lg-6 mr-auto order-md-1  mb-5 mb-lg-0">
-                    <h2 class="section-title mb-3">Istiak Ahmed Anik</h2>
-                    <p class="lead">Full Stack Web Developer</p>
-                    <p>Ipsum harum assumenda in eum vel eveniet numquam, cumque vero vitae enim cupiditate deserunt
-                        eligendi officia modi consectetur. Expedita tempora quos nobis earum hic ex asperiores quisquam
-                        optio nostrum sit!</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <form class="p-5 p-md-5 border rounded" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3 class="text-black mb-5 border-bottom pb-2">Item Details</h3>
 
-    <section class="site-section pb-0">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-3">
-                    <img src="{% static 'images/koushik.jpg' %}" alt="Image" class="img-fluid img-shadow">
-                </div>
-                <div class="col-lg-6">
-                    <h2 class="section-title mb-3">Koushik Ahmed</h2>
-                    <p class="lead">Software Quality & Testing Assurance</p>
-                    <p>Ipsum harum assumenda in eum vel eveniet numquam, cumque vero vitae enim cupiditate deserunt
-                        eligendi officia modi consectetur. Expedita tempora quos nobis earum hic ex asperiores quisquam
-                        optio nostrum sit!</p>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="company-website-tw d-block">Upload Item's Image</label> <br>
+            <label class="btn btn-primary btn-md btn-file">
+                Browse File<input type="file" name="item_image" hidden>
+            </label>
         </div>
-    </section>
 
-    <section class="site-section pt-0">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-5 mb-lg-0 order-md-2">
-                    <img src="{% static 'images/redwan.jpg' %}" alt="Image" class="img-fluid img-shadow">
-                </div>
-                <div class="col-lg-5 mr-auto order-md-1  mb-5 mb-lg-0">
-                    <h2 class="section-title mb-3">Redwan Ahmed Utsab</h2>
-                    <p class="lead">Machine Learning & Software Engineer</p>
-                    <p>Ipsum harum assumenda in eum vel eveniet numquam, cumque vero vitae enim cupiditate deserunt
-                        eligendi officia modi consectetur. Expedita tempora quos nobis earum hic ex asperiores quisquam
-                        optio nostrum sit!</p>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" name="email" placeholder="e.g. you@yourdomain.com">
         </div>
-    </section>
+        <div class="form-group">
+            <label for="mobile">Mobile</label>
+            <input type="text" class="form-control" name="mobile" placeholder="e.g. 01700000000">
+        </div>
+        <div class="form-group">
+            <label for="item_name">Item's Name</label>
+            <input type="text" class="form-control" name="item_name" placeholder="e.g. iPhone 13 Pro">
+        </div>
+        <div class="form-group">
+            <label for="location">Where you found it</label>
+            <input type="text" class="form-control" name="location" placeholder="e.g. canteen">
+        </div>
+        <div class="form-group">
+            <label for="time_date">Time & Date</label>
+            <input type="text" class="form-control" name="time_date" placeholder="Select time and date">
+        </div>
 
-    <section class="site-section pb-0">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-3">
-                    <img src="{% static 'images/redwan.jpg' %}" alt="Image" class="img-fluid img-shadow">
-                </div>
-                <div class="col-lg-6">
-                    <h2 class="section-title mb-3">Redwan Ahmed Utsab</h2>
-                    <p class="lead">Machine Learning & Software Engineer</p>
-                    <p>Ipsum harum assumenda in eum vel eveniet numquam, cumque vero vitae enim cupiditate deserunt
-                        eligendi officia modi consectetur. Expedita tempora quos nobis earum hic ex asperiores quisquam
-                        optio nostrum sit!</p>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="description">Item's Description</label>
+            <textarea class="form-control" name="description" id="editor-1"></textarea>
         </div>
-    </section>
+
+        <button type="submit" class="btn btn-primary btn-md">Post</button>
+
+        <script>
+            CKEDITOR.replace('editor-1');
+        </script>
+    </form>
 
     <footer class="site-footer">
 
@@ -270,14 +250,12 @@
 <script src="{% static 'js/stickyfill.min.js' %}"></script>
 <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
 <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
-
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
 <script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
 <script src="{% static 'js/owl.carousel.min.js' %}"></script>
-<script src="{% static 'js/quill.min.js' %}"></script>
-
 <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
+<script src="{% static 'js/chatbot.js' %}"></script>
 
 
 </body>

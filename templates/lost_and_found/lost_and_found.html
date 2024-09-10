@@ -1,11 +1,13 @@
 {% load static %}
-
 <!doctype html>
 <html lang="en">
 <head>
-    <title>JobBoard &mdash; Website Template by Colorlib</title>
+    <title>UIU Job Bank</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content="Free-Template.co"/>
 
     <link rel="shortcut icon" href="{% static 'images/uiu.jpg' %}">
     <link rel="stylesheet" href="{% static 'css/custom-bs.css' %}">
@@ -18,8 +20,30 @@
     <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {#    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">#}
+    {#    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>#}
+    {#    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>#}
+
+
+    <!-- MAIN CSS -->
 </head>
+
 <body id="top">
+<div class="messenger-icon" id="messenger-icon" onclick="toggleChatContainer()">
+    <span class="icon-chat"></span>
+</div>
+<div class="chat-container" id="chat-container">
+    <div class="chat-header">
+        UIU Chatbot
+    </div>
+    <div class="chat-box" id="chat-box">
+        <div class="bot-msg">Hello! How can I help you?</div>
+    </div>
+    <div class="input-container">
+        <input type="text" class="user-input" id="user-input" placeholder="Type your message...">
+        <button class="send-button" onclick="sendMessage()">Send</button>
+    </div>
+</div>
 
 <div id="overlayer"></div>
 <div class="loader">
@@ -99,105 +123,121 @@
     </header>
 
     <!-- HOME -->
-    <section class="section-hero overlay inner-page bg-image"
-             style="background-image: url('{% static "images/hero_1.jpg" %}');" id="home-section">
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+
         <div class="container">
-            <div class="row">
-                <div class="col-md-7">
-                    <h1 class="text-white font-weight-bold">About Us</h1>
-                    <div class="custom-breadcrumbs">
-                        <a href="#">Home</a> <span class="mx-2 slash">/</span>
-                        <span class="text-white"><strong>About Us</strong></span>
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12 text-center mb-5">
+                    <h1 class="text-white font-weight-bold">Welcome to lost and found section</h1>
+                    <p class="text-white font-weight-bold">Find your lost items here & give us a treat!</p>
+                </div>
+                <div class="col-md-12">
+                    <form method="post" class="search-jobs-form">
+                        <div class="row mb-5 justify-content-center">
+                            <div class="col-5">
+                                <input type="text" class="form-control form-control-lg" placeholder="Mobile, Watch...">
+                            </div>
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search">
+                                    <span class="icon-search icon mr-2"></span>Search Item
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 popular-keywords">
+                                <!-- Keywords content goes here -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <a href="#next" class="scroll-button smoothscroll">
+            <span class=" icon-keyboard_arrow_down"></span>
+        </a>
+    </section>
+
+
+    <section class="site-section" id="next">
+        <div class="container">
+
+            <div class="row mb-5 justify-content-center">
+                <div class="col-md-7 text-center">
+                    <h2 class="section-title mb-2"> {{ items.count }} Items Listed</h2>
+                </div>
+            </div>
+
+            <ul class="job-listings mb-5">
+                {% for item in items %}
+                    <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+                        <a href="{% url 'lost_and_found_single' item.id %}"></a>
+                        <div class="job-listing-logo">
+                            {% if item.item_image %}
+                                <img src="{{ item.item_image.url }}" alt="Item Image" class="img-fluid">
+                            {% else %}
+                                <img src="{% static 'images/smartuiu.png' %}" alt="Default Image"
+                                     class="img-fluid">
+                            {% endif %}
+                        </div>
+
+                        <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                            <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                                <h2>{{ item.item_name }}</h2>
+                                <!-- Since you don't have company_name in the Item model, you might remove this -->
+                            </div>
+                            <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                                <span class="icon-room"></span> {{ item.location }}
+                            </div>
+                            <div class="job-listing-meta">
+                                <!-- Job type is not in your model. If you want to display item type, add it to the model or adjust accordingly -->
+                                <span class="badge badge-success">
+                        {{ item.time_date }} <!-- Using time_date here as placeholder -->
+                    </span>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <div class="row pagination-wrap">
+                <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">
+                    <span>Showing {{ items.count }} Of {{ items.count }} Items</span>
+                </div>
+                <div class="col-md-6 text-center text-md-right">
+                    <div class="custom-pagination ml-auto">
+                        <a href="#" class="prev">Prev</a>
+                        <div class="d-inline-block">
+                            <a href="#" class="active">1</a>
+                            <a href="#">2</a>
+                            <a href="#">3</a>
+                            <a href="#">4</a>
+                        </div>
+                        <a href="#" class="next">Next</a>
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
 
-    <section class="site-section pb-0">
+    <section class="py-5 bg-image overlay-primary fixed overlay"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-5 mb-3">
-                    <img src="{% static 'images/redwan.jpg' %}" alt="Image" class="img-fluid img-shadow">
+                <div class="col-md-8">
+                    <h2 class="text-white">Want to register information of a found item?</h2>
+                    <p class="mb-0 text-white lead">Click on the register button and fill the found item's
+                        information.</p>
                 </div>
-                <div class="col-lg-6">
-                    <h2 class="section-title mb-3">Redwan Ahmed Utsab</h2>
-                    <p class="lead">Machine Learning & Software Engineer</p>
-                    <p>Ipsum harum assumenda in eum vel eveniet numquam, cumque vero vitae enim cupiditate deserunt
-                        eligendi officia modi consectetur. Expedita tempora quos nobis earum hic ex asperiores quisquam
-                        optio nostrum sit!</p>
+                <div class="col-md-3 ml-auto">
+                    <a href="{% url 'lost_and_found_register' %}" class="btn btn-warning btn-block btn-lg">Register</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="site-section pt-0">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-5 mb-lg-0 order-md-2">
-                    <img src="{% static 'images/anik.jpg' %}" alt="Image" class="img-fluid img-shadow">
-                </div>
-                <div class="col-lg-6 mr-auto order-md-1  mb-5 mb-lg-0">
-                    <h2 class="section-title mb-3">Istiak Ahmed Anik</h2>
-                    <p class="lead">Full Stack Web Developer</p>
-                    <p>Ipsum harum assumenda in eum vel eveniet numquam, cumque vero vitae enim cupiditate deserunt
-                        eligendi officia modi consectetur. Expedita tempora quos nobis earum hic ex asperiores quisquam
-                        optio nostrum sit!</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="site-section pb-0">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-3">
-                    <img src="{% static 'images/koushik.jpg' %}" alt="Image" class="img-fluid img-shadow">
-                </div>
-                <div class="col-lg-6">
-                    <h2 class="section-title mb-3">Koushik Ahmed</h2>
-                    <p class="lead">Software Quality & Testing Assurance</p>
-                    <p>Ipsum harum assumenda in eum vel eveniet numquam, cumque vero vitae enim cupiditate deserunt
-                        eligendi officia modi consectetur. Expedita tempora quos nobis earum hic ex asperiores quisquam
-                        optio nostrum sit!</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="site-section pt-0">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-5 mb-lg-0 order-md-2">
-                    <img src="{% static 'images/redwan.jpg' %}" alt="Image" class="img-fluid img-shadow">
-                </div>
-                <div class="col-lg-5 mr-auto order-md-1  mb-5 mb-lg-0">
-                    <h2 class="section-title mb-3">Redwan Ahmed Utsab</h2>
-                    <p class="lead">Machine Learning & Software Engineer</p>
-                    <p>Ipsum harum assumenda in eum vel eveniet numquam, cumque vero vitae enim cupiditate deserunt
-                        eligendi officia modi consectetur. Expedita tempora quos nobis earum hic ex asperiores quisquam
-                        optio nostrum sit!</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="site-section pb-0">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-3">
-                    <img src="{% static 'images/redwan.jpg' %}" alt="Image" class="img-fluid img-shadow">
-                </div>
-                <div class="col-lg-6">
-                    <h2 class="section-title mb-3">Redwan Ahmed Utsab</h2>
-                    <p class="lead">Machine Learning & Software Engineer</p>
-                    <p>Ipsum harum assumenda in eum vel eveniet numquam, cumque vero vitae enim cupiditate deserunt
-                        eligendi officia modi consectetur. Expedita tempora quos nobis earum hic ex asperiores quisquam
-                        optio nostrum sit!</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <footer class="site-footer">
 
@@ -270,14 +310,12 @@
 <script src="{% static 'js/stickyfill.min.js' %}"></script>
 <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
 <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
-
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
 <script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
 <script src="{% static 'js/owl.carousel.min.js' %}"></script>
-<script src="{% static 'js/quill.min.js' %}"></script>
-
 <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
+<script src="{% static 'js/chatbot.js' %}"></script>
 
 
 </body>
