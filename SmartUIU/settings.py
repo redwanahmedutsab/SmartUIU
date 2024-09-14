@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'homepage',
     'lost_and_found',
+    'thesis_finder',
     'django_extensions',
 ]
 

@@ -1,12 +1,30 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Item
 
 
+@login_required
 def home(request):
     items = Item.objects.all()
     return render(request, 'lost_and_found/lost_and_found.html', {'items': items})
 
 
+@login_required
+def lost_and_found_user_section_view(request):
+    if request.method == 'POST':
+        # Handle item deletion
+        item_id = request.POST.get('item_id')
+        if item_id:
+            item = get_object_or_404(Item, id=item_id, user=request.user)
+            item.delete()
+        return redirect('lost_and_found_user_section')  # Redirect to the same view
+
+    # Handle displaying items
+    items = Item.objects.filter(user=request.user)
+    return render(request, 'lost_and_found/lost_and_found_user_section.html', {'items': items})
+
+
+@login_required
 def lost_and_found_register_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -27,20 +45,16 @@ def lost_and_found_register_view(request):
             time_date=time_date,
             description=description,
             item_image=item_image,
-            found_by_name=found_by_user.first_name + ' ' + found_by_user.last_name
+            found_by_name=found_by_user.first_name + ' ' + found_by_user.last_name,
+            user_id=found_by_user.id
         )
         item.save()
         return redirect('lost_and_found')
     return render(request, 'lost_and_found/lost_and_found_register.html')
 
 
-# def lost_and_found_single_view(request, id):
-#     return render(request, 'lost_and_found/lost_and_found_single.html')
-
-
+@login_required
 def lost_and_found_single_view(request, id):
-    # Retrieve the item by id
     item = get_object_or_404(Item, id=id)
 
-    # Pass the item to the template for rendering
     return render(request, 'lost_and_found/lost_and_found_single.html', {'item': item})

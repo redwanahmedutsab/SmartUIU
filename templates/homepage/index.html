@@ -2,14 +2,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>UIU Job Bank</title>
+    <title>SmartUIU</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content=""/>
     <meta name="keywords" content=""/>
     <meta name="author" content="Free-Template.co"/>
     <link rel="shortcut icon" href="{% static 'images/uiu.jpg' %}">
-
     <link rel="stylesheet" href="{% static 'css/custom-bs.css' %}">
     <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
@@ -17,9 +16,6 @@
     <link rel="stylesheet" href="{% static 'fonts/line-icons/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
-
-
-    <!-- MAIN CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
@@ -83,9 +79,9 @@
                         <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Research</a></li>
                         <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Blog</a></li>
                         <li><a href="{% url 'developers' %}" class="nav-link active">Developers</a></li>
-                        <li><a href="{% url 'contacts' %}" class="nav-link active">Contacts</a></li>
-                        <li class="d-lg-none"><a href="login.html">Log In</a></li>
-                        <li class="d-lg-none"><a href="login.html">Sign In</a></li>
+                        <li><a href="{% url 'contacts' %}" class="nav-link active">Contact US</a></li>
+{#                        <li class="d-lg-none"><a href="login.html">Log In</a></li>#}
+{#                        <li class="d-lg-none"><a href="login.html">Sign In</a></li>#}
                     </ul>
                 </nav>
 

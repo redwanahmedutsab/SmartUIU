@@ -2,6 +2,7 @@
 <!doctype html>
 <html lang="en">
 {% include 'expendable/head.html' %}
+
 <body id="top">
 {% include 'expendable/chatbot_and_loading.html' %}
 
@@ -19,6 +20,7 @@
 
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
+
     <!-- HOME -->
     <section class="section-hero home-section overlay inner-page bg-image"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
@@ -26,18 +28,19 @@
         <div class="container">
             <div class="row align-items-center justify-content-center">
                 <div class="col-md-12 text-center mb-5">
-                    <h1 class="text-white font-weight-bold">Welcome to lost and found section</h1>
-                    <p class="text-white font-weight-bold">Find your lost items here & give us a treat!</p>
+                    <h1 class="text-white font-weight-bold">Welcome to the thesis finder section</h1>
+                    <p class="text-white font-weight-bold">Find member for your thesis!</p>
                 </div>
                 <div class="col-md-12">
                     <form method="post" class="search-jobs-form">
                         <div class="row mb-5 justify-content-center">
                             <div class="col-5">
-                                <input type="text" class="form-control form-control-lg" placeholder="Mobile, Watch...">
+                                <input type="text" class="form-control form-control-lg"
+                                       placeholder="Machine Learning...">
                             </div>
                             <div class="col-2">
                                 <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search">
-                                    <span class="icon-search icon mr-2"></span>Search Item
+                                    <span class="icon-search icon mr-2"></span>Search
                                 </button>
                             </div>
                         </div>
@@ -59,46 +62,53 @@
     <section class="site-section" id="next">
         <div class="container">
 
-            <!-- Title -->
             <div class="row mb-5 justify-content-center">
                 <div class="col-md-7 text-center">
-                    <h2 class="section-title mb-2">{{ items.count }} Items Listed</h2>
+                    {% if thesis.count > 1 %}
+                        <h2 class="section-title mb-2">{{ thesis.count }} Members are registered</h2>
+                    {% else %}
+                        <h2 class="section-title mb-2">{{ thesis.count }} Member is registered</h2>
+                    {% endif %}
                 </div>
             </div>
 
-            <div class="row">
-                {% for item in items %}
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100">
-                            <div class="card-img-top">
-                                {% if item.item_image %}
-                                    <img src="{{ item.item_image.url }}" alt="Item Image" class="img-fluid rounded-top"
-                                         style="max-height: 500px; object-fit: cover;">
-                                {% else %}
-                                    <img src="{% static 'images/smartuiu.png' %}" alt="Default Image"
-                                         class="img-fluid rounded-top" style="max-height: 200px; object-fit: cover;">
-                                {% endif %}
-                            </div>
-                            <!-- Card Body -->
-                            <div class="card-body">
-                                <h5 class="card-title">{{ item.item_name }}</h5>
-                                <p class="card-text">
-                                    <span class="icon-room"></span> {{ item.location }}<br>
-                                    <span class="icon-clock-o"></span> {{ item.time_date }}
-                                </p>
-                            </div>
-                            <!-- Card Footer -->
-                            <div class="card-footer">
+            <ul class="job-listings mb-5">
+                {% for profile in thesis %}
+                    <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+                        <a href="{% url 'thesis_finder_single' profile.id %}"></a>
+                        <div class="job-listing-logo">
+                            {% if profile.profile_picture %}
+                                <img src="{{ profile.profile_picture.url }}" alt="Item Image" class="img-fluid">
+                            {% else %}
+                                <img src="{% static 'images/smartuiu.png' %}" alt="Default Image"
+                                     class="img-fluid">
+                            {% endif %}
+                        </div>
 
-                                <a href="{% url 'lost_and_found_single' item.id %}"
-                                   class="btn btn-primary btn-sm float-end">View Details</a>
+                        <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                            <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                                <h2>{{ profile.name }}</h2>
+                                <p>{{ profile.department }}<br>{{ profile.university_id }}</p>
+
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="badge badge-success">{{ thesis.availability|yesno:"Unavailable,Available" }}</span>
+
+                                <br>
+                                <span class="badge badge-success">
+                        {{ profile.skills }}
+                    </span>
+                                <br>
+                                <span class="badge badge-success">
+                        {{ profile.research_interests }}
+                    </span>
                             </div>
                         </div>
-                    </div>
+                    </li>
                 {% endfor %}
-            </div>
+            </ul>
 
-            <!-- Pagination Section -->
             <div class="row pagination-wrap">
                 <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">
                     <span>Showing {{ items.count }} Of {{ items.count }} Items</span>
@@ -119,30 +129,32 @@
 
         </div>
     </section>
+
     <section class="py-5 bg-image overlay-primary fixed overlay"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');">
 
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h2 class="text-white">Want to register information of a found item?</h2>
-                    <p class="mb-0 text-white lead">Click on the register button and fill the found item's
-                        information.</p>
+                    <h2 class="text-white">Want to register your information?</h2>
+                    <p class="mb-0 text-white lead">Click on the create profile button let others find you!.</p>
                 </div>
                 <div class="col-md-3 ml-auto">
-                    <a href="{% url 'lost_and_found_register' %}" class="btn btn-warning btn-block btn-lg">Post Found
-                        Item
-                    </a>
-                    <a href="{% url 'lost_and_found_user_section' %}" class="btn btn-warning btn-block btn-lg">View My Posts
-                    </a>
+                    <a href="{% url 'thesis_finder_create_profile' %}" class="btn btn-warning btn-block btn-lg">Create
+                        Profile</a>
+                    <a href="{% url 'thesis_finder_profile' %}" class="btn btn-warning btn-block btn-lg">Edit My
+                        Profile</a>
                 </div>
             </div>
         </div>
     </section>
 
-
     {% include 'expendable/footer.html' %}
+
+
 </div>
+
 {% include 'expendable/include.html' %}
+
 </body>
 </html>

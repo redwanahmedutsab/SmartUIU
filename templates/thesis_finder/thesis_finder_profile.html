@@ -1,0 +1,151 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+    <!-- HOME -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Edit My Thesis Profile</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="#">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'thesis_finder' %}">Thesis Finder</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Edit My Thesis Profile</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="container mt-5 mb-5 col-sm-8">
+        <div class="form-container">
+            <h2 class="text-center mb-4">Edit Your Profile</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name"
+                           value="{{ user.name }}" placeholder="Enter your full name" required>
+                </div>
+
+                <!-- Email (Read-only) -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}"
+                           placeholder="Enter your email" readonly>
+                </div>
+
+                <!-- Department -->
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <input type="text" class="form-control" id="department" name="department"
+                           value="{{ user.department }}" placeholder="Enter your department" required>
+                </div>
+
+                <!-- University ID -->
+                <div class="form-group">
+                    <label for="university_id">University ID</label>
+                    <input type="text" class="form-control" id="university_id" name="university_id"
+                           value="{{ user.university_id }}" placeholder="Enter your university ID" required>
+                </div>
+
+                <!-- Skills -->
+                <div class="form-group">
+                    <label for="skills">Skills</label>
+                    <textarea class="form-control" id="skills" name="skills" rows="3" placeholder="Enter your skills"
+                              required>{{ user.skills }}</textarea>
+                </div>
+
+                <!-- Research Interests -->
+                <div class="form-group">
+                    <label for="research_interests">Research Interests</label>
+                    <textarea class="form-control" id="research_interests" name="research_interests" rows="3"
+                              placeholder="Enter your research interests"
+                              required>{{ user.research_interests }}</textarea>
+                </div>
+
+                <!-- Thesis Supervisor -->
+                <div class="form-group">
+                    <label for="thesis_supervisor">Thesis Supervisor (Expected)</label>
+                    <input type="text" class="form-control" id="thesis_supervisor" name="thesis_supervisor"
+                           value="{{ user.thesis_supervisor }}" placeholder="Enter thesis supervisor's name">
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="form-group">
+                    <label for="profile_picture">Profile Picture</label>
+                    <input type="file" class="form-control-file" id="profile_picture" name="profile_picture">
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="img-fluid mt-2"
+                             style="max-width: 150px;">
+                    {% endif %}
+                </div>
+
+                <!-- Availability -->
+                <div class="form-group">
+                    <label for="availability">Availability</label>
+                    <select class="form-control" id="availability" name="availability" required>
+                        <option value="True" {% if user.availability %}selected{% endif %}>Available for new
+                            collaborations
+                        </option>
+                        <option value="False" {% if not user.availability %}selected{% endif %}>Not available for new
+                            collaborations
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="form-group">
+                    <label for="contact_info">Contact Information</label>
+                    <input type="text" class="form-control" id="contact_info" name="contact_info"
+                           value="{{ user.contact_info }}" placeholder="Enter your contact info (phone, etc.)">
+                </div>
+
+                <!-- Thesis Topic -->
+                <div class="form-group">
+                    <label for="thesis_topic">Thesis Topic</label>
+                    <textarea class="form-control" id="thesis_topic" name="thesis_topic" rows="3"
+                              placeholder="Enter your thesis topic">{{ user.thesis_topic }}</textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+            </form>
+
+            <!-- Delete Profile Button -->
+            <form method="POST" action="{% url 'thesis_finder' %}" class="mt-3">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-block">Delete Profile</button>
+            </form>
+        </div>
+    </div>
+{% include 'expendable/footer.html' %}
+</div>
+{% include 'expendable/include.html' %}
+
+</body>
+</html>

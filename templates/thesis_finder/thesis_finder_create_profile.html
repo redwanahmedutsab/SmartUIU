@@ -1,0 +1,265 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+
+    <!-- NAVBAR -->
+    <header class="site-navbar mt-3">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="site-logo col-6">
+
+                    <a href="{% url 'index' %}">
+                        <img src="{% static 'images/uiu.jpg' %}" alt="logo" height="70px" width="80px" align="center">
+                    </a>
+
+                    <a href="{% url 'index' %}">
+                        <img src="{% static 'images/smartuiu.png' %}" alt="logo" height="110px" width="130px"
+                             align="center">
+                    </a>
+
+                </div>
+                <nav class="mx-auto site-navigation">
+                    <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
+                        <li><a href="{% url 'index' %}" class="nav-link active">Home</a></li>
+                        <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Academic</a>
+                        </li>
+                        <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Research</a>
+                        </li>
+                        <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Blog</a></li>
+                        <li><a href="{% url 'developers' %}" class="nav-link active">Developers</a></li>
+                        <li><a href="{% url 'contacts' %}" class="nav-link active">Contacts</a></li>
+                        <li class="d-lg-none"><a href="login.html">Log In</a></li>
+                        <li class="d-lg-none"><a href="login.html">Sign In</a></li>
+                    </ul>
+                </nav>
+
+                <div class="right-cta-menu text-right d-flex align-items-center col-6">
+                    <div class="ml-auto d-flex align-items-center">
+                        <div class="user-menu dropdown">
+                            <a href="#" class="dropdown-toggle" id="userDropdown" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+        <span class="user-icon">
+            <i class="fas fa-user-circle fa-2x"></i>
+        </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="{% url 'login' %}">Profile</a>
+                                <a class="dropdown-item" href="{% url 'login' %}">Dashboard</a>
+                                <a class="dropdown-item" href="{% url 'login' %}">Settings</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="site-menu-toggle js-menu-toggle d-inline-block d-xl-none mt-lg-2 ml-3">
+                        <span class="icon-menu h3 m-0 p-0 mt-2"></span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- HOME -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Create Thesis Profile</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="#">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'lost_and_found' %}">Thesis Finder</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Create Thesis Profile</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="container mt-5 mb-5 col-sm-8">
+        <div class="form-container">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name"
+                           placeholder="Enter your full name" required>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email"
+                           required>
+                </div>
+
+                <!-- Department -->
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <input type="text" class="form-control" id="department" name="department"
+                           placeholder="Enter your department" required>
+                </div>
+
+                <!-- University ID -->
+                <div class="form-group">
+                    <label for="university_id">University ID</label>
+                    <input type="text" class="form-control" id="university_id" name="university_id"
+                           placeholder="Enter your university ID" required>
+                </div>
+
+                <!-- Skills -->
+                <div class="form-group">
+                    <label for="skills">Skills</label>
+                    <textarea class="form-control" id="skills" name="skills" rows="3" placeholder="Enter your skills"
+                              required></textarea>
+                </div>
+
+                <!-- Research Interests -->
+                <div class="form-group">
+                    <label for="research_interests">Research Interests</label>
+                    <textarea class="form-control" id="research_interests" name="research_interests" rows="3"
+                              placeholder="Enter your research interests" required></textarea>
+                </div>
+
+                <!-- Thesis Supervisor -->
+                <div class="form-group">
+                    <label for="thesis_supervisor">Thesis Supervisor (Expected)</label>
+                    <input type="text" class="form-control" id="thesis_supervisor" name="thesis_supervisor"
+                           placeholder="Enter thesis supervisor's name">
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="form-group">
+                    <label for="profile_picture">Profile Picture</label>
+                    <input type="file" class="form-control-file" id="profile_picture" name="profile_picture">
+                </div>
+
+                <!-- Availability -->
+                <div class="form-group">
+                    <label for="availability">Availability</label>
+                    <select class="form-control" id="availability" name="availability" required>
+                        <option value="True">Available for new collaborations</option>
+                        <option value="False">Not available for new collaborations</option>
+                    </select>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="form-group">
+                    <label for="contact_info">Contact Information</label>
+                    <input type="text" class="form-control" id="contact_info" name="contact_info"
+                           placeholder="Enter your contact info (phone, etc.)">
+                </div>
+
+                <!-- Thesis Topic -->
+                <div class="form-group">
+                    <label for="thesis_topic">Thesis Topic</label>
+                    <textarea class="form-control" id="thesis_topic" name="thesis_topic" rows="3"
+                              placeholder="Enter your thesis topic"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-block">Create Profile</button>
+            </form>
+        </div>
+    </div>
+    <footer class="site-footer">
+
+        <a href="#top" class="smoothscroll scroll-top">
+            <span class="icon-keyboard_arrow_up"></span>
+        </a>
+
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-6 col-md-3 mb-4 mb-md-0">
+                    <h3>Search Trending</h3>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Web Design</a></li>
+                        <li><a href="#">Graphic Design</a></li>
+                        <li><a href="#">Web Developers</a></li>
+                        <li><a href="#">Python</a></li>
+                        <li><a href="#">HTML5</a></li>
+                        <li><a href="#">CSS3</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-3 mb-4 mb-md-0">
+                    <h3>Company</h3>
+                    <ul class="list-unstyled">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Career</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Resources</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-3 mb-4 mb-md-0">
+                    <h3>Support</h3>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-3 mb-4 mb-md-0">
+                    <h3>Contact Us</h3>
+                    <div class="footer-social">
+                        <a href="#"><span class="icon-facebook"></span></a>
+                        <a href="#"><span class="icon-twitter"></span></a>
+                        <a href="#"><span class="icon-instagram"></span></a>
+                        <a href="#"><span class="icon-linkedin"></span></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-12">
+                    <p class="copyright"><small>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        Copyright &copy;<script>document.write(new Date().getFullYear());</script>
+                        All rights reserved | This template is made with <i class="icon-heart text-danger"
+                                                                            aria-hidden="true"></i> by <a
+                            href="https://colorlib.com" target="_blank">Colorlib</a>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<!-- SCRIPTS -->
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'js/stickyfill.min.js' %}"></script>
+<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+<script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+<script src="{% static 'js/chatbot.js' %}"></script>
+
+
+</body>
+</html>

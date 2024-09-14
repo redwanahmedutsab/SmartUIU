@@ -16,7 +16,7 @@ def generate_verification_code(length=6):
 
 
 def home(request):
-    return render(request, 'index.html')
+    return render(request, 'homepage/index.html')
 
 
 def login_view(request):
@@ -40,7 +40,7 @@ def login_view(request):
                 'message': 'username and password are not correct'
             }
             return JsonResponse(response_data)
-    return render(request, 'login.html')
+    return render(request, 'homepage/login.html')
 
 
 def signup_view(request):
@@ -82,7 +82,7 @@ def signup_view(request):
             )
 
             return JsonResponse({'status': 'success', 'message': 'A verification code has sent to your email'})
-    return render(request, 'signup.html')
+    return render(request, 'homepage/signup.html')
 
 
 def check_email(email):
@@ -149,22 +149,22 @@ def verification_view(request):
                 return JsonResponse({'status': 'failed', 'message': 'Temporary user data not found'})
         else:
             return JsonResponse({'status': 'failed', 'message': 'No email found in session'})
-    return render(request, 'verification.html')
+    return render(request, 'homepage/verification.html')
 
 
 @login_required(login_url='/login')
 def contacts_view(request):
-    return render(request, 'contact.html')
+    return render(request, 'homepage/contact.html')
 
 
 @login_required(login_url='/login')
 def homepage_view(request):
-    return render(request, 'homepage.html')
+    return render(request, 'homepage/homepage.html')
 
 
 @login_required(login_url='/login')
 def developers_view(request):
-    return render(request, 'about.html')
+    return render(request, 'homepage/about.html')
 
 
 def logout_view(request):

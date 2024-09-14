@@ -1,0 +1,21 @@
+{% load static %}
+<div class="messenger-icon" id="messenger-icon" onclick="toggleChatContainer()">
+    <span class="icon-chat"></span>
+</div>
+<div class="chat-container" id="chat-container">
+    <div class="chat-header">
+        UIU Chatbot
+    </div>
+    <div class="chat-box" id="chat-box">
+        <div class="bot-msg">Hello! How can I help you?</div>
+    </div>
+    <div class="input-container">
+        <input type="text" class="user-input" id="user-input" placeholder="Type your message...">
+        <button class="send-button" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<div id="overlayer"></div>
+<div class="loader">
+    <img src="{% static 'images/smartuiu.png' %}" alt="Loading..." height="447" width="559" align="center">
+</div>

@@ -1,0 +1,62 @@
+{% load static %}
+<header class="site-navbar mt-3">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="site-logo col-6">
+
+                <a href="{% url 'index' %}">
+                    <img src="{% static 'images/uiu.jpg' %}" alt="logo" height="70px" width="80px" align="center">
+                </a>
+
+                <a href="{% url 'index' %}">
+                    <img src="{% static 'images/smartuiu.png' %}" alt="logo" height="110px" width="130px"
+                         align="center">
+                </a>
+
+            </div>
+            <nav class="mx-auto site-navigation">
+                <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
+                    <li><a href="{% url 'homepage' %}" class="nav-link active">Home</a></li>
+                    <li><a href="{% url 'homepage' %}" class="nav-link active" onclick="login_check()">Academic</a></li>
+                    <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Blogs</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Features
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'lost_and_found' %}">Lost & Found</a></li>
+                            <li><a class="dropdown-item" href="{% url 'thesis_finder' %}">Thesis Finder</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'developers' %}" class="nav-link active">Developers</a></li>
+                    <li><a href="{% url 'contacts' %}" class="nav-link active">Contact Us</a></li>
+                </ul>
+            </nav>
+
+            <div class="right-cta-menu text-right d-flex align-items-center col-6">
+                <div class="ml-auto d-flex align-items-center">
+                    <div class="user-menu dropdown">
+                        <a href="#" class="dropdown-toggle" id="userDropdown" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+        <span class="user-icon">
+            <i class="fas fa-user-circle fa-2x"></i>
+        </span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="{% url 'login' %}">Profile</a>
+                            <a class="dropdown-item" href="{% url 'login' %}">Dashboard</a>
+                            <a class="dropdown-item" href="{% url 'login' %}">Settings</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="site-menu-toggle js-menu-toggle d-inline-block d-xl-none mt-lg-2 ml-3">
+                    <span class="icon-menu h3 m-0 p-0 mt-2"></span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</header>
