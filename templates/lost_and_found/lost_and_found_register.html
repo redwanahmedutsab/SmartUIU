@@ -20,7 +20,7 @@
 
 
     <!-- NAVBAR -->
-{% include 'expendable/navbar.html' %}
+    {% include 'expendable/navbar.html' %}
 
 
     <!-- HOME -->
@@ -55,7 +55,8 @@
 
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-control" name="email" placeholder="e.g. you@yourdomain.com">
+            <input type="email" class="form-control" name="email" placeholder="e.g. you@yourdomain.com"
+                   value="{{ user.email }}" readonly>
         </div>
         <div class="form-group">
             <label for="mobile">Mobile</label>
@@ -66,18 +67,42 @@
             <input type="text" class="form-control" name="item_name" placeholder="e.g. iPhone 13 Pro">
         </div>
         <div class="form-group">
-            <label for="location">Where you found it</label>
-            <input type="text" class="form-control" name="location" placeholder="e.g. canteen">
-        </div>
-        <div class="form-group">
-            <label for="time_date">Time & Date</label>
-            <input type="text" class="form-control" name="time_date" placeholder="Select time and date">
+            <label for="floor">Select Location</label>
+            <select class="form-control" id="location" name="location">
+                <option value="Canteen">Canteen</option>
+                <option value="Library">Library</option>
+                <option value="Auditorium">Auditorium</option>
+                <option value="Bike Garage">Bike Garage</option>
+                <option value="Car Garage">Car Garage</option>
+                <option value="Shuttle Line">Shuttle Line</option>
+                <option value="Playground">Playground</option>
+                <option value="BookShop">BookShop</option>
+                <option value="BookShop">Class</option>
+                <option value="Laboratory">Laboratory</option>
+                <!-- Add more floors as needed -->
+            </select>
         </div>
 
+        <div class="form-group">
+            <label for="time_date">Time & Date</label>
+            <input type="text" class="form-control" id="time_date" placeholder="Select time and date" name="time_date">
+        </div>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <div class="form-group">
             <label for="description">Item's Description</label>
             <textarea class="form-control" name="description" id="editor-1"></textarea>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                flatpickr("#time_date", {
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                    minDate: "1900-01-01", // Set a date far in the past if needed
+                });
+            });
+        </script>
 
         <button type="submit" class="btn btn-primary btn-md">Post</button>
 
@@ -86,12 +111,11 @@
         </script>
     </form>
 
-{% include 'expendable/footer.html' %}
+    {% include 'expendable/footer.html' %}
 
 </div>
 
 {% include 'expendable/include.html' %}
-
 
 
 </body>

@@ -1,15 +1,16 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Item
 
 
-@login_required
+@login_required(login_url='/login')
 def home(request):
     items = Item.objects.all()
     return render(request, 'lost_and_found/lost_and_found.html', {'items': items})
 
 
-@login_required
+@login_required(login_url='/login')
 def lost_and_found_user_section_view(request):
     if request.method == 'POST':
         # Handle item deletion
@@ -24,7 +25,7 @@ def lost_and_found_user_section_view(request):
     return render(request, 'lost_and_found/lost_and_found_user_section.html', {'items': items})
 
 
-@login_required
+@login_required(login_url='/login')
 def lost_and_found_register_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -50,10 +51,11 @@ def lost_and_found_register_view(request):
         )
         item.save()
         return redirect('lost_and_found')
-    return render(request, 'lost_and_found/lost_and_found_register.html')
+    user = User.objects.get(id=request.user.id)
+    return render(request, 'lost_and_found/lost_and_found_register.html', {'user': user})
 
 
-@login_required
+@login_required(login_url='/login')
 def lost_and_found_single_view(request, id):
     item = get_object_or_404(Item, id=id)
 

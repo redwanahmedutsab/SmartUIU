@@ -140,8 +140,14 @@
                     <p class="mb-0 text-white lead">Click on the create profile button let others find you!.</p>
                 </div>
                 <div class="col-md-3 ml-auto">
-                    <a href="{% url 'thesis_finder_create_profile' %}" class="btn btn-warning btn-block btn-lg">Create
-                        Profile</a>
+                    {% if user %}
+                        <a href="#" class="btn btn-warning btn-block btn-lg"
+                           onclick="alert('you already created an account')">Create
+                            Profile</a>
+                    {% else %}
+                        <a href="{% url 'thesis_finder_create_profile' %}" class="btn btn-warning btn-block btn-lg">Create
+                            Profile</a>
+                    {% endif %}
                     <a href="{% url 'thesis_finder_profile' %}" class="btn btn-warning btn-block btn-lg">Edit My
                         Profile</a>
                 </div>

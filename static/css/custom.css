@@ -238,3 +238,23 @@ body {
     background-color: transparent; /* Transparent background for loader */
     text-align: center;
 }
+
+.curved-border {
+    border: 2px solid #000; /* Adjust the border thickness and color */
+    border-radius: 15px; /* Adjust the curve radius */
+    padding: 10px; /* Optional: Adds space inside the border */
+}
+
+/* Custom styles for the Flatpickr input */
+.flatpickr-input {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.flatpickr-calendar {
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
