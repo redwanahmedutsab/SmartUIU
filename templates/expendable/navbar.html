@@ -1,5 +1,5 @@
 {% load static %}
-<header class="site-navbar mt-3 curved-border">
+<header class="site-navbar mt-3">
     <div class="container-fluid">
         <div class="row align-items-center">
             <div class="site-logo col-6">
@@ -14,23 +14,58 @@
                 </a>
 
             </div>
-            <nav class="mx-auto site-navigation">
+            <style>
+                .site-navigation .site-menu li a {
+                    font-size: 15px; /* Reduce the font size */
+                    padding: 10px; /* Optionally adjust the padding for tighter spacing */
+                }
+            </style>
+            <nav class="mx-auto site-navigation curved-border">
                 <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
-                    <li><a href="{% url 'homepage' %}" class="nav-link active">Home</a></li>
-                    <li><a href="{% url 'homepage' %}" class="nav-link active" onclick="login_check()">Academic</a></li>
-                    <li><a href="{% url 'index' %}" class="nav-link active" onclick="login_check()">Blogs</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Features
+                            Academic
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Academic Resource</a></li>
+                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Course Feedback and Review</a></li>
+                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Study Group Creation</a></li>
+                            <li><a class="dropdown-item" href="{% url 'thesis_finder' %}">Thesis Member Finder</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Campus
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="{% url 'lost_and_found' %}">Lost & Found</a></li>
-                            <li><a class="dropdown-item" href="{% url 'thesis_finder' %}">Thesis Finder</a></li>
+                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Home Finder</a></li>
+                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Marketplace</a></li>
                         </ul>
                     </li>
-                    <li><a href="{% url 'developers' %}" class="nav-link active">Developers</a></li>
-                    <li><a href="{% url 'contacts' %}" class="nav-link active">Contact Us</a></li>
+                    <li><a href="{% url 'homepage' %}" class="nav-link active">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Social
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'blog' %}">Blog</a></li>
+                            <li><a class="dropdown-item" href="{% url 'developers' %}">Developers</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Career
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Internship & Job</a></li>
+                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Alumni Network</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </nav>
 

@@ -3,44 +3,44 @@ import re
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 import random
 import string
-
 from homepage.models import EmailVerification, TemporaryUser
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from django.shortcuts import render
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        print(f"Username: {username}, Password: {password}")  # Debug info
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            response_data = {
+                'status': 'success',
+                'message': 'Logged in successfully'
+            }
+            return JsonResponse(response_data)
+        else:
+            response_data = {
+                'status': 'failed',
+                'message': 'Username and password are not correct'
+            }
+            return JsonResponse(response_data)
+    return render(request, 'homepage/login.html')
 
 
 def generate_verification_code(length=6):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 
+@login_required(login_url='login')
 def home(request):
     return render(request, 'homepage/index.html')
-
-
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        print(username)
-        print(password)
-        user = authenticate(username=username, password=password)
-        print(user)
-        if user is not None:
-            login(request, user)
-            response_data = {
-                'status': 'success',
-                'message': 'logged in successfully'
-            }
-            return JsonResponse(response_data)
-        else:
-            response_data = {
-                'status': 'failed',
-                'message': 'username and password are not correct'
-            }
-            return JsonResponse(response_data)
-    return render(request, 'homepage/login.html')
 
 
 def signup_view(request):

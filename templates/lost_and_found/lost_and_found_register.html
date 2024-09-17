@@ -42,75 +42,106 @@
     </section>
 
 
-    <form class="p-5 p-md-5 border rounded" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <h3 class="text-black mb-5 border-bottom pb-2">Item Details</h3>
+<form class="p-5 p-md-5 border rounded bg-white shadow-lg" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3 class="text-center text-dark mb-5 border-bottom pb-4 display-4 font-weight-bold">Item Details</h3>
 
-        <div class="form-group">
-            <label for="company-website-tw d-block">Upload Item's Image</label> <br>
-            <label class="btn btn-primary btn-md btn-file">
-                Browse File<input type="file" name="item_image" hidden>
-            </label>
-        </div>
+    <!-- Upload Item's Image -->
+    <div class="form-group mb-4">
+        <label for="item_image" class="h5 font-weight-bold">Upload Item's Image</label><br>
+        <label class="btn btn-primary btn-md btn-file shadow-sm rounded-pill">
+            <i class="fas fa-upload"></i> Browse File
+            <input type="file" name="item_image" id="item_image" hidden onchange="showFileName()">
+        </label>
+        <span id="file-name" class="ml-3 text-muted"></span> <!-- Display file name -->
+    </div>
 
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" name="email" placeholder="e.g. you@yourdomain.com"
-                   value="{{ user.email }}" readonly>
-        </div>
-        <div class="form-group">
-            <label for="mobile">Mobile</label>
-            <input type="text" class="form-control" name="mobile" placeholder="e.g. 01700000000">
-        </div>
-        <div class="form-group">
-            <label for="item_name">Item's Name</label>
-            <input type="text" class="form-control" name="item_name" placeholder="e.g. iPhone 13 Pro">
-        </div>
-        <div class="form-group">
-            <label for="floor">Select Location</label>
-            <select class="form-control" id="location" name="location">
-                <option value="Canteen">Canteen</option>
-                <option value="Library">Library</option>
-                <option value="Auditorium">Auditorium</option>
-                <option value="Bike Garage">Bike Garage</option>
-                <option value="Car Garage">Car Garage</option>
-                <option value="Shuttle Line">Shuttle Line</option>
-                <option value="Playground">Playground</option>
-                <option value="BookShop">BookShop</option>
-                <option value="BookShop">Class</option>
-                <option value="Laboratory">Laboratory</option>
-                <!-- Add more floors as needed -->
-            </select>
-        </div>
+    <!-- Email (Read-only) -->
+    <div class="form-group mb-4">
+        <label for="email" class="h5 font-weight-bold">Email</label>
+        <input type="email" class="form-control form-control-lg border-0 shadow-sm rounded" name="email"
+               placeholder="e.g. you@yourdomain.com" value="{{ user.email }}" readonly>
+    </div>
 
-        <div class="form-group">
-            <label for="time_date">Time & Date</label>
-            <input type="text" class="form-control" id="time_date" placeholder="Select time and date" name="time_date">
-        </div>
+    <!-- Mobile -->
+    <div class="form-group mb-4">
+        <label for="mobile" class="h5 font-weight-bold">Mobile</label>
+        <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="mobile"
+               placeholder="e.g. 01700000000" required>
+    </div>
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-        <div class="form-group">
-            <label for="description">Item's Description</label>
-            <textarea class="form-control" name="description" id="editor-1"></textarea>
-        </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                flatpickr("#time_date", {
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i",
-                    minDate: "1900-01-01", // Set a date far in the past if needed
-                });
+    <!-- Item's Name -->
+    <div class="form-group mb-4">
+        <label for="item_name" class="h5 font-weight-bold">Item's Name</label>
+        <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="item_name"
+               placeholder="e.g. iPhone 13 Pro" required>
+    </div>
+
+    <!-- Location -->
+    <div class="form-group mb-4">
+        <label for="location" class="h5 font-weight-bold">Select Location</label>
+        <select class="form-control form-control-lg border-0 shadow-sm rounded" id="location" name="location">
+            <option value="Canteen">Canteen</option>
+            <option value="Library">Library</option>
+            <option value="Auditorium">Auditorium</option>
+            <option value="Bike Garage">Bike Garage</option>
+            <option value="Car Garage">Car Garage</option>
+            <option value="Shuttle Line">Shuttle Line</option>
+            <option value="Playground">Playground</option>
+            <option value="BookShop">BookShop</option>
+            <option value="Class">Class</option>
+            <option value="Laboratory">Laboratory</option>
+        </select>
+    </div>
+
+    <!-- Time & Date -->
+    <div class="form-group mb-4">
+        <label for="time_date" class="h5 font-weight-bold">Time & Date</label>
+        <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" id="time_date"
+               placeholder="Select time and date" name="time_date" required>
+    </div>
+
+    <!-- Date Picker Script -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            flatpickr("#time_date", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                minDate: "1900-01-01",
             });
-        </script>
 
-        <button type="submit" class="btn btn-primary btn-md">Post</button>
+            // Function to display the file name when a file is selected
+            document.getElementById('item_image').addEventListener('change', function () {
+                var fileName = document.getElementById('file-name');
+                var fileInput = this;
+                if (fileInput.files.length > 0) {
+                    fileName.textContent = fileInput.files[0].name;
+                } else {
+                    fileName.textContent = '';
+                }
+            });
+        });
+    </script>
 
-        <script>
-            CKEDITOR.replace('editor-1');
-        </script>
-    </form>
+    <!-- Item's Description -->
+    <div class="form-group mb-4">
+        <label for="description" class="h5 font-weight-bold">Item's Description</label>
+        <textarea class="form-control form-control-lg border-0 shadow-sm rounded" name="description" id="editor-1"
+                  placeholder="Provide a brief description of the item..." rows="5" required></textarea>
+    </div>
 
+    <!-- CKEditor Script -->
+    <script>
+        CKEDITOR.replace('editor-1');
+    </script>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-success btn-lg btn-block shadow-lg rounded-pill mt-4">
+        <i class="fas fa-paper-plane"></i> Post Item
+    </button>
+</form>
     {% include 'expendable/footer.html' %}
 
 </div>

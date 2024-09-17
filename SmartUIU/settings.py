@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'lost_and_found',
     'thesis_finder',
     'django_extensions',
+    'blog',
 ]
 
 MIDDLEWARE = [

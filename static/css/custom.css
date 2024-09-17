@@ -240,9 +240,9 @@ body {
 }
 
 .curved-border {
-    border: 2px solid #000; /* Adjust the border thickness and color */
+    border: 2px solid #b9d6f1; /* Adjust the border thickness and color */
     border-radius: 15px; /* Adjust the curve radius */
-    padding: 10px; /* Optional: Adds space inside the border */
+    padding: 1px; /* Optional: Adds space inside the border */
 }
 
 /* Custom styles for the Flatpickr input */
