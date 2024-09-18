@@ -153,6 +153,7 @@
                     if (xhr.status === 200) {
                         var response = JSON.parse(xhr.responseText);
                         if (response.status === 'success') {
+                            alert("Congratulations! your account has created successfully.");
                             window.location.href = "{% url 'login' %}";
                         } else {
                             alert(response.message);

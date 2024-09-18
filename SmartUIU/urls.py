@@ -7,6 +7,10 @@ urlpatterns = [
     path('lost_and_found/', include('lost_and_found.urls')),
     path('thesis_finder/', include('thesis_finder.urls')),
     path('blog/', include('blog.urls')),
+    path('marketplace/', include('marketplace.urls')),
+    path('course_materials_and_feedback/', include('course_materials_and_feedback.urls')),
+    path('homefinder/', include('homefinder.urls')),
+    path('internship_and_job/', include('internship_and_job.urls')),
 ]
 
 if settings.DEBUG:

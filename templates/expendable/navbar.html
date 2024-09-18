@@ -4,11 +4,11 @@
         <div class="row align-items-center">
             <div class="site-logo col-6">
 
-                <a href="{% url 'index' %}">
+                <a href="{% url 'homepage' %}">
                     <img src="{% static 'images/uiu.jpg' %}" alt="logo" height="70px" width="80px" align="center">
                 </a>
 
-                <a href="{% url 'index' %}">
+                <a href="{% url 'homepage' %}">
                     <img src="{% static 'images/smartuiu.png' %}" alt="logo" height="110px" width="130px"
                          align="center">
                 </a>
@@ -42,7 +42,7 @@
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="{% url 'lost_and_found' %}">Lost & Found</a></li>
                             <li><a class="dropdown-item" href="{% url 'homepage' %}">Home Finder</a></li>
-                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Marketplace</a></li>
+                            <li><a class="dropdown-item" href="{% url 'marketplace' %}">Marketplace</a></li>
                         </ul>
                     </li>
                     <li><a href="{% url 'homepage' %}" class="nav-link active">Home</a></li>

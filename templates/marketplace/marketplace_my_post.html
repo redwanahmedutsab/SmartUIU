@@ -1,0 +1,200 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HOME -->
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12 text-center mb-5">
+                    <h1 class="text-white font-weight-bold">Explore Items for Sale</h1>
+                    <p class="text-white">Discover a variety of items listed by users!</p>
+                </div>
+                <div class="col-md-12">
+                    <form method="post" class="search-items-form">
+                        <div class="row mb-5 justify-content-center">
+                            <div class="col-5">
+                                <input type="text" class="form-control form-control-lg"
+                                       placeholder="Search for items..." name="search">
+                            </div>
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search">
+                                    <span class="icon-search icon mr-2"></span>Search
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <a href="#next" class="scroll-button smoothscroll">
+            <span class=" icon-keyboard_arrow_down"></span>
+        </a>
+    </section>
+
+    <!-- ITEM LIST -->
+    <section class="site-section" id="next">
+        <div class="container">
+
+            <!-- Title -->
+            <div class="row mb-5 justify-content-center">
+                <div class="col-md-7 text-center">
+                    <h2 class="section-title mb-2">{{ items.count }} Items for Sale</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for item in items %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm border-0 rounded">
+                            <div class="card-img-top">
+                                {% if item.images.first %}
+                                    <img src="{{ item.images.first.image.url }}" alt="Item Image"
+                                         class="img-fluid rounded-top"
+                                         style="max-height: 250px; object-fit: cover; width: 100%;">
+                                {% else %}
+                                    <img src="{% static 'images/smartuiu.png' %}" alt="Default Image"
+                                         class="img-fluid rounded-top"
+                                         style="max-height: 250px; object-fit: cover; width: 100%;">
+                                {% endif %}
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="card-body p-4">
+                                <h5 class="card-title font-weight-bold text-primary mb-3">{{ item.name }}</h5>
+                                <p class="card-text">
+                                    <span class="text-muted">Seller:</span>
+                                    <strong>{{ item.seller.get_full_name }}</strong><br>
+                                    <span class="text-muted">Price:</span> {{ item.price }} Taka<br>
+                                    <span class="text-muted">Location:</span> {{ item.location }}<br>
+                                    <span class="text-muted">Posted on:</span> {{ item.date_listed|date:"F d, Y" }}
+                                </p>
+                            </div>
+
+                            <!-- Card Footer -->
+                            <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                                <a href="{% url 'marketplace_edit' item.id %}" class="btn btn-outline-primary btn-sm">
+                                    Edit Details
+                                </a>
+
+                                <form method="post" class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="delete_product_id" value="{{ item.id }}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">{{ item.date_listed|timesince }} ago</span>
+                        </div>
+                    </div>
+                    </div>
+                {% endfor %}
+        </div>
+        <!-- CSS Styles -->
+        <style>
+            .card:hover {
+                transform: translateY(-10px);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .card-title {
+                color: #007bff;
+                font-size: 1.25rem;
+                text-transform: capitalize;
+            }
+
+            .card-footer {
+                border-top: 1px solid #f0f0f0;
+                padding: 0.75rem 1.25rem;
+            }
+
+            .card-body p {
+                font-size: 0.9rem;
+                color: #6c757d;
+            }
+
+            .btn-outline-primary {
+                border-color: #007bff;
+                color: #007bff;
+            }
+
+            .btn-outline-primary:hover {
+                background-color: #007bff;
+                color: #fff;
+            }
+        </style>
+
+        <!-- Pagination Section -->
+        <div class="row pagination-wrap mt-5">
+            <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">
+                <span>Showing {{ items.paginator.per_page }} of {{ items.paginator.count }} Items</span>
+            </div>
+            <div class="col-md-6 text-center text-md-right">
+                <div class="custom-pagination ml-auto">
+                    {% if items.has_previous %}
+                        <a href="?page=1" class="prev">First</a>
+                        <a href="?page={{ items.previous_page_number }}" class="prev">Prev</a>
+                    {% endif %}
+                    <div class="d-inline-block">
+                        {% for num in items.paginator.page_range %}
+                            {% if items.number == num %}
+                                <a href="?page={{ num }}" class="active">{{ num }}</a>
+                            {% else %}
+                                <a href="?page={{ num }}">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% if items.has_next %}
+                        <a href="?page={{ items.next_page_number }}" class="next">Next</a>
+                        <a href="?page={{ items.paginator.num_pages }}" class="next">Last</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+</div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-image overlay-primary fixed overlay"
+         style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="text-white">Back to marketplace dashboard.</h2>
+            </div>
+            <div class="col-md-4 ml-auto">
+                <a href="{% url 'marketplace' %}" class="btn btn-warning btn-block btn-lg">Back to Marketplace</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include 'expendable/footer.html' %}
+</div>
+{% include 'expendable/include.html' %}
+</body>
+</html>

@@ -1,0 +1,158 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Post a Product</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'marketplace' %}">Products</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Post a Product</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <form class="p-5 p-md-5 border rounded bg-white shadow-lg" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3 class="text-center text-dark mb-5 border-bottom pb-4 display-4 font-weight-bold">Post Your Product</h3>
+
+        <!-- Product Name -->
+        <div class="form-group mb-4">
+            <label for="product-name" class="h5 font-weight-bold">Product Name</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="name"
+                   id="product-name" placeholder="Enter the product name" required>
+        </div>
+
+        <!-- Product Description -->
+        <div class="form-group mb-4">
+            <label for="product-description" class="h5 font-weight-bold">Product Description</label>
+            <textarea class="form-control form-control-lg border-0 shadow-sm rounded" name="description"
+                      id="product-description" placeholder="Describe the product" rows="5" required></textarea>
+        </div>
+
+        <!-- Product Price -->
+        <div class="form-group mb-4">
+            <label for="product-price" class="h5 font-weight-bold">Product Price</label>
+            <input type="number" class="form-control form-control-lg border-0 shadow-sm rounded" name="price"
+                   id="product-price" placeholder="Enter the product price" step="0.01" required>
+        </div>
+
+        <!-- Product Category -->
+        <div class="form-group mb-4">
+            <label for="product-category" class="h5 font-weight-bold">Product Category</label>
+            <select class="form-control form-control-lg border-0 shadow-sm rounded" name="category"
+                    id="product-category" required>
+                <option value="Electronics">Electronics</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Home & Garden">Home & Garden</option>
+                <option value="Sports">Sports</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <!-- Seller Phone -->
+        <div class="form-group mb-4">
+            <label for="phone" class="h5 font-weight-bold">Phone Number</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="phone"
+                   id="phone" placeholder="Enter phone number" required>
+        </div>
+
+        <!-- Location -->
+        <div class="form-group mb-4">
+            <label for="location" class="h5 font-weight-bold">Location</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="location"
+                   id="location" placeholder="Enter the location" required>
+        </div>
+
+        <!-- Product Condition -->
+        <div class="form-group mb-4">
+            <label for="product-condition" class="h5 font-weight-bold">Condition</label>
+            <select class="form-control form-control-lg border-0 shadow-sm rounded" name="condition"
+                    id="product-condition" required>
+                <option value="New">New</option>
+                <option value="Used">Used</option>
+                <option value="Refurbished">Refurbished</option>
+            </select>
+        </div>
+
+        <!-- Shipping Details -->
+        <div class="form-group mb-4">
+            <label for="shipping-details" class="h5 font-weight-bold">Shipping Method</label>
+            <select class="form-control form-control-lg border-0 shadow-sm rounded" name="shipping_details"
+                    id="shipping-details" required>
+                <option value="Meetup">Meetup</option>
+                <option value="Delivery">Delivery</option>
+                <option value="Home Pick Up">Home Pick Up</option>
+            </select>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group mb-4">
+            <label for="tags" class="h5 font-weight-bold">Tags</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="tags" id="tags"
+                   placeholder="Enter tags separated by commas" required>
+        </div>
+
+        <!-- Product Image -->
+<!-- Product Images -->
+<div class="form-group mb-4">
+    <label for="product-images" class="h5 font-weight-bold">Upload Product Images</label><br>
+    <label class="btn btn-primary btn-md btn-file shadow-sm rounded-pill">
+        <i class="fas fa-upload"></i> Browse Files
+        <input type="file" name="images" id="product-images" multiple hidden onchange="showFileNames()">
+    </label>
+    <textarea id="file-names" class="form-control mt-2" readonly rows="3"
+              placeholder="Selected file names will appear here"></textarea>
+</div>
+
+        <!-- Script to display file name -->
+        <script>
+            function showFileName() {
+                var input = document.getElementById('product-image');
+                var fileName = document.getElementById('file-name');
+                var file = input.files[0];
+                fileName.value = file ? file.name : 'No file selected';
+            }
+        </script>
+
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-success btn-lg shadow-lg rounded-pill mt-4 custom-width">
+                <i class="fas fa-paper-plane"></i> Post Product
+            </button>
+        </div>
+
+    </form>
+
+    {% include 'expendable/footer.html' %}
+
+</div>
+
+{% include 'expendable/include.html' %}
+</body>
+</html>

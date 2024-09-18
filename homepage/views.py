@@ -38,7 +38,6 @@ def generate_verification_code(length=6):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 
-@login_required(login_url='login')
 def home(request):
     return render(request, 'homepage/index.html')
 

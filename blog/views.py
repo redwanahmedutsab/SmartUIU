@@ -67,7 +67,7 @@ def blog_delete_view(request, id):
         blog.delete()
         messages.success(request, "Blog post deleted successfully.")
         return redirect('blog_my_blog')
-    return render(request, 'blog/blog_delete_confirm.html', {'blog': blog})
+    return render(request, 'blog/blog.html', {'blog': blog})
 
 
 @login_required(login_url='/login')

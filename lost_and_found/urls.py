@@ -10,6 +10,5 @@ urlpatterns = [
     path('lost_and_found_single/<int:id>/', views.lost_and_found_single_view, name='lost_and_found_single'),
 ]
 
-# Serve media files during development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
