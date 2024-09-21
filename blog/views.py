@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Blog, Comment
+from .models import Blog, Comment, Reply
 from .forms import CommentForm, ReplyForm
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
@@ -11,11 +11,39 @@ from django import forms
 
 
 @login_required(login_url='/login')
+def comment_delete(request, id):
+    comment = get_object_or_404(Comment, id=id)
+
+    if comment.author == request.user:
+        comment.delete()
+
+    return redirect('blog_single', id=comment.blog.id)
+
+
+@login_required(login_url='/login')
+def comment_delete(request, id):
+    comment = get_object_or_404(Comment, id=id)
+
+    if comment.author == request.user:
+        comment.delete()
+
+    return redirect('blog_single', id=comment.blog.id)
+
+
+def reply_delete(request, id):
+    reply = get_object_or_404(Reply, id=id)
+
+    if reply.author == request.user:
+        reply.delete()
+
+    return redirect('blog_single', id=reply.comment.blog.id)
+
+
+@login_required(login_url='/login')
 def blog_single_view(request, id):
     blog = get_object_or_404(Blog, id=id)
 
     if request.method == 'POST':
-        # Handle comment submission
         if 'submit_comment' in request.POST:
             comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
@@ -25,7 +53,6 @@ def blog_single_view(request, id):
                 comment.save()
                 return redirect('blog_single', id=blog.id)
 
-        # Handle reply submission
         elif 'submit_reply' in request.POST:
             reply_form = ReplyForm(request.POST)
             if reply_form.is_valid():

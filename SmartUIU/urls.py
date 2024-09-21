@@ -11,6 +11,7 @@ urlpatterns = [
     path('course_materials_and_feedback/', include('course_materials_and_feedback.urls')),
     path('homefinder/', include('homefinder.urls')),
     path('internship_and_job/', include('internship_and_job.urls')),
+    path("__reload__/", include("django_browser_reload.urls")),
 ]
 
 if settings.DEBUG:

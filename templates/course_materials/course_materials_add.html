@@ -1,0 +1,170 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+    <!-- HOME -->
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12 text-center mb-5">
+                    <h1 class="text-white font-weight-bold">Welcome to the Course Material Section</h1>
+                    <p class="text-white font-weight-bold">Find course materials and questions that you need!</p>
+                </div>
+                <div class="col-md-12">
+                    <form method="post" class="search-jobs-form">
+                        {% csrf_token %}
+                        <div class="row mb-5 justify-content-center">
+                            <div class="col-5">
+                                <input type="text" class="form-control form-control-lg"
+                                       placeholder="Search for materials...">
+                            </div>
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search">
+                                    <span class="icon-search icon mr-2"></span>Search
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 popular-keywords">
+                                <!-- Keywords content goes here -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <a href="#next" class="scroll-button smoothscroll">
+            <span class="icon-keyboard_arrow_down"></span>
+        </a>
+    </section>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Manage Course Materials</h2>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Add or Update Course Material</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'course_materials_add' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="degree" class="form-label">Degree Name</label>
+                            <select id="degree" name="degree" class="form-control" required
+                                    onchange="updateTrimester()">
+                                <!-- Option values should match those handled in your script -->
+                                <option value="bscse">B.Sc. in Computer Science & Engineering</option>
+                                <option value="mscse">M.Sc. in Computer Science & Engineering</option>
+                                <option value="bsds">B.Sc. in Data Science</option>
+                                <option value="bseee">B.Sc. in Electrical & Electronics Engineering</option>
+                                <option value="bsce">B.Sc. in Civil Engineering</option>
+                                <option value="bba">BBA</option>
+                                <option value="mba">MBA</option>
+                                <option value="bt">B.Sc. in Bio Technology & Genetic Engineering</option>
+                                <option value="bp">B. Pharma.</option>
+                                <option value="bse">B.Sc. in Economics</option>
+                                <option value="bse">B.A. in English</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="trimester" class="form-label">Trimester/Semester</label>
+                            <select id="trimester" name="trimester" class="form-control" required>
+                                <!-- Options will be populated by the script -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <script>
+                        function updateTrimester() {
+                            var degree = document.getElementById("degree").value;
+                            var trimesterSelect = document.getElementById("trimester");
+                            trimesterSelect.innerHTML = "";
+
+                            var trimesterOptions = [];
+
+                            // Adjust condition if needed based on the actual degree values
+                            if (['bscse', 'bseee', 'bsds', 'mscse', 'bba', 'mba'].includes(degree)) {
+                                trimesterOptions = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
+                            } else {
+                                trimesterOptions = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
+                            }
+
+                            // Populate the trimester dropdown
+                            trimesterOptions.forEach(function (value) {
+                                var option = document.createElement("option");
+                                option.value = value;
+                                option.text = value;
+                                trimesterSelect.appendChild(option);
+                            });
+                        }
+
+                        window.onload = updateTrimester;
+                    </script>
+
+                    <div class="mb-3">
+                        <label for="course_title" class="form-label">Course Name (Write full name)</label>
+                        <input type="text" id="course_title" name="course_title" placeholder="System Analysis & Design" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="course_title" class="form-label">Course Code (Follow the given format)</label>
+                        <input type="text" id="course_code" name="course_code" placeholder="CSE 3411" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="material_type" class="form-label">Material Type</label>
+                        <select id="material_type" name="material_type" class="form-control" required>
+                            <option value="Class Test">Class Test</option>
+                            <option value="Mid Question">Mid Question</option>
+                            <option value="Final Question">Final Question</option>
+                            <option value="Assignment">Assignment</option>
+                            <option value="Slides">Slides</option>
+                            <option value="Notes">Notes</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="material_description" class="form-label">Material Description</label>
+                        <textarea id="material_description" name="material_description" class="form-control"
+                                  rows="4"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="materials" class="form-label">Upload Materials</label>
+                        <input type="file" id="materials" name="materials" class="form-control" multiple required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="admin_email" class="form-label">Admin Email</label>
+                        <input type="email" id="admin_email" name="admin_email" class="form-control"
+                               value="{{ user.email }}" readonly>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Material</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    {% include 'expendable/footer.html' %}
+
+</div>
+    {% include 'expendable/include.html' %}
+
+
+</body>
+</html>

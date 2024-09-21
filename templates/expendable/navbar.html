@@ -16,8 +16,8 @@
             </div>
             <style>
                 .site-navigation .site-menu li a {
-                    font-size: 15px; /* Reduce the font size */
-                    padding: 10px; /* Optionally adjust the padding for tighter spacing */
+                    font-size: 15px;
+                    padding: 10px;
                 }
             </style>
             <nav class="mx-auto site-navigation curved-border">
@@ -28,8 +28,7 @@
                             Academic
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Academic Resource</a></li>
-                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Course Feedback and Review</a></li>
+                            <li><a class="dropdown-item" href="{% url 'course_materials' %}">Course Materials & Feedback</a></li>
                             <li><a class="dropdown-item" href="{% url 'homepage' %}">Study Group Creation</a></li>
                             <li><a class="dropdown-item" href="{% url 'thesis_finder' %}">Thesis Member Finder</a></li>
                         </ul>

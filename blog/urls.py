@@ -8,4 +8,6 @@ urlpatterns = [
     path('blog_post/', views.blog_post_view, name='blog_post'),
     path('delete/<int:id>/', views.blog_delete_view, name='blog_delete'),
     path('blog/edit/<int:blog_id>/', views.edit_blog, name='blog_edit'),
+    path('comment_delete/<int:id>/', views.comment_delete, name='comment_delete'),
+    path('reply_delete/<int:id>/', views.reply_delete, name='reply_delete'),  # URL for reply deletion
 ]
