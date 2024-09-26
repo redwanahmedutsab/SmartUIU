@@ -1,0 +1,154 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HOME -->
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12 text-center mb-5">
+                    <h1 class="text-white font-weight-bold">Thesis Group Management</h1>
+                    <p class="text-white font-weight-bold">
+                        {% if user.has_group %}
+                            Manage your thesis group!
+                        {% else %}
+                            Create your thesis group now!
+                        {% endif %}
+                    </p>
+                </div>
+
+                <!-- Check if user has a group -->
+                <div class="col-md-12">
+                    {% if not user.has_group %}
+                        <!-- Group Creation Form -->
+                        <form method="post" class="create-group-form">
+                            {% csrf_token %}
+                            <div class="row mb-5 justify-content-center">
+                                <div class="col-5">
+                                    <input type="text" name="group_name" class="form-control form-control-lg"
+                                           placeholder="Group Name" required>
+                                </div>
+                                <div class="col-5">
+                                    <input type="text" name="group_name" class="form-control form-control-lg"
+                                           placeholder="Group Name" required>
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" name="description" class="form-control form-control-lg mt-1"
+                                           placeholder="Description" required>
+                                </div>
+                                <div class="col-6 mt-1">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block text-white">
+                                        <span class="icon-plus-circle icon mr-2"></span>Create Group
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    {% else %}
+                        <!-- Group Details -->
+                        <div class="group-info">
+                            <h2 class="text-white">Your Group: {{ user.group.name }}</h2>
+                            <p class="text-white">
+                                Members: {{ user.group.members.count }}/{{ user.group.max_members }}</p>
+                            <p class="text-white">Invite more members below:</p>
+                        </div>
+
+                        <!-- Invite Members Form -->
+                        <form method="post" class="invite-member-form">
+                            {% csrf_token %}
+                            <div class="row justify-content-center">
+                                <div class="col-10">
+                                    <input type="text" name="invite_member" class="form-control form-control-lg"
+                                           placeholder="Enter University ID or Email" required>
+                                    <button type="submit" class="btn btn-secondary mt-3">Send Invite</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- List of invited members -->
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 invited-members-list">
+                                <h5 class="text-white">Invited Members:</h5>
+                                <ul>
+                                    {% for member in user.group.invited_members %}
+                                        <li>{{ member.name }} - {{ member.status }}</li>
+                                    {% empty %}
+                                        <li>No members invited yet.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <a href="#next" class="scroll-button smoothscroll">
+            <span class="icon-keyboard_arrow_down"></span>
+        </a>
+    </section>
+
+    <!-- Group Information Section -->
+    {% if user.has_group %}
+        <section class="site-section" id="next">
+            <div class="container">
+                <div class="row mb-5 justify-content-center">
+                    <div class="col-md-7 text-center">
+                        <h2 class="section-title mb-2">Your Group Information</h2>
+                        <p>Manage your thesis group members below.</p>
+                    </div>
+                </div>
+
+                <ul class="group-listings mb-5">
+                    <!-- Loop through the group members -->
+                    {% for member in user.group.members %}
+                        <li class="group-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+                            <div class="group-listing-info custom-width w-100 justify-content-between mx-4">
+                                <div class="group-listing-position custom-width w-50 mb-3 mb-sm-0">
+                                    <h2>{{ member.name }}</h2>
+                                    <p>{{ member.department }}<br>{{ member.university_id }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="badge badge-success">{{ member.status|yesno:"Confirmed,Pending" }}</span>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="row pagination-wrap">
+                    <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">
+                        <span>Showing {{ user.group.members.count }} Members</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    {% endif %}
+
+    {% include 'expendable/footer.html' %}
+
+</div>
+
+{% include 'expendable/include.html' %}
+
+</body>
+</html>

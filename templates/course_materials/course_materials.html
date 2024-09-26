@@ -24,35 +24,12 @@
 
         <div class="container">
             <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center mb-5">
+                <div class="col-md-12 text-center">
                     <h1 class="text-white font-weight-bold">Welcome to the course material section</h1>
                     <p class="text-white font-weight-bold">Find course materials and questions that you need!</p>
                 </div>
-                <div class="col-md-12">
-                    <form method="post" class="search-jobs-form">
-                        <div class="row mb-5 justify-content-center">
-                            <div class="col-5">
-                                <input type="text" class="form-control form-control-lg"
-                                       placeholder="Journey to google...">
-                            </div>
-                            <div class="col-2">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search">
-                                    <span class="icon-search icon mr-2"></span>Search Item
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-md-12 popular-keywords">
-                                <!-- Keywords content goes here -->
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
-        <a href="#next" class="scroll-button smoothscroll">
-            <span class=" icon-keyboard_arrow_down"></span>
-        </a>
     </section>
 
     <section class="site-section" id="next">
@@ -113,7 +90,8 @@
                                     <strong>Department of Computer Science & Engineering</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=bscse"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -134,7 +112,8 @@
                                     <strong>Department of Computer Science & Engineering</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=bsds"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -155,7 +134,8 @@
                                     <strong>Department of Computer Science & Engineering</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=mscse"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -165,8 +145,8 @@
                 <div class="col-md-4 mb-5">
                     <div class="card h-100 shadow-sm border-0">
                         <div class="card-img-top">
-                            <img src="{% static 'images/cse.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 300px; object-fit: cover; width: 100%;">
+                            <img src="{% static 'images/eee.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
+                                 style="max-height: 180px; object-fit: cover; width: 100%;">
                         </div>
                         <div class="card-body d-flex flex-column justify-content-between">
                             <div>
@@ -176,7 +156,8 @@
                                     <strong>Department of Electrical & Electronics Engineering</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=bseee"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -186,8 +167,8 @@
                 <div class="col-md-4 mb-5">
                     <div class="card h-100 shadow-sm border-0">
                         <div class="card-img-top">
-                            <img src="{% static 'images/cse.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 300px; object-fit: cover; width: 100%;">
+                            <img src="{% static 'images/civil.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
+                                 style="max-height: 180px; object-fit: cover; width: 100%;">
                         </div>
                         <div class="card-body d-flex flex-column justify-content-between">
                             <div>
@@ -197,7 +178,8 @@
                                     <strong>Department of Civil Engineering</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=bsce"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -208,8 +190,9 @@
                 <div class="col-md-4 mb-5">
                     <div class="card h-100 shadow-sm border-0">
                         <div class="card-img-top">
-                            <img src="{% static 'images/cse.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 300px; object-fit: cover; width: 100%;">
+                            <img src="{% static 'images/pharmacy.webp' %}" alt="Blog Image 1"
+                                 class="img-fluid rounded-top"
+                                 style="max-height: 180px; object-fit: cover; width: 100%;">
                         </div>
                         <div class="card-body d-flex flex-column justify-content-between">
                             <div>
@@ -218,7 +201,8 @@
                                     <strong>Department of Pharmacy</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=bp"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -229,8 +213,9 @@
                 <div class="col-md-4 mb-5">
                     <div class="card h-100 shadow-sm border-0">
                         <div class="card-img-top">
-                            <img src="{% static 'images/cse.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 300px; object-fit: cover; width: 100%;">
+                            <img src="{% static 'images/genetic.jpg' %}" alt="Blog Image 1"
+                                 class="img-fluid rounded-top"
+                                 style="max-height: 180px; object-fit: cover; width: 100%;">
                         </div>
                         <div class="card-body d-flex flex-column justify-content-between">
                             <div>
@@ -240,7 +225,8 @@
                                     <strong>Department of Biotechnology & Genetic Engineering</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=bt"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -251,7 +237,8 @@
                 <div class="col-md-4 mb-5">
                     <div class="card h-100 shadow-sm border-0">
                         <div class="card-img-top">
-                            <img src="{% static 'images/english.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
+                            <img src="{% static 'images/english.jpg' %}" alt="Blog Image 1"
+                                 class="img-fluid rounded-top"
                                  style="max-height: 180px; object-fit: cover; width: 100%;">
                         </div>
                         <div class="card-body d-flex flex-column justify-content-between">
@@ -261,7 +248,8 @@
                                     <strong>Department of English</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=bae"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -281,7 +269,8 @@
                                     <strong>Department of Business Administration</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=bba"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -302,7 +291,8 @@
                                     <strong>Department of Business Administration</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=mba"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -323,7 +313,8 @@
                                     <strong>Department of Media & Journalism</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=msj"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -343,7 +334,8 @@
                                     <strong>Department of Business Studies</strong>
                                 </p>
                             </div>
-                            <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'course_materials_search' %}?degree=bse"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="fas icon-find_in_page"></i> Find Materials
                             </a>
                         </div>
@@ -388,26 +380,38 @@
                 }
             </style>
         </div>
-    </section>
-
-    <section class="py-5 bg-image overlay-primary fixed overlay"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
-
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h2 class="text-white">Ready to Sell Your Items?</h2>
-                    <p class="mb-0 text-white lead">Post your items and reach potential buyers.</p>
-                </div>
-                <div class="col-md-4 ml-auto">
-                    <a href="{% url 'course_materials_add' %}" class="btn btn-warning btn-block btn-lg">Add Course Materials</a>
-                    <a href="{% url 'course_materials_my_materials' %}" class="btn btn-warning btn-block btn-lg">View My Items</a>
+                <div class="col-md-5 ml-auto">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'course_materials_add' %}"
+                           class="btn btn-outline-success btn-lg custom-button">Add Course Materials</a>
+                        <a href="{% url 'course_materials_my_materials' %}"
+                           class="btn btn-outline-success btn-lg custom-button">View Posted Items</a>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Custom CSS -->
+        <style>
+            .custom-button {
+                border-color: #62c3e5; /* Purple border */
+                color: #72ce72; /* Green text */
+                background-color: white; /* White background */
+            }
+
+            .custom-button:hover {
+                background-color: purple; /* Purple background on hover */
+                color: white; /* White text on hover */
+            }
+        </style>
+
     </section>
 
-
+    <section class="py-5 bg-image fixed overlay"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+    </section>
     {% include 'expendable/footer.html' %}
 </div>
 {% include 'expendable/include.html' %}

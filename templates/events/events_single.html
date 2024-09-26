@@ -1,0 +1,264 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<style>
+    /* Global Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+    }
+
+    .btn-primary, .btn-warning {
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #357ABD;
+    }
+
+    .btn-warning:hover {
+        background-color: #ff9800;
+    }
+
+    .section-hero {
+        border-bottom-left-radius: 50px;
+        border-bottom-right-radius: 50px;
+        overflow: hidden;
+        position: relative;
+        height: 400px;
+        background-size: cover;
+        background-position: center;
+        background-image: url('{% static 'images/hero_1.jpg' %}');
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .section-hero h1 {
+        color: white;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+
+    .section-hero p {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin-top: 0;
+    }
+
+    /* Form Styles */
+    .filter-form {
+        margin-top: 20px;
+        margin-bottom: 50px;
+    }
+
+    .filter-form select, .filter-form button {
+        height: 45px;
+        font-size: 1.1rem;
+    }
+
+    /* Card Styles */
+    .card {
+        border-radius: 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-bottom: 30px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row;
+        height: 220px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        width: 50%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .card-body {
+        width: 50%;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .text-muted {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+
+    /* Event Banner & Details */
+    .event-banner {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .event-details {
+        margin-top: -100px;
+        background-color: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .event-meta {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .event-meta strong {
+        font-weight: bold;
+    }
+
+    .btn-register {
+        background-color: #ff9800;
+        color: white;
+        border-radius: 25px;
+        padding: 10px 30px;
+        font-size: 1.3rem;
+        margin-top: 20px;
+    }
+
+    .btn-register:hover {
+        background-color: #e68900;
+    }
+
+    /* Footer CTA Section */
+    .cta-section {
+        padding: 50px 0;
+        background-image: url('{% static 'images/hero_1.jpg' %}');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        text-align: center;
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .cta-section a {
+        margin: 10px;
+    }
+
+    /* Spacing */
+    .mt-5 {
+        margin-top: 5rem !important;
+    }
+
+    .mb-12 {
+        margin-bottom: 12px;
+    }
+</style>
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    {% include 'expendable/navbar.html' %}
+
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">{{ event.title }}</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'event' %}">Events</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>{{ event.title }}</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Event Details -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                {% if event.banner %}
+                    <img src="{{ event.banner.url }}" alt="{{ event.title }}" class="event-banner">
+                {% else %}
+                    <img src="{% static 'images/smartuiu.png' %}" alt="Default Banner" class="event-banner">
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10 event-details">
+                <h2 class="event-title">{{ event.title }}</h2>
+                <p class="event-meta">
+                    <strong>Date:</strong> {{ event.date }} <br>
+                    <strong>Time:</strong> {{ event.time }} <br>
+                    <strong>Location:</strong> {{ event.location }} <br>
+                    <strong>Club:</strong> {{ event.get_club_display }}<br><br>
+                    <strong>Description:</strong> {{ event.description|linebreaks }}
+                </p>
+                <div class="text-center">
+                    {% if registration %}
+                        <!-- If the user is registered -->
+                        <form method="POST" action="{% url 'event_registration' event.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-register">Unregister</button>
+                        </form>
+                    {% else %}
+                        <!-- If the user is not registered -->
+                        <form method="POST" action="{% url 'event_registration' event.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-register">Register Now</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer CTA -->
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+{% include 'expendable/include.html' %}
+</body>
+</html>

@@ -1,0 +1,174 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<style>
+    .card {
+        border-radius: 30px; /* Curved corners */
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-bottom: 20px; /* Space between cards */
+        overflow: hidden; /* Ensures content fits nicely */
+        display: flex; /* Flexbox for layout */
+        flex-direction: row; /* Row direction for card contents */
+        height: 220px; /* Reduced card height */
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        width: 50%; /* Card image takes up 40% of card width */
+        height: 100%; /* Maintain aspect ratio */
+        object-fit: cover; /* Cover for uniform appearance */
+        margin-right: 20px; /* Space between image and text */
+    }
+
+    .card-body {
+        width: 65%; /* Card body takes up the remaining 60% */
+        padding: 10px; /* Reduced padding for a more compact look */
+        display: flex;
+        margin: 10px auto; /* Add margin for top and bottom gaps */
+        flex-direction: column;
+        justify-content: center; /* Center content vertically */
+    }
+
+    .card-title {
+        font-size: 1.2rem; /* Adjust title size */
+        margin-bottom: 5px; /* Space below title */
+    }
+
+    .text-muted {
+        font-size: 0.9rem; /* Smaller font for details */
+    }
+
+    .btn-primary {
+        background-color: #4a90e2;
+        border: none;
+        border-radius: 25px;
+    }
+
+    .btn-primary:hover {
+        background-color: #357ABD;
+    }
+
+    .section-hero {
+        border-bottom-left-radius: 50px;
+        border-bottom-right-radius: 50px;
+        overflow: hidden;
+    }
+</style>
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    {% include 'expendable/navbar.html' %}
+
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12 text-center mb-5">
+                    <h1 class="text-white font-weight-bold">See what have you posted!</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mt-5">
+        <form method="get" action="">
+            <div class="row mb-12">
+                <div class="col-md-4">
+                    <select name="club" class="form-control">
+                        <option value="">None</option>
+                        {% for club in clubs %}
+                            <option value="{{ club.0 }}" {% if request.GET.club == club.0 %}selected{% endif %}>
+                                {{ club.1 }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="sort" class="form-control">
+                        <option value="">None</option>
+                        <option value="upcoming" {% if request.GET.sort == "upcoming" %}selected{% endif %}>Upcoming
+                        </option>
+                        <option value="new_to_old" {% if request.GET.sort == "new_to_old" %}selected{% endif %}>New to
+                            Old
+                        </option>
+                        <option value="old_to_new" {% if request.GET.sort == "old_to_new" %}selected{% endif %}>Old to
+                            New
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Apply and Reset Buttons -->
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                    <a href="{% url 'event' %}" class="btn btn-primary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            {% for event in events %}
+                <div class="col-md-12">
+                    <div class="card shadow-sm">
+                        {% if event.banner %}
+                            <img src="{{ event.banner.url }}" class="card-img-top" alt="Event Banner">
+                        {% else %}
+                            <img src="{% static 'images/smartuiu.png' %}" class="card-img-top" alt="Default Banner">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ event.title }}</h5>
+                            <p class="text-muted">
+                                <strong>Date:</strong> {{ event.date }} <br>
+                                <strong>Time:</strong> {{ event.time }} <br>
+                                <strong>Location:</strong> {{ event.location }} <br>
+                                <strong>Club:</strong> {{ event.get_club_display }}
+                            </p>
+                            <div class="row">
+                                <div class="col">
+                                    <a href="{% url 'event_send_email' event.id %}" class="btn btn-primary btn-block">See Registered Members</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-md-12">
+                    <p class="text-center">No events available.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <section class="py-5 bg-image overlay-primary fixed overlay"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="text-white">Want to register your information?</h2>
+                    <p class="mb-0 text-white lead">Click on the create profile button to let others find you!</p>
+                </div>
+                <div class="col-md-3 ml-auto">
+                    <a href="{% url 'event_post_event' %}" class="btn btn-warning btn-block btn-lg">Create Event</a>
+                    <a href="{% url 'thesis_finder_group' %}" class="btn btn-warning btn-block btn-lg">Registered Events</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+{% include 'expendable/include.html' %}
+</body>
+</html>

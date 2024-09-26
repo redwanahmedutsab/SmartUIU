@@ -1,0 +1,304 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<style>
+    /* Global Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+    }
+
+    .btn-primary, .btn-warning {
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #357ABD;
+    }
+
+    .btn-warning:hover {
+        background-color: #ff9800;
+    }
+
+    .section-hero {
+        border-bottom-left-radius: 50px;
+        border-bottom-right-radius: 50px;
+        overflow: hidden;
+        position: relative;
+        height: 400px;
+        background-size: cover;
+        background-position: center;
+        background-image: url('{% static 'images/hero_1.jpg' %}');
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .section-hero h1 {
+        color: white;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+
+    .section-hero p {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin-top: 0;
+    }
+
+    /* Form Styles */
+    .filter-form {
+        margin-top: 20px;
+        margin-bottom: 50px;
+    }
+
+    .filter-form select, .filter-form button {
+        height: 45px;
+        font-size: 1.1rem;
+    }
+
+    /* Card Styles */
+    .card {
+        border-radius: 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-bottom: 30px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row;
+        height: 220px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        width: 50%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .card-body {
+        width: 50%;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .text-muted {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+
+    /* Event Banner & Details */
+    .event-banner {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .event-details {
+        margin-top: -100px;
+        background-color: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .event-meta {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .event-meta strong {
+        font-weight: bold;
+    }
+
+    .btn-invite {
+        background-color: #ff9800;
+        color: white;
+        border-radius: 25px;
+        padding: 10px 30px;
+        font-size: 1.3rem;
+        margin-top: 20px;
+        display: block;
+    }
+
+    .btn-invite:hover {
+        background-color: #e68900;
+    }
+
+    /* Table Styles */
+    .registered-users-table {
+        margin-top: 30px;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .registered-users-table th, .registered-users-table td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    .registered-users-table th {
+        background-color: #f8f9fa;
+    }
+
+    /* Footer CTA Section */
+    .cta-section {
+        padding: 50px 0;
+        background-image: url('{% static 'images/hero_1.jpg' %}');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        text-align: center;
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .cta-section a {
+        margin: 10px;
+    }
+
+    /* Spacing */
+    .mt-5 {
+        margin-top: 5rem !important;
+    }
+
+    .mb-12 {
+        margin-bottom: 12px;
+    }
+</style>
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    {% include 'expendable/navbar.html' %}
+
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">{{ event.title }}</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'event' %}">Events</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>{{ event.title }}</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Details -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                {% if event.banner %}
+                    <img src="{{ event.banner.url }}" alt="{{ event.title }}" class="event-banner">
+                {% else %}
+                    <img src="{% static 'images/smartuiu.png' %}" alt="Default Banner" class="event-banner">
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10 event-details">
+                <h2 class="event-title">{{ event.title }}</h2>
+                <p class="event-meta">
+                    <strong>Date:</strong> {{ event.date }} <br>
+                    <strong>Time:</strong> {{ event.time }} <br>
+                    <strong>Location:</strong> {{ event.location }} <br>
+                    <strong>Club:</strong> {{ event.get_club_display }}<br><br>
+                    <strong>Description:</strong> {{ event.description|linebreaks }}
+                </p>
+
+                <!-- Invite All Button -->
+                <div class="text-center">
+                    <form method="POST" action="{% url 'event_single' event.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-invite">Send Invitation Email to All</button>
+                    </form>
+                </div>
+
+                <!-- Registered Users Table -->
+                <div class="mt-4">
+                    <h3>Registered Users</h3>
+                    <table class="registered-users-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for registration in registrations %}
+                                <tr>
+                                    <td>{{ registration.user.get_full_name }}</td>
+                                    <td>{{ registration.user.email }}</td>
+                                    <td>
+                                        <form method="POST" action="{% url 'event_single' user.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-primary btn-sm">Email</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No users registered for this event.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer CTA -->
+    {% include 'expendable/footer.html' %}
+</div>
+
+{% include 'expendable/include.html' %}
+</body>
+</html>

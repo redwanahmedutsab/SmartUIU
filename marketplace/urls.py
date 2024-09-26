@@ -7,4 +7,5 @@ urlpatterns = [
     path('marketplace_my_post/', views.marketplace_my_post_view, name='marketplace_my_post'),
     path('marketplace_single/<int:product_id>/', views.marketplace_single_view, name='marketplace_single'),
     path('marketplace/<int:product_id>/edit/', views.marketplace_edit_view, name='marketplace_edit'),
+    path('delete_product_image/', views.delete_product_image, name='delete_product_image'),
 ]

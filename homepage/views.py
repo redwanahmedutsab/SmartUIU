@@ -169,3 +169,15 @@ def developers_view(request):
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+
+def forget_email_view(request):
+    return None
+
+
+def forget_code_view(request):
+    return None
+
+
+def forget_new_view(request):
+    return None

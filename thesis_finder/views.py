@@ -100,3 +100,8 @@ def thesis_member_create_profile_view(request):
         return redirect('thesis_finder')
     user = User.objects.get(id=request.user.id)
     return render(request, 'thesis_finder/thesis_finder_create_profile.html', {'email': user.email})
+
+
+@login_required(login_url='/login')
+def thesis_finder_group_view(request):
+    return render(request, 'thesis_finder/thesis_finder_groups.html')

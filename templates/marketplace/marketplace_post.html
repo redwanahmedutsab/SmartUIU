@@ -119,27 +119,35 @@
                    placeholder="Enter tags separated by commas" required>
         </div>
 
-        <!-- Product Image -->
-<!-- Product Images -->
-<div class="form-group mb-4">
-    <label for="product-images" class="h5 font-weight-bold">Upload Product Images</label><br>
-    <label class="btn btn-primary btn-md btn-file shadow-sm rounded-pill">
-        <i class="fas fa-upload"></i> Browse Files
-        <input type="file" name="images" id="product-images" multiple hidden onchange="showFileNames()">
-    </label>
-    <textarea id="file-names" class="form-control mt-2" readonly rows="3"
-              placeholder="Selected file names will appear here"></textarea>
-</div>
+        <!-- Product Images -->
+        <div class="form-group mb-4">
+            <label for="product-images" class="h5 font-weight-bold">Upload Product Images</label><br>
+            <label class="btn btn-primary btn-md btn-file shadow-sm rounded-pill">
+                <i class="fas fa-upload"></i> Browse Files
+                <input type="file" name="images" id="product-images" multiple hidden onchange="showFileNames()">
+            </label>
+            <textarea id="file-names" class="form-control mt-2" readonly rows="3"
+                      placeholder="Selected file names will appear here"></textarea>
+        </div>
 
-        <!-- Script to display file name -->
+        <!-- Script to display file names -->
         <script>
-            function showFileName() {
-                var input = document.getElementById('product-image');
-                var fileName = document.getElementById('file-name');
-                var file = input.files[0];
-                fileName.value = file ? file.name : 'No file selected';
+            function showFileNames() {
+                var input = document.getElementById('product-images');
+                var fileNamesArea = document.getElementById('file-names');
+                var files = input.files;
+
+                // Create a list of file names
+                var fileNames = [];
+                for (var i = 0; i < files.length; i++) {
+                    fileNames.push(files[i].name);
+                }
+
+                // Join the file names with a line break and display them
+                fileNamesArea.value = fileNames.join('\n');
             }
         </script>
+
 
         <div class="d-flex justify-content-end">
             <button type="submit" class="btn btn-success btn-lg shadow-lg rounded-pill mt-4 custom-width">

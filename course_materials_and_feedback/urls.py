@@ -9,4 +9,5 @@ urlpatterns = [
          name='course_materials_my_materials'),
     path('course_materials/edit/<int:id>/', views.edit_course_material, name='edit_course_material'),
     path('course_materials/delete/<int:id>/', views.delete_course_material, name='delete_course_material'),
+    path('download/<int:file_id>/', views.download_material_file, name='download_material_file'),
 ]

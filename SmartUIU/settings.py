@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'course_materials_and_feedback',
     'marketplace',
     'django_browser_reload',
+    'events',
 ]
 
 MIDDLEWARE = [

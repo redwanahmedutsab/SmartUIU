@@ -1,0 +1,252 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<style>
+    .card {
+        border-radius: 30px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-bottom: 20px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row;
+        height: 220px;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        margin-left: 50px;
+        margin-top: 50px;
+        width: 10%;
+        height: 51%;
+        object-fit: cover;
+        margin-right: 20px;
+    }
+
+    .card-body {
+        width: 65%;
+        padding: 10px;
+        display: flex;
+        margin: 10px auto;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .text-muted {
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        background-color: #4a90e2;
+        border: none;
+        border-radius: 25px;
+    }
+
+    .btn-primary:hover {
+        background-color: #357ABD;
+    }
+
+    .section-hero {
+        border-bottom-left-radius: 50px;
+        border-bottom-right-radius: 50px;
+        overflow: hidden;
+    }
+</style>
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+    {% include 'expendable/navbar.html' %}
+
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12 text-center mb-5">
+                    <h1 class="text-white font-weight-bold">Welcome to the Job Board</h1>
+                    <p class="text-white font-weight-bold">Find your next job opportunity!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mt-5">
+        <form method="get" action="">
+            <div class="row mb-12">
+                <!-- Job Name Filter -->
+                <div class="col-md-4">
+                    <input type="text" name="job_name" class="form-control" placeholder="Enter Job Name"
+                           value="{{ request.GET.job_name }}">
+                </div>
+
+                <!-- Category Filter -->
+                <div class="col-md-4">
+                    <select name="category" class="form-control">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}"
+                                    {% if request.GET.category == category.id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Job Type Filter -->
+                <div class="col-md-4">
+                    <select name="job_type" class="form-control">
+                        <option value="">All Job Types</option>
+                        <option value="full_time" {% if request.GET.job_type == "full_time" %}selected{% endif %}>
+                            Full-time
+                        </option>
+                        <option value="part_time" {% if request.GET.job_type == "part_time" %}selected{% endif %}>
+                            Part-time
+                        </option>
+                        <option value="internship" {% if request.GET.job_type == "internship" %}selected{% endif %}>
+                            Internship
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-12 mt-3">
+                <!-- Experience Level Filter -->
+                <div class="col-md-4">
+                    <select name="experience" class="form-control">
+                        <option value="">Experience Level</option>
+                        <option value="entry" {% if request.GET.experience == "entry" %}selected{% endif %}>
+                            Entry-Level
+                        </option>
+                        <option value="mid" {% if request.GET.experience == "mid" %}selected{% endif %}>Mid-Level
+                        </option>
+                        <option value="senior" {% if request.GET.experience == "senior" %}selected{% endif %}>
+                            Senior-Level
+                        </option>
+                        <option value="all" {% if request.GET.experience == "all" %}selected{% endif %}>All Levels
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Work Environment Filter -->
+                <div class="col-md-4">
+                    <select name="work_env" class="form-control">
+                        <option value="">Work Environment</option>
+                        <option value="remote" {% if request.GET.work_env == "remote" %}selected{% endif %}>Remote
+                        </option>
+                        <option value="onsite" {% if request.GET.work_env == "onsite" %}selected{% endif %}>On-site
+                        </option>
+                        <option value="hybrid" {% if request.GET.work_env == "hybrid" %}selected{% endif %}>Hybrid
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Industry Filter -->
+                <div class="col-md-4">
+                    <select name="industry" class="form-control">
+                        <option value="">All Industries</option>
+                        {% for industry in industries %}
+                            <option value="{{ industry.id }}"
+                                    {% if request.GET.industry == industry.id %}selected{% endif %}>
+                                {{ industry.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-12 mt-3">
+                <!-- Sorting Filter -->
+                <div class="col-md-4">
+                    <select name="sort" class="form-control">
+                        <option value="">Sort By</option>
+                        <option value="newest" {% if request.GET.sort == "newest" %}selected{% endif %}>Newest</option>
+                        <option value="oldest" {% if request.GET.sort == "oldest" %}selected{% endif %}>Oldest</option>
+                        <option value="salary_min_to_max"
+                                {% if request.GET.sort == "salary_min_to_max" %}selected{% endif %}>Salary (Low to High)
+                        </option>
+                        <option value="salary_max_to_min"
+                                {% if request.GET.sort == "salary_max_to_min" %}selected{% endif %}>Salary (High to Low)
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Apply and Reset Buttons -->
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="{% url 'internship_and_job' %}" class="btn btn-primary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            {% for job in jobs %}
+                <div class="col-md-12">
+                    <div class="card shadow-sm">
+                        {% if job.logo %}
+                            <img src="{{ job.logo.url }}" class="card-img-top" alt="Company Logo">
+                        {% else %}
+                            <img src="{% static 'images/default_logo.png' %}" class="card-img-top" alt="Default Logo">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ job.title }}</h5>
+                            <p class="text-muted">
+                                <strong>Company:</strong> {{ job.company }} <br>
+                                <strong>Location:</strong> {{ job.location }} <br>
+                                <strong>Deadline:</strong> {{ job.deadline }} <br>
+                                <strong>Salary:</strong> ${{ job.salary }} <br>
+                            </p>
+                            <div class="row">
+                                <div class="col">
+                                    <a href="{% url 'job_detail' job.id %}" class="btn btn-primary btn-block">View
+                                        Job Details</a>
+                                </div>
+                                <div class="col">
+                                    <a href="{% url 'job_detail' job.id %}" class="btn btn-primary btn-block">Apply
+                                        Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-md-12">
+                    <p class="text-center">No jobs available.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <section class="py-5 bg-image overlay-primary fixed overlay"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="text-white">Want to post a job?</h2>
+                    <p class="mb-0 text-white lead">Click on the create job button to let others find you!</p>
+                </div>
+                <div class="col-md-3 ml-auto">
+                    <a href="{% url 'internship_job_post' %}" class="btn btn-warning btn-block">Create a Job Post</a>
+                    <a href="{% url 'internship_job_create_cv' %}" class="btn btn-warning btn-block">Create CV
+                        Post</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'expendable/footer.html' %}
+</div>
+{% include 'expendable/include.html' %}
+</body>
+</html>

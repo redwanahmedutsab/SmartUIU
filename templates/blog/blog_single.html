@@ -94,7 +94,7 @@
                             {% for comment in blog.comments.all %}
                                 <li class="mb-4">
                                     <div class="p-3 bg-white border rounded shadow-sm">
-                                        <p><strong>{{ comment.author.get_full_name }}:</strong></p>
+                                        <p><strong>{{ comment.author.get_full_name }}</strong></p>
                                         <p class="mb-2">{{ comment.content }}</p>
                                         <p class="text-muted small">Posted on {{ comment.created_at|date:"M d, Y" }}</p>
 

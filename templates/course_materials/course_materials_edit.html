@@ -1,0 +1,183 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+
+<div class="site-wrap">
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Edit Course Material</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'course_materials' %}">Course Materials</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Edit Course Material</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mt-5 mb-5">
+        <h2 class="text-center mb-4">Manage Course Material</h2>
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Edit Course Material Details</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'edit_course_material' course_material.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="degree" class="form-label">Degree Name</label>
+                            <select id="degree" name="degree" class="form-control" required onchange="updateTrimester()">
+                                <option value="bscse" {% if course_material.degree == 'bscse' %}selected{% endif %}>B.Sc. in Computer Science & Engineering</option>
+                                <option value="mscse" {% if course_material.degree == 'mscse' %}selected{% endif %}>M.Sc. in Computer Science & Engineering</option>
+                                <option value="bsds" {% if course_material.degree == 'bsds' %}selected{% endif %}>B.Sc. in Data Science</option>
+                                <option value="bseee" {% if course_material.degree == 'bseee' %}selected{% endif %}>B.Sc. in Electrical & Electronics Engineering</option>
+                                <option value="bsce" {% if course_material.degree == 'bsce' %}selected{% endif %}>B.Sc. in Civil Engineering</option>
+                                <option value="bt" {% if course_material.degree == 'bt' %}selected{% endif %}>B.Sc. in Bio Technology & Genetic Engineering</option>
+                                <option value="msj" {% if course_material.degree == 'msj' %}selected{% endif %}>Media and Journalism</option>
+                                <option value="bae" {% if course_material.degree == 'bae' %}selected{% endif %}>B.A. in English</option>
+                                <option value="mba" {% if course_material.degree == 'mba' %}selected{% endif %}>Masters of Business Administration</option>
+                                <option value="bba" {% if course_material.degree == 'bba' %}selected{% endif %}>Bachelor of Business Administration</option>
+                                <option value="bp" {% if course_material.degree == 'bp' %}selected{% endif %}>B. Pharma.</option>
+                                <option value="bse" {% if course_material.degree == 'bse' %}selected{% endif %}>B.Sc. in Economics</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="trimester" class="form-label">Trimester/Semester</label>
+                            <select id="trimester" name="trimester" class="form-control" required>
+                                <!-- Options will be populated by the script -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <script>
+                        function updateTrimester() {
+                            var degree = document.getElementById("degree").value;
+                            var trimesterSelect = document.getElementById("trimester");
+                            trimesterSelect.innerHTML = "";
+
+                            var trimesterOptions = [];
+
+                            // Adjust condition if needed based on the actual degree values
+                            if (['bscse', 'bseee', 'bsds', 'mscse', 'bba', 'mba'].includes(degree)) {
+                                trimesterOptions = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
+                            } else {
+                                trimesterOptions = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
+                            }
+
+                            // Populate the trimester dropdown
+                            trimesterOptions.forEach(function (value) {
+                                var option = document.createElement("option");
+                                option.value = value;
+                                option.text = value;
+                                if (value == "{{ course_material.trimester }}") {
+                                    option.selected = true; // Select the current trimester
+                                }
+                                trimesterSelect.appendChild(option);
+                            });
+                        }
+
+                        window.onload = updateTrimester;
+                    </script>
+
+                    <div class="mb-3">
+                        <label for="course_title" class="form-label">Course Name (Write full name)</label>
+                        <input type="text" id="course_title" name="course_title"
+                               placeholder="e.g. System Analysis & Design" class="form-control" required
+                               value="{{ course_material.course_title }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="course_code" class="form-label">Course Code (Follow the given format)</label>
+                        <input type="text" id="course_code" name="course_code" placeholder="e.g. CSE 3411"
+                               class="form-control" required value="{{ course_material.course_code }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="material_type" class="form-label">Material Type</label>
+                        <select id="material_type" name="material_type" class="form-control" required>
+                            <option value="Class Test" {% if course_material.material_type == 'Class Test' %}selected{% endif %}>Class Test</option>
+                            <option value="Mid Question" {% if course_material.material_type == 'Mid Question' %}selected{% endif %}>Mid Question</option>
+                            <option value="Final Question" {% if course_material.material_type == 'Final Question' %}selected{% endif %}>Final Question</option>
+                            <option value="Assignment" {% if course_material.material_type == 'Assignment' %}selected{% endif %}>Assignment</option>
+                            <option value="Slides" {% if course_material.material_type == 'Slides' %}selected{% endif %}>Slides</option>
+                            <option value="Notes" {% if course_material.material_type == 'Notes' %}selected{% endif %}>Notes</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="material_description" class="form-label">Material Description</label>
+                        <textarea id="material_description" name="material_description" class="form-control"
+                                  rows="4">{{ course_material.material_description }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="materials" class="form-label">Upload New Materials (Optional)</label>
+                        <input type="file" id="materials" name="materials" class="form-control" multiple>
+                        <small class="form-text text-muted">You can upload new files here. Previous files will remain unchanged.</small>
+                    </div>
+
+                    <h5>Existing Files:</h5>
+                    <ul>
+                        {% for file in existing_files %}
+                            <li>
+                                <a href="{{ file.file.url }}">{{ file.file.name }}</a>
+                            </li>
+                        {% empty %}
+                            <li>No files uploaded.</li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="mb-3">
+                        <label for="admin_email" class="form-label">Admin Email</label>
+                        <input type="email" id="admin_email" name="admin_email" class="form-control"
+                               value="{{ user.email }}" readonly>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa; /* Light background */
+    }
+
+    .section-hero {
+        padding: 60px 0;
+    }
+
+    .form-control {
+        border-radius: 0.5rem; /* Rounded corners */
+    }
+
+    .btn-primary {
+        background-color: #007bff; /* Bootstrap primary color */
+    }
+
+    .btn-secondary {
+        margin-left: 10px;
+    }
+</style>
+
+{% include 'expendable/footer.html' %}
+</body>
+</html>

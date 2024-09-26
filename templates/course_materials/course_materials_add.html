@@ -24,36 +24,12 @@
 
         <div class="container">
             <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center mb-5">
+                <div class="col-md-12 text-center">
                     <h1 class="text-white font-weight-bold">Welcome to the Course Material Section</h1>
                     <p class="text-white font-weight-bold">Find course materials and questions that you need!</p>
                 </div>
-                <div class="col-md-12">
-                    <form method="post" class="search-jobs-form">
-                        {% csrf_token %}
-                        <div class="row mb-5 justify-content-center">
-                            <div class="col-5">
-                                <input type="text" class="form-control form-control-lg"
-                                       placeholder="Search for materials...">
-                            </div>
-                            <div class="col-2">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search">
-                                    <span class="icon-search icon mr-2"></span>Search
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-md-12 popular-keywords">
-                                <!-- Keywords content goes here -->
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
-        <a href="#next" class="scroll-button smoothscroll">
-            <span class="icon-keyboard_arrow_down"></span>
-        </a>
     </section>
 
     <div class="container mt-5">
@@ -77,12 +53,13 @@
                                 <option value="bsds">B.Sc. in Data Science</option>
                                 <option value="bseee">B.Sc. in Electrical & Electronics Engineering</option>
                                 <option value="bsce">B.Sc. in Civil Engineering</option>
-                                <option value="bba">BBA</option>
-                                <option value="mba">MBA</option>
                                 <option value="bt">B.Sc. in Bio Technology & Genetic Engineering</option>
+                                <option value="msj">Media and Journalism</option>
+                                <option value="bae">B.A. in English</option>
+                                <option value="mba">Masters of Business Administration</option>
+                                <option value="bba">Bachelor of Business Administration</option>
                                 <option value="bp">B. Pharma.</option>
                                 <option value="bse">B.Sc. in Economics</option>
-                                <option value="bse">B.A. in English</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -122,11 +99,11 @@
 
                     <div class="mb-3">
                         <label for="course_title" class="form-label">Course Name (Write full name)</label>
-                        <input type="text" id="course_title" name="course_title" placeholder="System Analysis & Design" class="form-control" required>
+                        <input type="text" id="course_title" name="course_title" placeholder="e.g. System Analysis & Design" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="course_title" class="form-label">Course Code (Follow the given format)</label>
-                        <input type="text" id="course_code" name="course_code" placeholder="CSE 3411" class="form-control" required>
+                        <input type="text" id="course_code" name="course_code" placeholder="e.g. CSE 3411" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="material_type" class="form-label">Material Type</label>
@@ -153,7 +130,7 @@
                         <input type="email" id="admin_email" name="admin_email" class="form-control"
                                value="{{ user.email }}" readonly>
                     </div>
-                    <button type="submit" class="btn btn-primary">Save Material</button>
+                    <button type="submit" class="btn btn-primary">Upload Material</button>
                 </form>
             </div>
         </div>

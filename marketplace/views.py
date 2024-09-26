@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -76,11 +77,20 @@ def marketplace_my_post_view(request):
 
 
 @login_required(login_url='/login')
+def delete_product_image(request):
+    if request.method == 'POST':
+        image_id = request.POST.get('image_id')
+        image = get_object_or_404(ProductImage, id=image_id)
+        image.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+
+@login_required(login_url='/login')
 def marketplace_edit_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
     if request.method == 'POST':
-        # Update product details
         product.name = request.POST.get('name')
         product.description = request.POST.get('description')
         product.price = request.POST.get('price')
@@ -91,8 +101,8 @@ def marketplace_edit_view(request, product_id):
         product.shipping_details = request.POST.get('shipping_details')
         product.save()
 
-        # Handle new image uploads
         new_images = request.FILES.getlist('new_images')
+        print('here is called')
         print(new_images)
         for image in new_images:
             ProductImage.objects.create(product=product, image=image)

@@ -1,0 +1,356 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HOME -->
+    <section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static "images/hero_1.jpg" %}');" id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Create Thesis Profile</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="#">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'internship_and_job' %}">Internship and Jobs</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Create Thesis Profile</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mt-5 mb-5 mt-2">
+        <h2 class="form-title">Create Your CV/Profile</h2>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#personal_profile">Personal Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#education">Education</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#experience">Experience</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#skills">Skills</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#languages">Languages</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#awards">Awards</a>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content mt-3">
+            <!-- Personal Profile Section -->
+            <div id="personal_profile" class="tab-pane active">
+                <form id="cv_form" method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic mb-3" id="profilePreview">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group mb-3">
+                                <label for="bio">Bio</label>
+                                <textarea class="form-control" id="bio" name="bio" rows="3"></textarea>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="contact_email">Contact Email</label>
+                                <input type="email" class="form-control" id="contact_email" name="contact_email">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="contact_phone">Contact Phone</label>
+                                <input type="text" class="form-control" id="contact_phone" name="contact_phone">
+                            </div>
+                            <!-- New Image Field -->
+                            <div class="form-group mb-3">
+                                <label for="profile_image">Upload Profile Picture</label>
+                                <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*" onchange="previewImage(event)">
+                            </div>
+                        </div>
+                    </div>
+
+            <!-- Education Section -->
+            <div id="education" class="tab-pane fade">
+                <div class="form-section">
+                    <div class="form-group mb-3">
+                        <label for="degree">Degree</label>
+                        <input type="text" class="form-control" id="degree" placeholder="Enter your degree">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="institution">Institution</label>
+                        <input type="text" class="form-control" id="institution" placeholder="Enter institution name">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="start_year">Start Year</label>
+                        <input type="date" class="form-control" id="start_year">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="end_year">End Year (Optional)</label>
+                        <input type="date" class="form-control" id="end_year">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="addEducation()">Add Education</button>
+                </div>
+
+                <!-- Dynamic Table for Education -->
+                <div class="table-responsive">
+                    <table class="table table-striped" id="educationTable">
+                        <thead>
+                            <tr>
+                                <th>Degree</th>
+                                <th>Institution</th>
+                                <th>Start Year</th>
+                                <th>End Year</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Experience Section -->
+            <div id="experience" class="tab-pane fade">
+                <div class="form-section">
+                    <div class="form-group mb-3">
+                        <label for="company">Company</label>
+                        <input type="text" class="form-control" id="company" placeholder="Enter company name">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="job_title">Job Title</label>
+                        <input type="text" class="form-control" id="job_title" placeholder="Enter job title">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="start_date">Start Date</label>
+                        <input type="date" class="form-control" id="start_date">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="end_date">End Date (Optional)</label>
+                        <input type="date" class="form-control" id="end_date">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="addExperience()">Add Experience</button>
+                </div>
+
+                <!-- Dynamic Table for Experience -->
+                <div class="table-responsive">
+                    <table class="table table-striped" id="experienceTable">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Job Title</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Skills Section -->
+            <div id="skills" class="tab-pane fade">
+                <div class="form-section">
+                    <div class="form-group mb-3">
+                        <label for="skill">Skill</label>
+                        <input type="text" class="form-control" id="skill" placeholder="Enter a skill">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="addSkill()">Add Skill</button>
+                </div>
+
+                <!-- Dynamic List for Skills -->
+                <ul class="list-group" id="skillsList"></ul>
+            </div>
+
+            <!-- Languages Section -->
+            <div id="languages" class="tab-pane fade">
+                <div class="form-section">
+                    <div class="form-group mb-3">
+                        <label for="language">Language</label>
+                        <input type="text" class="form-control" id="language" placeholder="Enter a language">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="addLanguage()">Add Language</button>
+                </div>
+
+                <!-- Dynamic List for Languages -->
+                <ul class="list-group" id="languagesList"></ul>
+            </div>
+
+            <!-- Awards Section -->
+            <div id="awards" class="tab-pane fade">
+                <div class="form-section">
+                    <div class="form-group mb-3">
+                        <label for="award">Award</label>
+                        <input type="text" class="form-control" id="award" placeholder="Enter an award">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="addAward()">Add Award</button>
+                </div>
+
+                <!-- Dynamic List for Awards -->
+                <ul class="list-group" id="awardsList"></ul>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-success">Create Profile</button>
+        </div>
+        </form> <!-- Close the form here -->
+    </div>
+</div>
+
+{% include 'expendable/footer.html' %}
+
+<script>
+    function previewImage(event) {
+        const imagePreview = document.getElementById('profilePreview');
+        imagePreview.src = URL.createObjectURL(event.target.files[0]);
+    }
+
+    function addEducation() {
+        const degree = document.getElementById('degree').value;
+        const institution = document.getElementById('institution').value;
+        const startYear = document.getElementById('start_year').value;
+        const endYear = document.getElementById('end_year').value;
+
+        if (degree && institution) {
+            const table = document.getElementById('educationTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td>${degree}</td>
+                <td>${institution}</td>
+                <td>${startYear}</td>
+                <td>${endYear}</td>
+                <td><button class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
+            `;
+            // Clear inputs
+            document.getElementById('degree').value = '';
+            document.getElementById('institution').value = '';
+            document.getElementById('start_year').value = '';
+            document.getElementById('end_year').value = '';
+        } else {
+            alert("Please fill in all fields.");
+        }
+    }
+
+    function removeRow(button) {
+        const row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+
+    function addExperience() {
+        const company = document.getElementById('company').value;
+        const jobTitle = document.getElementById('job_title').value;
+        const startDate = document.getElementById('start_date').value;
+        const endDate = document.getElementById('end_date').value;
+
+        if (company && jobTitle) {
+            const table = document.getElementById('experienceTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td>${company}</td>
+                <td>${jobTitle}</td>
+                <td>${startDate}</td>
+                <td>${endDate}</td>
+                <td><button class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
+            `;
+            // Clear inputs
+            document.getElementById('company').value = '';
+            document.getElementById('job_title').value = '';
+            document.getElementById('start_date').value = '';
+            document.getElementById('end_date').value = '';
+        } else {
+            alert("Please fill in all fields.");
+        }
+    }
+
+    function addSkill() {
+        const skill = document.getElementById('skill').value;
+
+        if (skill) {
+            const skillsList = document.getElementById('skillsList');
+            const newItem = document.createElement('li');
+            newItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+            newItem.textContent = skill;
+            newItem.innerHTML += '<button class="btn btn-danger btn-sm" onclick="removeSkill(this)">Remove</button>';
+            skillsList.appendChild(newItem);
+            // Clear input
+            document.getElementById('skill').value = '';
+        } else {
+            alert("Please enter a skill.");
+        }
+    }
+
+    function removeSkill(button) {
+        const item = button.parentNode;
+        item.parentNode.removeChild(item);
+    }
+
+    function addLanguage() {
+        const language = document.getElementById('language').value;
+
+        if (language) {
+            const languagesList = document.getElementById('languagesList');
+            const newItem = document.createElement('li');
+            newItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+            newItem.textContent = language;
+            newItem.innerHTML += '<button class="btn btn-danger btn-sm" onclick="removeLanguage(this)">Remove</button>';
+            languagesList.appendChild(newItem);
+            // Clear input
+            document.getElementById('language').value = '';
+        } else {
+            alert("Please enter a language.");
+        }
+    }
+
+    function removeLanguage(button) {
+        const item = button.parentNode;
+        item.parentNode.removeChild(item);
+    }
+
+    function addAward() {
+        const award = document.getElementById('award').value;
+
+        if (award) {
+            const awardsList = document.getElementById('awardsList');
+            const newItem = document.createElement('li');
+            newItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+            newItem.textContent = award;
+            newItem.innerHTML += '<button class="btn btn-danger btn-sm" onclick="removeAward(this)">Remove</button>';
+            awardsList.appendChild(newItem);
+            // Clear input
+            document.getElementById('award').value = '';
+        } else {
+            alert("Please enter an award.");
+        }
+    }
+
+    function removeAward(button) {
+        const item = button.parentNode;
+        item.parentNode.removeChild(item);
+    }
+</script>
+
+</body>
+</html>

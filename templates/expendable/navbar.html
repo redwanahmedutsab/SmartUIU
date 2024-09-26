@@ -22,13 +22,14 @@
             </style>
             <nav class="mx-auto site-navigation curved-border">
                 <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
+                    <li><a href="{% url 'homepage' %}" class="nav-link active">Home</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             Academic
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'course_materials' %}">Course Materials & Feedback</a></li>
+                            <li><a class="dropdown-item" href="{% url 'course_materials' %}">Course Materials</a></li>
                             <li><a class="dropdown-item" href="{% url 'homepage' %}">Study Group Creation</a></li>
                             <li><a class="dropdown-item" href="{% url 'thesis_finder' %}">Thesis Member Finder</a></li>
                         </ul>
@@ -40,19 +41,17 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="{% url 'lost_and_found' %}">Lost & Found</a></li>
-                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Home Finder</a></li>
                             <li><a class="dropdown-item" href="{% url 'marketplace' %}">Marketplace</a></li>
                         </ul>
                     </li>
-                    <li><a href="{% url 'homepage' %}" class="nav-link active">Home</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             Social
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'blog' %}">Blog</a></li>
-                            <li><a class="dropdown-item" href="{% url 'developers' %}">Developers</a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog' %}">Blogs</a></li>
+                            <li><a class="dropdown-item" href="{% url 'event' %}">Events</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -61,8 +60,9 @@
                             Career
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Internship & Job</a></li>
-                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Alumni Network</a></li>
+                            <li><a class="dropdown-item" href="{% url 'internship_and_job' %}">Internship & Job</a></li>
+                            <li><a class="dropdown-item" href="{% url 'developers' %}">Developers</a></li>
+
                         </ul>
                     </li>
                 </ul>
