@@ -3,7 +3,7 @@
 <html lang="en">
 {% include 'expendable/head.html' %}
 <body id="top">
-{#{% include 'expendable/chatbot_and_loading.html' %}#}
+{% include 'expendable/chatbot_and_loading.html' %}
 
 <div class="site-wrap">
 
@@ -19,47 +19,26 @@
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
     <!-- HOME -->
-    <section class="section-hero home-section overlay inner-page bg-image"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
-
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
         <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center mb-5">
-                    <h1 class="text-white font-weight-bold">Welcome to the Course Material Section</h1>
-                    <p class="text-white font-weight-bold">Find course materials and questions that you need!</p>
-                </div>
-                <div class="col-md-12">
-                    <form method="post" class="search-jobs-form">
-                        {% csrf_token %}
-                        <div class="row mb-5 justify-content-center">
-                            <div class="col-5">
-                                <input type="text" class="form-control form-control-lg"
-                                       placeholder="Search for materials...">
-                            </div>
-                            <div class="col-2">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search">
-                                    <span class="icon-search icon mr-2"></span>Search
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-md-12 popular-keywords">
-                                <!-- Keywords content goes here -->
-                            </div>
-                        </div>
-                    </form>
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Manage Posted Materials</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'course_materials' %}">Course Materials</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Manage Posted Materials</strong></span>
+                    </div>
                 </div>
             </div>
         </div>
-        <a href="#next" class="scroll-button smoothscroll">
-            <span class="icon-keyboard_arrow_down"></span>
-        </a>
     </section>
 
     <div class="container mt-5 mb-5">
         <h2 class="text-center mb-4">Manage Course Materials</h2>
 
-        <!-- TABLE TO DISPLAY COURSE MATERIALS -->
         <div class="card shadow-sm">
             <div class="card-header bg-secondary text-white">
                 <h5 class="mb-0">Course Materials List</h5>
@@ -111,7 +90,6 @@
                             <td>{{ material.course_title }}</td>
                             <td>{{ material.material_type }}</td>
                             <td>{{ material.user.get_full_name }}</td>
-                            <!-- Assuming 'admin' is a ForeignKey to User model -->
                             <td>{{ material.created_at }}</td>
                             <td>
                                 <a href="{% url 'edit_course_material' material.id %}" class="btn btn-primary btn-sm mb-1">Edit</a>
@@ -131,17 +109,18 @@
     </div>
 
     {% include 'expendable/footer.html' %}
+    {% include 'expendable/include.html' %}
 
 </div>
 
 <style>
     .table-wrap {
-        table-layout: auto; /* Allow the table to adjust column widths based on content */
+        table-layout: auto;
     }
 
     .table-wrap th, .table-wrap td {
-        word-wrap: break-word; /* Allow text to wrap within cells */
-        overflow-wrap: break-word; /* Support for different browsers */
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 </style>
 

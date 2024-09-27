@@ -41,7 +41,7 @@ def course_materials_add_view(request):
                 file=material
             )
 
-        return redirect('course_materials')  # Ensure this URL name exists
+        return redirect('course_materials')
 
     return render(request, 'course_materials/course_materials_add.html')
 

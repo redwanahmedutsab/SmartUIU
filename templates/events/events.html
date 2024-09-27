@@ -72,7 +72,7 @@
              style="background-image: url('{% static 'images/hero_1.jpg' %}');">
         <div class="container">
             <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center mb-5">
+                <div class="col-md-12 text-center">
                     <h1 class="text-white font-weight-bold">Welcome to the thesis finder section</h1>
                     <p class="text-white font-weight-bold">Find members for your thesis!</p>
                 </div>
@@ -140,7 +140,11 @@
                                     <a href="{% url 'event_single' event.id %}" class="btn btn-primary btn-block">View
                                         Details</a>
                                 </div>
+                                <div class="col">
+                                    <a href="{% url 'event' %}" class="btn btn-primary btn-block">Register Now</a>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -152,22 +156,34 @@
         </div>
     </div>
 
-    <section class="py-5 bg-image overlay-primary fixed overlay"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h2 class="text-white">Want to register your information?</h2>
-                    <p class="mb-0 text-white lead">Click on the create profile button to let others find you!</p>
-                </div>
-                <div class="col-md-3 ml-auto">
-                    <a href="{% url 'event_post_event' %}" class="btn btn-warning btn-block btn-lg">Create Event</a>
-                    <a href="{% url 'event_posted_event' %}" class="btn btn-warning btn-block btn-lg">Posted Events</a>
-                    <a href="{% url 'thesis_finder_group' %}" class="btn btn-warning btn-block btn-lg">Registered Events</a>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8 ml-auto mb-5">
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'event_post_event' %}"
+                       class="btn btn-outline-success btn-lg custom-button">Add Upcoming Events</a>
+                    <a href="{% url 'event_posted_event' %}"
+                       class="btn btn-outline-success btn-lg custom-button">View Posted Events</a>
+                    <a href="{% url 'event_registered' %}"
+                       class="btn btn-outline-success btn-lg custom-button">View Registered Events</a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Custom CSS -->
+    <style>
+        .custom-button {
+            border-color: #62c3e5; /* Purple border */
+            color: #72ce72; /* Green text */
+            background-color: white; /* White background */
+        }
+
+        .custom-button:hover {
+            background-color: purple; /* Purple background on hover */
+            color: white; /* White text on hover */
+        }
+    </style>
 
     {% include 'expendable/footer.html' %}
 </div>

@@ -1,0 +1,157 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HOME -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Edit Event</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'event' %}">Events</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Edit Event</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mt-5 mb-5">
+        <div class="card p-5 shadow-lg">
+            <h3 class="text-center mb-4">Edit Event</h3>
+
+            <!-- Event Edit Form -->
+            <form method="POST" enctype="multipart/form-data" action="{% url 'event_edit' event.id %}" onsubmit="return confirm('Are you sure you want to update information?')">
+                {% csrf_token %}
+
+                <!-- Event Title -->
+                <div class="form-group">
+                    <label for="event_title">Event Title</label>
+                    <input type="text" class="form-control shadowed-input rounded-input" id="event_title"
+                           name="event_title" value="{{ event.title }}"
+                           placeholder="Enter event title" required>
+                </div>
+
+                <!-- Event Description -->
+                <div class="form-group">
+                    <label for="event_description">Event Description</label>
+                    <textarea class="form-control shadowed-input rounded-input" id="event_description"
+                              name="event_description" rows="4"
+                              placeholder="Enter a brief description of the event"
+                              required>{{ event.description }}</textarea>
+                </div>
+
+                <!-- Event Date -->
+                <div class="form-group">
+                    <label for="event_date">Event Date</label>
+                    <input type="date" class="form-control shadowed-input rounded-input" id="event_date"
+                           name="event_date" value="{{ event.date|date:'Y-m-d' }}" required>
+                </div>
+
+                <!-- Event Time -->
+                <div class="form-group">
+                    <label for="event_time">Event Time</label>
+                    <input type="time" class="form-control shadowed-input rounded-input" id="event_time"
+                           name="event_time" value="{{ event.time|time:'H:i' }}" required>
+                </div>
+
+                <!-- Event Location -->
+                <div class="form-group">
+                    <label for="event_location">Event Location</label>
+                    <input type="text" class="form-control shadowed-input rounded-input" id="event_location"
+                           name="event_location"
+                           value="{{ event.location }}"
+                           placeholder="Enter the location of the event" required>
+                </div>
+
+                <!-- Club -->
+                <div class="form-group">
+                    <label for="club">Organizing Club</label>
+                    <select class="form-control shadowed-input rounded-input" id="club" name="club" required>
+                        <option disabled>Select a Club</option>
+                        <option value="UIUDC" {% if event.club == "UIUDC" %}selected{% endif %}>UIU Debate Club
+                            (UIUDC)
+                        </option>
+                        <option value="UIUCC" {% if event.club == "UIUCC" %}selected{% endif %}>UIU Cultural Club
+                            (UIUCC)
+                        </option>
+                        <option value="UIUTFC" {% if event.club == "UIUTFC" %}selected{% endif %}>UIU Theater & Film
+                            Club (UIUT&FC)
+                        </option>
+                        <option value="UIUBC" {% if event.club == "UIUBC" %}selected{% endif %}>UIU Business Club
+                            (UIUBC)
+                        </option>
+                        <option value="UIUCCL" {% if event.club == "UIUCCL" %}selected{% endif %}>UIU Computer Club
+                            (UIUCCL)
+                        </option>
+                        <option value="UIUEEC" {% if event.club == "UIUEEC" %}selected{% endif %}>UIU Electrical &
+                            Electronic Club (UIUEEC)
+                        </option>
+                        <option value="UIUPC" {% if event.club == "UIUPC" %}selected{% endif %}>UIU Photography Club
+                            (UIUPC)
+                        </option>
+                        <option value="UIUSSC" {% if event.club == "UIUSSC" %}selected{% endif %}>UIU Social Services
+                            Club (UIUSSC)
+                        </option>
+                        <option value="UIUSC" {% if event.club == "UIUSC" %}selected{% endif %}>UIU Sports Club
+                            (UIUSC)
+                        </option>
+                        <option value="UIUMC" {% if event.club == "UIUMC" %}selected{% endif %}>UIU MBA Club (UIUMC)
+                        </option>
+                        <option value="UIUAF" {% if event.club == "UIUAF" %}selected{% endif %}>UIU APP Forum (UIUAF)
+                        </option>
+                        <option value="UIURC" {% if event.club == "UIURC" %}selected{% endif %}>UIU Robotics Club
+                            (UIURC)
+                        </option>
+                        <option value="UIUES" {% if event.club == "UIUES" %}selected{% endif %}>UIU Electronics Society
+                            (UIUES)
+                        </option>
+                    </select>
+                </div>
+
+
+                <!-- Event Banner -->
+                <div class="form-group">
+                    <label for="event_banner">Event Banner (Optional)</label>
+
+                    <!-- Show the existing image if available -->
+                    {% if event.banner %}
+                        <div class="mb-3">
+                            <img src="{{ event.banner.url }}" alt="Event Banner" class="img-fluid"
+                                 style="max-width: 300px;">
+                        </div>
+                    {% endif %}
+
+                    <input type="file" class="form-control-file" id="event_banner" name="event_banner">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-block">Update Event</button>
+            </form>
+
+            <!-- Delete Button -->
+            <form method="POST" action="{% url 'event_delete' event.id %}" onsubmit="return confirm('Are you sure you want to delete information?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-block mt-3">Delete Event</button>
+            </form>
+        </div>
+    </div>
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+{% include 'expendable/include.html' %}
+</body>
+</html>

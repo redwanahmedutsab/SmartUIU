@@ -27,8 +27,6 @@
     .section-hero {
         border-bottom-left-radius: 50px;
         border-bottom-right-radius: 50px;
-        overflow: hidden;
-        position: relative;
         height: 400px;
         background-size: cover;
         background-position: center;
@@ -39,18 +37,18 @@
         align-items: center;
     }
 
-    .section-hero h1 {
+    .section-hero h1, .section-hero p {
         color: white;
+    }
+
+    .section-hero h1 {
         font-size: 3rem;
         font-weight: 700;
-        margin-bottom: 0;
     }
 
     .section-hero p {
-        color: white;
         font-size: 1.5rem;
         font-weight: 500;
-        margin-top: 0;
     }
 
     /* Form Styles */
@@ -67,13 +65,12 @@
     /* Card Styles */
     .card {
         border-radius: 20px;
-        transition: transform 0.2s, box-shadow 0.2s;
         margin-bottom: 30px;
-        overflow: hidden;
         display: flex;
         flex-direction: row;
         height: 220px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .card:hover {
@@ -146,7 +143,6 @@
         padding: 10px 30px;
         font-size: 1.3rem;
         margin-top: 20px;
-        display: block;
     }
 
     .btn-invite:hover {
@@ -191,10 +187,6 @@
         margin-bottom: 20px;
     }
 
-    .cta-section a {
-        margin: 10px;
-    }
-
     /* Spacing */
     .mt-5 {
         margin-top: 5rem !important;
@@ -209,19 +201,19 @@
 {% include 'expendable/chatbot_and_loading.html' %}
 
 <div class="site-wrap">
-
     {% include 'expendable/navbar.html' %}
 
-    <section class="section-hero overlay inner-page bg-image"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');"
-             id="home-section">
+    <!-- Hero Section -->
+    <section class="section-hero overlay inner-page bg-image" id="home-section">
         <div class="container">
             <div class="row">
                 <div class="col-md-7">
                     <h1 class="text-white font-weight-bold">{{ event.title }}</h1>
                     <div class="custom-breadcrumbs">
-                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
-                        <a href="{% url 'event' %}">Events</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'homepage' %}">Home</a>
+                        <span class="mx-2 slash">/</span>
+                        <a href="{% url 'event' %}">Events</a>
+                        <span class="mx-2 slash">/</span>
                         <span class="text-white"><strong>{{ event.title }}</strong></span>
                     </div>
                 </div>
@@ -231,6 +223,14 @@
 
     <!-- Event Details -->
     <div class="container mt-5">
+        {% if messages %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <div class="row justify-content-center">
             <div class="col-md-12">
                 {% if event.banner %}
@@ -254,9 +254,9 @@
 
                 <!-- Invite All Button -->
                 <div class="text-center">
-                    <form method="POST" action="{% url 'event_single' event.id %}">
+                    <form method="POST" action="{% url 'event_send_email' event.id %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn-invite">Send Invitation Email to All</button>
+                        <button type="submit" name="send_all" class="btn-invite">Send Invitation Email to All</button>
                     </form>
                 </div>
 
@@ -265,34 +265,64 @@
                     <h3>Registered Users</h3>
                     <table class="registered-users-table">
                         <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Action</th>
-                            </tr>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {% for registration in registrations %}
-                                <tr>
-                                    <td>{{ registration.user.get_full_name }}</td>
-                                    <td>{{ registration.user.email }}</td>
-                                    <td>
-                                        <form method="POST" action="{% url 'event_single' user.id %}">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-primary btn-sm">Email</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="3" class="text-center">No users registered for this event.</td>
-                                </tr>
-                            {% endfor %}
+                        {% for registration in registrations %}
+                            <tr>
+                                <td>{{ registration.user.get_full_name }}</td>
+                                <td>{{ registration.user.email }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                            data-toggle="modal" data-target="#emailModal"
+                                            onclick="populateEmailModal('{{ registration.user.id }}', '{{ registration.user.first_name }}', '{{ registration.user.last_name }}')">
+                                        Email
+                                    </button>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No users registered for this event.</td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
+
+                    <!-- Modal for Email Editing -->
+                    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog"
+                         aria-labelledby="emailModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="emailModalLabel">Edit Email</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="emailForm" method="POST" action="{% url 'event_send_email' event.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="user_id" id="emailUserId">
+                                        <div class="form-group">
+                                            <label for="emailBody">Email Body</label>
+                                            <textarea class="form-control" id="emailBody" name="email_body"
+                                                      rows="6"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Send Email</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
+
     </div>
 
     <!-- Footer CTA -->
@@ -300,5 +330,13 @@
 </div>
 
 {% include 'expendable/include.html' %}
+
+<script>
+    function populateEmailModal(userId, user_first, user_last) {
+        document.getElementById('emailUserId').value = userId;
+        const defaultMessage = `Dear ${user_first+" "+user_last},\n\nWe are pleased to invite you to the event {{ event.title }}.\nPlease join us on {{ event.date }} at {{ event.time }}.\nLocation: {{ event.location }}.\n\nLooking forward to seeing you there!\n\nBest regards,\n{{ event.get_club_display }} Team`;
+        document.getElementById('emailBody').value = defaultMessage;
+    }
+</script>
 </body>
 </html>

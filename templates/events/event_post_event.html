@@ -64,11 +64,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-7">
-                    <h1 class="text-white font-weight-bold">Create Thesis Profile</h1>
+                    <h1 class="text-white font-weight-bold">Post an Event</h1>
                     <div class="custom-breadcrumbs">
-                        <a href="#">Home</a> <span class="mx-2 slash">/</span>
-                        <a href="{% url 'lost_and_found' %}">Thesis Finder</a> <span class="mx-2 slash">/</span>
-                        <span class="text-white"><strong>Create Thesis Profile</strong></span>
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'event' %}">Events</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Post an Event</strong></span>
                     </div>
                 </div>
             </div>
@@ -80,7 +80,6 @@
             <h3 class="text-center mb-4">Post a New Event</h3>
             <form method="POST" enctype="multipart/form-data" action="{% url 'event_post_event' %}">
                 {% csrf_token %}
-                <!-- Event Title -->
                 <div class="form-group">
                     <label for="event_title">Event Title</label>
                     <input type="text" class="form-control shadowed-input rounded-input" id="event_title"
@@ -88,7 +87,6 @@
                            placeholder="Enter event title" required>
                 </div>
 
-                <!-- Event Description -->
                 <div class="form-group">
                     <label for="event_description">Event Description</label>
                     <textarea class="form-control shadowed-input rounded-input" id="event_description"
@@ -96,21 +94,26 @@
                               placeholder="Enter a brief description of the event" required></textarea>
                 </div>
 
-                <!-- Event Date -->
                 <div class="form-group">
                     <label for="event_date">Event Date</label>
                     <input type="date" class="form-control shadowed-input rounded-input" id="event_date"
                            name="event_date" required>
                 </div>
 
-                <!-- Event Time -->
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var today = new Date().toISOString().split('T')[0];
+                        document.getElementById("event_date").setAttribute('min', today);
+                    });
+                </script>
+
+
                 <div class="form-group">
                     <label for="event_time">Event Time</label>
                     <input type="time" class="form-control shadowed-input rounded-input" id="event_time"
                            name="event_time" required>
                 </div>
 
-                <!-- Event Location -->
                 <div class="form-group">
                     <label for="event_location">Event Location</label>
                     <input type="text" class="form-control shadowed-input rounded-input" id="event_location"
@@ -118,7 +121,6 @@
                            placeholder="Enter the location of the event" required>
                 </div>
 
-                <!-- Club Selection -->
                 <div class="form-group">
                     <label for="club">Organizing Club</label>
                     <select class="form-control shadowed-input rounded-input" id="club" name="club" required>
@@ -133,20 +135,23 @@
                         <option value="UIUSSC">UIU Social Services Club (UIUSSC)</option>
                         <option value="UIUSC">UIU Sports Club (UIUSC)</option>
                         <option value="UIUMC">UIU MBA Club (UIUMC)</option>
+                        <option value="UIUAF">UIU APP FORUM (UIUAF)</option>
+
                     </select>
                 </div>
 
-                <!-- Event Banner -->
                 <div class="form-group">
                     <label for="event_banner">Event Banner (Optional)</label>
                     <input type="file" class="form-control-file" id="event_banner" name="event_banner">
                 </div>
 
-                <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary btn-block">Post Event</button>
             </form>
         </div>
     </div>
+    <section class="py-5 bg-image fixed overlay"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+    </section>
     {% include 'expendable/footer.html' %}
 </div>
 {% include 'expendable/include.html' %}

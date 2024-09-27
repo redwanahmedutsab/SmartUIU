@@ -1,10 +1,11 @@
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.utils import timezone
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
+from django.utils.html import strip_tags
 from .models import Event, EventRegistration
-
 from django.contrib import messages
 
 
@@ -76,28 +77,31 @@ def event_post_event_view(request):
 @login_required(login_url='/login')
 def event_single_view(request, id):
     event = get_object_or_404(Event, id=id)
-
+    current_time = timezone.now()
     registration = EventRegistration.objects.filter(user=request.user, event=event).first()
+    current_date = current_time.date()  # Get the current date
+
+    if current_date < event.date:
+        available = 1
+    else:
+        available = 0
     return render(request, 'events/events_single.html', {
         'event': event,
-        'registration': registration  # This will be None if not registered
+        'registration': registration,
+        'available': available,
     })
 
 
 @login_required(login_url='/login')
 def event_posted_event_view(request):
-    # Get parameters from the request
     club = request.GET.get('club')
     sort = request.GET.get('sort')
 
-    # Start with all events created by the logged-in user
     events = Event.objects.filter(created_by=request.user)
 
-    # Filter by club if specified
     if club:
         events = events.filter(club=club)
 
-    # Sort events based on the specified criteria
     if sort:
         if sort == 'new_to_old':
             events = events.order_by('-date')
@@ -106,10 +110,8 @@ def event_posted_event_view(request):
         elif sort == 'upcoming':
             events = events.filter(date__gte=timezone.now()).order_by('date')
 
-    # Get the list of clubs for the template
     clubs = Event.CLUB_CHOICES
 
-    # Render the template with the filtered events and clubs
     return render(request, 'events/event_posted_events.html', {'events': events, 'clubs': clubs})
 
 
@@ -117,41 +119,113 @@ def event_posted_event_view(request):
 def event_registration_view(request, id):
     registration = EventRegistration.objects.filter(event=id, user=request.user).first()
 
-    print(registration)  # Debugging line to check the registration status
+    print(registration)
 
     if registration:
-        # User is already registered; proceed to unregister
         registration.delete()
         messages.success(request, "You have successfully unregistered from the event.")
     else:
-        # User is not registered; proceed to register
         event_registration = EventRegistration(
-            event_id=id,  # Set the event using the event ID
-            user=request.user,  # Directly assign the User instance
-            registered_at=timezone.now()  # Set the registered_at field to the current time
+            event_id=id,
+            user=request.user,
+            registered_at=timezone.now()
         )
-        event_registration.save()  # Save the registration to the database
+        event_registration.save()
         messages.success(request, "You have successfully registered for the event.")
 
-    # Redirect back to the event detail view
-    return redirect('event_single', id=id)  # Redirecting to the event_single view
+    return redirect('event_single', id=id)
 
 
-def send_invitation_email(email, event):
-    pass
+@login_required(login_url='/login')
+def send_invitation_email(recipient_email, event):
+    subject = f"Invitation to {event.title}"
+
+    # Create the email content using a template
+    html_message = render_to_string('emails/invitation_email.html', {'event': event})
+    plain_message = strip_tags(html_message)  # Strip HTML tags for plain text version
+
+    send_mail(
+        subject,
+        plain_message,
+        'your_email@example.com',  # Replace with your email
+        [recipient_email],
+        html_message=html_message,
+        fail_silently=False,
+    )
 
 
 @login_required(login_url='/login')
 def event_send_email_view(request, id):
-    event = Event.objects.get(id=id)
+    event = get_object_or_404(Event, id=id)
     registrations = EventRegistration.objects.filter(event=event)
 
-    print(id)
-
     if request.method == 'POST':
-        # Logic to send invitations to all registered users
-        for registration in registrations:
-            print(id)
-            # send_invitation_email(registration.user.email, event)  # Replace with your email sending logic
+        if 'send_all' in request.POST:
+            for registration in registrations:
+                send_invitation_email(registration.user.email, event)
+            messages.success(request, 'Invitation emails sent successfully to all registered users!')
+        else:
+            user_id = request.POST.get('user_id')
+            registration = registrations.get(user__id=user_id)
+            send_invitation_email(registration.user.email, event)
+            messages.success(request, 'Invitation emails sent successfully to the registered users!')
 
     return render(request, 'events/event_send_email.html', {'event': event, 'registrations': registrations})
+
+
+@login_required(login_url='/login')
+def event_registered_view(request):
+    user = request.user
+
+    registrations = EventRegistration.objects.filter(user=user)
+
+    event_ids = [registration.event_id for registration in registrations]
+
+    events = Event.objects.filter(id__in=event_ids)
+
+    context = {
+        'registrations': registrations,
+        'events': events,
+    }
+
+    return render(request, 'events/event_registered.html', context)
+
+
+@login_required(login_url='/login')
+def event_edit_view(request, id):
+    # Get the event object by ID or show 404 if not found
+    event = get_object_or_404(Event, id=id)
+
+    if request.method == 'POST':
+        # Update the event fields with POST data
+        event.title = request.POST.get('event_title')
+        event.description = request.POST.get('event_description')
+        event.date = request.POST.get('event_date')
+        event.time = request.POST.get('event_time')
+        event.location = request.POST.get('event_location')
+        event.club = request.POST.get('club')
+
+        # Check if a file was uploaded for the event banner
+        if request.FILES.get('event_banner'):
+            event.banner = request.FILES['event_banner']
+
+        event.save()  # Save the edited event
+        messages.success(request, 'Event updated successfully!')
+        return redirect('event_edit', id=event.id)  # Redirect to the event detail page
+
+    # Render the form pre-filled with event data
+    return render(request, 'events/event_edit.html', {'event': event})
+
+
+@login_required(login_url='/login')
+def event_delete_view(request, id):
+    # Get the event object by ID or show 404 if not found
+    event = get_object_or_404(Event, id=id)
+
+    if request.method == 'POST':  # Handle POST request to delete the event
+        event.delete()
+        messages.success(request, 'Event deleted successfully!')
+        return redirect('event_posted_event')  # Redirect to the list of events after deletion
+
+    # Render a confirmation page for deleting the event
+    return render(request, 'events/event_edit.html', {'event': event})

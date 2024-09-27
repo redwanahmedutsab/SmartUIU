@@ -196,7 +196,6 @@
 
     <section class="section-hero overlay inner-page bg-image"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');"
              id="home-section">
         <div class="container">
             <div class="row">
@@ -237,25 +236,29 @@
                 </p>
                 <div class="text-center">
                     {% if registration %}
-                        <!-- If the user is registered -->
+
                         <form method="POST" action="{% url 'event_registration' event.id %}">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-register">Unregister</button>
                         </form>
                     {% else %}
-                        <!-- If the user is not registered -->
-                        <form method="POST" action="{% url 'event_registration' event.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-register">Register Now</button>
-                        </form>
+                        {% if available %}
+                            <form method="POST" action="{% url 'event_registration' event.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-register">Register Now</button>
+                            </form>
+                        {% else %}
+                            <p>Registration is closed for this event</p>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer CTA -->
-
+    <section class="py-5 bg-image fixed overlay"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+    </section>
     {% include 'expendable/footer.html' %}
 </div>
 

@@ -109,6 +109,7 @@ body {
 .chat-container {
     display: none;
     position: fixed;
+    margin-left: 50px;
     bottom: 90px;
     right: 20px;
     width: 300px;

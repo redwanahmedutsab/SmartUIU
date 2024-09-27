@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Invitation</title>
+</head>
+<body>
+<p>Dear {{ registration.user.first_name }} {{ registration.user.last_name }},</p>
+<h1>We are pleased to invite you to the event {{ event.title }}</h1>
+<h2>Please join us on:</h2>
+<p><strong>Date:</strong> {{ event.date }}</p>
+<p><strong>Time:</strong> {{ event.time }}</p>
+<p><strong>Location:</strong> {{ event.location }}</p>
+<p>We hope to see you there!</p>
+<div class="footer">
+    <strong>Best regards,</strong><br>
+    {{ event.get_club_display }}
+</div>
+</body>
+</html>

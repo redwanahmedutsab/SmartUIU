@@ -74,11 +74,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-7">
-                    <h1 class="text-white font-weight-bold">Manage Posted Events</h1>
+                    <h1 class="text-white font-weight-bold">Registered Events</h1>
                     <div class="custom-breadcrumbs">
                         <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
                         <a href="{% url 'event' %}">Events</a> <span class="mx-2 slash">/</span>
-                        <span class="text-white"><strong>Manage Posted Events</strong></span>
+                        <span class="text-white"><strong>Registered Events</strong></span>
                     </div>
                 </div>
             </div>
@@ -140,16 +140,16 @@
                                 <strong>Location:</strong> {{ event.location }} <br>
                                 <strong>Club:</strong> {{ event.get_club_display }}
                             </p>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <a href="{% url 'event_send_email' event.id %}" class="btn btn-primary btn-block">See
-                                        Registered Members</a>
+                            <div class="row">
+                                <div class="col">
+                                    <a href="{% url 'event_single' event.id %}" class="btn btn-primary btn-block">View
+                                        Details</a>
                                 </div>
-                                <div class="col-md-6">
-                                    <a href="{% url 'event_edit' event.id %}" class="btn btn-primary btn-block">Edit
-                                        Event</a>
+                                <div class="col">
+                                    <a href="{% url 'event' %}" class="btn btn-primary btn-block">Register Now</a>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -161,9 +161,35 @@
         </div>
     </div>
 
-    <section class="py-5 bg-image fixed overlay"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
-    </section>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8 ml-auto mb-5">
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'event_post_event' %}"
+                       class="btn btn-outline-success btn-lg custom-button">Add Upcoming Events</a>
+                    <a href="{% url 'event_posted_event' %}"
+                       class="btn btn-outline-success btn-lg custom-button">View Posted Events</a>
+                    <a href="{% url 'event_registered' %}"
+                       class="btn btn-outline-success btn-lg custom-button">View Registered Events</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom CSS -->
+    <style>
+        .custom-button {
+            border-color: #62c3e5; /* Purple border */
+            color: #72ce72; /* Green text */
+            background-color: white; /* White background */
+        }
+
+        .custom-button:hover {
+            background-color: purple; /* Purple background on hover */
+            color: white; /* White text on hover */
+        }
+    </style>
+
     {% include 'expendable/footer.html' %}
 </div>
 
