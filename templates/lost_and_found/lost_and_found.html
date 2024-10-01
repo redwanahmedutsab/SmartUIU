@@ -1,3 +1,137 @@
+{#{% load static %}#}
+{#<!doctype html>#}
+{#<html lang="en">#}
+{#{% include 'expendable/head.html' %}#}
+{#<body id="top">#}
+{#{% include 'expendable/chatbot_and_loading.html' %}#}
+{##}
+{#<div class="site-wrap">#}
+{##}
+{#    <div class="site-mobile-menu site-navbar-target">#}
+{#        <div class="site-mobile-menu-header">#}
+{#            <div class="site-mobile-menu-close mt-3">#}
+{#                <span class="icon-close2 js-menu-toggle"></span>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="site-mobile-menu-body"></div>#}
+{#    </div> <!-- .site-mobile-menu -->#}
+{##}
+{##}
+{#    <!-- NAVBAR -->#}
+{#    {% include 'expendable/navbar.html' %}#}
+{#    <!-- HOME -->#}
+{#    <section class="section-hero home-section overlay inner-page bg-image"#}
+{#             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">#}
+{##}
+{#        <div class="container">#}
+{#            <div class="row align-items-center justify-content-center">#}
+{#                <div class="col-md-12 text-center mb-5">#}
+{#                    <h1 class="text-white font-weight-bold">Welcome to lost and found section</h1>#}
+{#                    <p class="text-white font-weight-bold">Find your lost items here & give us a treat!</p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </section>#}
+{##}
+{##}
+{#    <section class="site-section" id="next">#}
+{#        <div class="container">#}
+{##}
+{#            <!-- Title -->#}
+{#            <div class="row mb-5 justify-content-center">#}
+{#                <div class="col-md-7 text-center">#}
+{#                    <h2 class="section-title mb-2">{{ items.count }} Items Listed</h2>#}
+{#                </div>#}
+{#            </div>#}
+{##}
+{#            <div class="row">#}
+{#                {% for item in items %}#}
+{#                    <div class="col-md-4 mb-4">#}
+{#                        <div class="card h-100">#}
+{#                            <div class="card-img-top">#}
+{#                                {% if item.item_image %}#}
+{#                                    <img src="{{ item.item_image.url }}" alt="Item Image" class="img-fluid rounded-top"#}
+{#                                         style="height: 300px; width: 500px; object-fit: contain;">#}
+{##}
+{#                                {% else %}#}
+{#                                    <img src="{% static 'images/smartuiu.png' %}" alt="Default Image"#}
+{#                                         class="img-fluid rounded-top" style="max-height: 200px; object-fit: cover;">#}
+{#                                {% endif %}#}
+{#                            </div>#}
+{#                            <!-- Card Body -->#}
+{#                            <div class="card-body">#}
+{#                                <h5 class="card-title">{{ item.item_name }}</h5>#}
+{#                                <p class="card-text">#}
+{#                                    <span class="icon-room"></span> {{ item.location }}<br>#}
+{#                                    <span class="icon-clock-o"></span> {{ item.time_date }}<br>#}
+{#                                    {% if item.post_status == 1 %}#}
+{#                                        <span class="icon-handshake-o text-success"> Delivered</span>#}
+{#                                    {% else %}#}
+{#                                        <span class="icon-handshake-o text-danger"> Not Delivered</span>#}
+{#                                    {% endif %}#}
+{#                                </p>#}
+{#                            </div>#}
+{#                            <!-- Card Footer -->#}
+{#                            <div class="card-footer">#}
+{##}
+{#                                <a href="{% url 'lost_and_found_single' item.id %}"#}
+{#                                   class="btn btn-primary btn-sm float-end">View Details</a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{##}
+{#            <!-- Pagination Section -->#}
+{#            <div class="row pagination-wrap">#}
+{#                <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">#}
+{#                    <span>Showing {{ items.count }} Of {{ items.count }} Items</span>#}
+{#                </div>#}
+{#                <div class="col-md-6 text-center text-md-right">#}
+{#                    <div class="custom-pagination ml-auto">#}
+{#                        <a href="#" class="prev">Prev</a>#}
+{#                        <div class="d-inline-block">#}
+{#                            <a href="#" class="active">1</a>#}
+{#                            <a href="#">2</a>#}
+{#                            <a href="#">3</a>#}
+{#                            <a href="#">4</a>#}
+{#                        </div>#}
+{#                        <a href="#" class="next">Next</a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{##}
+{#        </div>#}
+{#    </section>#}
+{#    <section class="py-5 bg-image overlay-primary fixed overlay"#}
+{#             style="background-image: url('{% static 'images/hero_1.jpg' %}');">#}
+{##}
+{#        <div class="container">#}
+{#            <div class="row align-items-center">#}
+{#                <div class="col-md-8">#}
+{#                    <h2 class="text-white">Want to register information of a found item?</h2>#}
+{#                    <p class="mb-0 text-white lead">Click on the register button and fill the found item's#}
+{#                        information.</p>#}
+{#                </div>#}
+{#                <div class="col-md-3 ml-auto">#}
+{#                    <a href="{% url 'lost_and_found_register' %}" class="btn btn-warning btn-block btn-lg">Post Found#}
+{#                        Item#}
+{#                    </a>#}
+{#                    <a href="{% url 'lost_and_found_user_section' %}" class="btn btn-warning btn-block btn-lg">View My#}
+{#                        Posts#}
+{#                    </a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </section>#}
+{##}
+{##}
+{#    {% include 'expendable/footer.html' %}#}
+{#</div>#}
+{#{% include 'expendable/include.html' %}#}
+{#</body>#}
+{#</html>#}
+
 {% load static %}
 <!doctype html>
 <html lang="en">
@@ -16,7 +150,6 @@
         <div class="site-mobile-menu-body"></div>
     </div> <!-- .site-mobile-menu -->
 
-
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
     <!-- HOME -->
@@ -33,9 +166,54 @@
         </div>
     </section>
 
-
     <section class="site-section" id="next">
         <div class="container">
+
+            <!-- Search Filters -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Product Name" name="product_name"
+                           id="product_name" value="{{ search_name }}">
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" name="location" id="location">
+                        <option value="" {% if search_location == "" %}selected{% endif %}>Select Location</option>
+                        <option value="Canteen" {% if search_location == "Canteen" %}selected{% endif %}>Canteen
+                        </option>
+                        <option value="Library" {% if search_location == "Library" %}selected{% endif %}>Library
+                        </option>
+                        <option value="Auditorium" {% if search_location == "Auditorium" %}selected{% endif %}>
+                            Auditorium
+                        </option>
+                        <option value="Bike Garage" {% if search_location == "Bike Garage" %}selected{% endif %}>Bike
+                            Garage
+                        </option>
+                        <option value="Car Garage" {% if search_location == "Car Garage" %}selected{% endif %}>Car
+                            Garage
+                        </option>
+                        <option value="Shuttle Line" {% if search_location == "Shuttle Line" %}selected{% endif %}>
+                            Shuttle Line
+                        </option>
+                        <option value="Playground" {% if search_location == "Playground" %}selected{% endif %}>
+                            Playground
+                        </option>
+                        <option value="BookShop" {% if search_location == "BookShop" %}selected{% endif %}>BookShop
+                        </option>
+                        <option value="Class" {% if search_location == "Class" %}selected{% endif %}>Class</option>
+                        <option value="Laboratory" {% if search_location == "Laboratory" %}selected{% endif %}>
+                            Laboratory
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <input type="date" class="form-control" placeholder="Date" name="date" id="date" value="{{ search_date }}">
+                </div>
+
+                <div class="col-md-12 mt-3 text-center">
+                    <button type="button" class="btn btn-primary" onclick="searchItems()">Search</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                </div>
+            </div>
 
             <!-- Title -->
             <div class="row mb-5 justify-content-center">
@@ -51,7 +229,7 @@
                             <div class="card-img-top">
                                 {% if item.item_image %}
                                     <img src="{{ item.item_image.url }}" alt="Item Image" class="img-fluid rounded-top"
-                                         style="max-height: 500px; object-fit: cover;">
+                                         style="height: 300px; width: 500px; object-fit: contain;">
                                 {% else %}
                                     <img src="{% static 'images/smartuiu.png' %}" alt="Default Image"
                                          class="img-fluid rounded-top" style="max-height: 200px; object-fit: cover;">
@@ -62,12 +240,16 @@
                                 <h5 class="card-title">{{ item.item_name }}</h5>
                                 <p class="card-text">
                                     <span class="icon-room"></span> {{ item.location }}<br>
-                                    <span class="icon-clock-o"></span> {{ item.time_date }}
+                                    <span class="icon-clock-o"></span> {{ item.time_date }}<br>
+                                    {% if item.post_status == 1 %}
+                                        <span class="icon-handshake-o text-success"> Delivered</span>
+                                    {% else %}
+                                        <span class="icon-handshake-o text-danger"> Not Delivered</span>
+                                    {% endif %}
                                 </p>
                             </div>
                             <!-- Card Footer -->
                             <div class="card-footer">
-
                                 <a href="{% url 'lost_and_found_single' item.id %}"
                                    class="btn btn-primary btn-sm float-end">View Details</a>
                             </div>
@@ -111,16 +293,53 @@
                     <a href="{% url 'lost_and_found_register' %}" class="btn btn-warning btn-block btn-lg">Post Found
                         Item
                     </a>
-                    <a href="{% url 'lost_and_found_user_section' %}" class="btn btn-warning btn-block btn-lg">View My Posts
+                    <a href="{% url 'lost_and_found_user_section' %}" class="btn btn-warning btn-block btn-lg">View My
+                        Posts
                     </a>
                 </div>
             </div>
         </div>
     </section>
 
-
     {% include 'expendable/footer.html' %}
 </div>
 {% include 'expendable/include.html' %}
 </body>
 </html>
+
+<script>
+    function searchItems() {
+        const productName = document.getElementById('product_name').value;
+        const date = document.getElementById('date').value;
+        const location = document.getElementById('location').value;
+
+        const formData = new FormData();
+        formData.append('product_name', productName);
+        formData.append('date', date);
+        formData.append('location', location);
+
+        fetch("{% url 'lost_and_found' %}", {  // Replace 'your_view_name' with the actual URL name of your view
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'  // Ensure CSRF token is included for security
+            }
+        })
+            .then(response => response.text())
+            .then(html => {
+                document.open();
+                document.write(html);
+                document.close();
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function resetFilters() {
+        document.getElementById('product_name').value = '';
+        document.getElementById('date').value = '';
+        document.getElementById('location').value = '';
+
+        // Reload the items without any filters applied
+        searchItems();
+    }
+</script>

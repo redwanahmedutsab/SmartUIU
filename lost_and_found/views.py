@@ -1,13 +1,38 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
+
 from .models import Item
 
 
 @login_required(login_url='/login')
 def home(request):
     items = Item.objects.all()
-    return render(request, 'lost_and_found/lost_and_found.html', {'items': items})
+
+    search_name = request.POST.get('product_name', '')
+    search_date = request.POST.get('date', '')
+    search_location = request.POST.get('location', '')
+
+    if request.method == 'POST':
+        if search_name:
+            items = items.filter(item_name__icontains=search_name)
+
+        if search_date:
+            items = items.filter(time_date__startswith=search_date)
+
+        if search_location:
+            items = items.filter(location__icontains=search_location)
+
+    # Order items by post_time
+    items = items.order_by('post_time').reverse()
+
+    return render(request, 'lost_and_found/lost_and_found.html', {
+        'items': items,
+        'search_name': search_name,
+        'search_date': search_date,
+        'search_location': search_location
+    })
 
 
 @login_required(login_url='/login')
@@ -60,3 +85,27 @@ def lost_and_found_single_view(request, id):
     item = get_object_or_404(Item, id=id)
 
     return render(request, 'lost_and_found/lost_and_found_single.html', {'item': item})
+
+
+@login_required(login_url='/login')
+def lost_and_found_edit_view(request, id):
+    item = get_object_or_404(Item, id=id)  # Get the specific item by ID
+    if request.method == 'POST':
+        # Update the item with the submitted data
+        item_image = request.FILES.get('item_image', item.item_image)  # Keep the existing image if not updated
+        item.email = request.POST.get('email', item.email)
+        item.mobile = request.POST.get('mobile', item.mobile)
+        item.item_name = request.POST.get('item_name', item.item_name)
+        item.location = request.POST.get('location', item.location)
+        item.time_date = request.POST.get('time_date', item.time_date)
+        item.description = request.POST.get('description', item.description)
+        item.post_status = int(request.POST.get('post_status', item.post_status))
+
+        # Save the updated item to the database
+        item.item_image = item_image
+        item.save()
+
+        return redirect('lost_and_found_edit', id)  # Redirect to the lost and found page or any other page
+
+    # Render the template with the item data
+    return render(request, 'lost_and_found/lost_and_found_edit.html', {'item': item})

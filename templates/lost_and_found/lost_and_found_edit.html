@@ -1,0 +1,236 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HOME -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Post an item</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'lost_and_found' %}">Lost & Found</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Post an item</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <form class="p-5 p-md-5 border rounded bg-white shadow-lg" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3 class="text-center text-dark mb-5 border-bottom pb-4 display-4 font-weight-bold">Item Details</h3>
+
+        <!-- Upload Item's Image -->
+<div class="form-group mb-4">
+    <label for="item_image" class="h5 font-weight-bold">Upload Item's Image</label><br>
+
+    <!-- Display previous image if it exists -->
+    <div id="image-preview" style="border: 1px solid #ccc; width: 200px; height: 150px; margin-bottom: 10px; display: {% if item.item_image %}block{% else %}none{% endif %};">
+        <img src="{{ item.item_image.url }}" alt="Previous Item Image" style="width: 100%; height: 100%; object-fit: cover;">
+    </div>
+
+    <label class="btn btn-primary btn-md btn-file shadow-sm rounded-pill">
+        <i class="fas fa-upload"></i> Browse File
+        <input type="file" name="item_image" id="item_image" hidden onchange="handleFileChange()">
+    </label>
+    <span id="file-name" class="ml-3 text-muted"></span> <!-- Display file name -->
+</div>
+
+<script>
+    function handleFileChange() {
+        const fileInput = document.getElementById('item_image');
+        const fileNameSpan = document.getElementById('file-name');
+        const imagePreview = document.getElementById('image-preview');
+
+        // Show the selected file name
+        if (fileInput.files.length > 0) {
+            fileNameSpan.textContent = fileInput.files[0].name;
+
+            // Warn the user about replacing the previous image
+            if (imagePreview.style.display === 'block') {
+                if (!confirm("A new image will replace the existing one. Do you want to proceed?")) {
+                    fileInput.value = ''; // Reset the file input if user cancels
+                    fileNameSpan.textContent = ''; // Clear the displayed file name
+                    return;
+                }
+            }
+
+            // Optional: Display the new image preview (if desired)
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                imagePreview.innerHTML = ''; // Clear previous image
+                imagePreview.appendChild(img);
+                imagePreview.style.display = 'block'; // Show the image preview
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+        <!-- Email (Read-only) -->
+        <div class="form-group mb-4">
+            <label for="email" class="h5 font-weight-bold">Email</label>
+            <input type="email" class="form-control form-control-lg border-0 shadow-sm rounded" name="email"
+                   value="{{ item.email }}" readonly>
+        </div>
+
+        <!-- Mobile -->
+        <div class="form-group mb-4">
+            <label for="mobile" class="h5 font-weight-bold">Mobile</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="mobile"
+                   placeholder="e.g. 01700000000" value="{{ item.mobile }}" required>
+        </div>
+
+        <!-- Item's Name -->
+        <div class="form-group mb-4">
+            <label for="item_name" class="h5 font-weight-bold">Item's Name</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="item_name"
+                   placeholder="e.g. iPhone 13 Pro" value="{{ item.item_name }}" required>
+        </div>
+
+        <!-- Location -->
+        <div class="form-group mb-4">
+            <label for="location" class="h5 font-weight-bold">Select Location</label>
+            <select class="form-control form-control-lg border-0 shadow-sm rounded" id="location" name="location"
+                    required>
+                <option value="">Select Location</option>
+                <option value="Canteen" {% if item.location == "Canteen" %}selected{% endif %}>Canteen</option>
+                <option value="Library" {% if item.location == "Library" %}selected{% endif %}>Library</option>
+                <option value="Auditorium" {% if item.location == "Auditorium" %}selected{% endif %}>Auditorium</option>
+                <option value="Bike Garage" {% if item.location == "Bike Garage" %}selected{% endif %}>Bike Garage
+                </option>
+                <option value="Car Garage" {% if item.location == "Car Garage" %}selected{% endif %}>Car Garage</option>
+                <option value="Shuttle Line" {% if item.location == "Shuttle Line" %}selected{% endif %}>Shuttle Line
+                </option>
+                <option value="Playground" {% if item.location == "Playground" %}selected{% endif %}>Playground</option>
+                <option value="BookShop" {% if item.location == "BookShop" %}selected{% endif %}>BookShop</option>
+                <option value="Class" {% if item.location == "Class" %}selected{% endif %}>Class</option>
+                <option value="Laboratory" {% if item.location == "Laboratory" %}selected{% endif %}>Laboratory</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="post_status" class="h5 font-weight-bold">Select Status</label>
+            <select class="form-control form-control-lg border-0 shadow-sm rounded" id="post_status" name="post_status"
+                    required>
+                <option value="">Select Status</option>
+                <option value="1" {% if item.post_status == 1 %}selected{% endif %}>Delivered</option>
+                <option value="0" {% if item.post_status == 0 %}selected{% endif %}>Not Delivered</option>
+            </select>
+        </div>
+
+        <!-- Time & Date -->
+<div class="form-group mb-4">
+    <label for="time_date" class="h5 font-weight-bold">Time & Date</label>
+    <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" id="time_date"
+           placeholder="Select time and date" name="time_date"
+           value="{{ item.time_date }}" required> <!-- Show previously selected time -->
+</div>
+
+<!-- Date Picker Script -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr("#time_date", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: "1900-01-01",
+        });
+
+        // Function to display the file name when a file is selected
+        document.getElementById('item_image').addEventListener('change', function () {
+            var fileName = document.getElementById('file-name');
+            var fileInput = this;
+            if (fileInput.files.length > 0) {
+                fileName.textContent = fileInput.files[0].name;
+            } else {
+                fileName.textContent = '';
+            }
+        });
+    });
+</script>
+
+        <!-- Item's Description -->
+        <div class="form-group mb-4">
+            <label for="description" class="h5 font-weight-bold">Item's Description</label>
+            <textarea class="form-control form-control-lg border-0 shadow-sm rounded" name="description" id="editor-1"
+                      placeholder="Provide a brief description of the item..." rows="5"
+                      required>{{ item.description }}</textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success btn-lg btn-block shadow-lg rounded-pill mt-4">
+            <i class="fas fa-paper-plane"></i> Update Item
+        </button>
+    </form>
+
+    {% include 'expendable/footer.html' %}
+
+</div>
+
+{% include 'expendable/include.html' %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form submission for validation
+
+            // Validate all required fields
+            const email = document.querySelector('input[name="email"]');
+            const mobile = document.querySelector('input[name="mobile"]');
+            const itemName = document.querySelector('input[name="item_name"]');
+            const location = document.querySelector('select[name="location"]');
+            const timeDate = document.querySelector('input[name="time_date"]');
+            const description = document.querySelector('textarea[name="description"]');
+
+            if (!email.value || !mobile.value || !itemName.value || !location.value || !timeDate.value || !description.value) {
+                alert('Please fill in all fields.');
+                return; // Exit if any field is empty
+            }
+
+            // Validate phone number format
+            const mobilePattern = /^01[3-9]\d{8}$/; // Bangladesh phone number format
+            if (!mobilePattern.test(mobile.value)) {
+                alert('Please enter a valid Bangladeshi phone number (11 digits, starting with 01).');
+                return; // Exit if phone number is invalid
+            }
+
+            // If all validations pass, submit the form
+            form.submit();
+        });
+    });
+</script>
+
+</body>
+</html>

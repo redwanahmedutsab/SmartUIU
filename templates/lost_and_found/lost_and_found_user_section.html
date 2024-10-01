@@ -20,39 +20,21 @@
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
     <!-- HOME -->
-    <section class="section-hero home-section overlay inner-page bg-image"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
-
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
         <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center mb-5">
-                    <h1 class="text-white font-weight-bold">Welcome to lost and found section</h1>
-                    <p class="text-white font-weight-bold">Find your lost items here & give us a treat!</p>
-                </div>
-                <div class="col-md-12">
-                    <form method="post" class="search-jobs-form">
-                        <div class="row mb-5 justify-content-center">
-                            <div class="col-5">
-                                <input type="text" class="form-control form-control-lg" placeholder="Mobile, Watch...">
-                            </div>
-                            <div class="col-2">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search">
-                                    <span class="icon-search icon mr-2"></span>Search Item
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-md-12 popular-keywords">
-                                <!-- Keywords content goes here -->
-                            </div>
-                        </div>
-                    </form>
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">View Posted Items</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'lost_and_found' %}">Lost & Found</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>View Posted Items</strong></span>
+                    </div>
                 </div>
             </div>
         </div>
-        <a href="#next" class="scroll-button smoothscroll">
-            <span class=" icon-keyboard_arrow_down"></span>
-        </a>
     </section>
 
 
@@ -66,43 +48,47 @@
                 </div>
             </div>
 
-<div class="row">
-    {% for item in items %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-img-top">
-                    {% if item.item_image %}
-                        <img src="{{ item.item_image.url }}" alt="Item Image" class="img-fluid rounded-top"
-                             style="max-height: 500px; object-fit: cover;">
-                    {% else %}
-                        <img src="{% static 'images/smartuiu.png' %}" alt="Default Image"
-                             class="img-fluid rounded-top" style="max-height: 200px; object-fit: cover;">
-                    {% endif %}
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <h5 class="card-title">{{ item.item_name }}</h5>
-                    <p class="card-text">
-                        <span class="icon-room"></span> {{ item.location }}<br>
-                        <span class="icon-clock-o"></span> {{ item.time_date }}
-                    </p>
-                </div>
-                <!-- Card Footer -->
-                <div class="card-footer">
-                    <a href="{% url 'lost_and_found_single' item.id %}"
-                       class="btn btn-primary btn-sm float-end btn-success">View Details</a>
+            <div class="row">
+                {% for item in items %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-img-top">
+                                {% if item.item_image %}
+                                    <img src="{{ item.item_image.url }}" alt="Item Image" class="img-fluid rounded-top"
+                                         style="height: 300px; width: 500px; object-fit: contain;">
 
-                    <!-- Delete Form -->
-                    <form method="POST" action="{% url 'lost_and_found_user_section' %}" class="d-inline">
-                        {% csrf_token %}
-                        <input type="hidden" name="item_id" value="{{ item.id }}">
-                        <button type="submit" class="btn btn-danger btn-sm float-end">Delete</button>
-                    </form>
-                </div>
+                                {% else %}
+                                    <img src="{% static 'images/smartuiu.png' %}" alt="Default Image"
+                                         class="img-fluid rounded-top" style="max-height: 200px; object-fit: cover;">
+                                {% endif %}
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <h5 class="card-title">{{ item.item_name }}</h5>
+                                <p class="card-text">
+                                    <span class="icon-room"></span> {{ item.location }}<br>
+                                    <span class="icon-clock-o"></span> {{ item.time_date }}
+                                </p>
+                            </div>
+                            <!-- Card Footer -->
+                            <div class="card-footer">
+                                <a href="{% url 'lost_and_found_single' item.id %}"
+                                   class="btn btn-primary btn-sm float-end btn-success">View Details</a>
+                                <a href="{% url 'lost_and_found_edit' item.id %}"
+                                   class="btn btn-secondary btn-sm float-end btn-warning">Edit Details</a>
+
+                                <!-- Delete Form -->
+                                <form method="POST" action="{% url 'lost_and_found_user_section' %}" class="d-inline"
+                                      onclick="return confirm('Are you sure you want to delete the post?')">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <button type="submit" class="btn btn-danger btn-sm float-end">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        </div>
-    {% endfor %}
-</div>
             <!-- Pagination Section -->
             <div class="row pagination-wrap">
                 <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">
@@ -124,21 +110,9 @@
 
         </div>
     </section>
-    <section class="py-5 bg-image overlay-primary fixed overlay"
+    <section class="py-5 bg-image"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');">
 
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h2 class="text-white">See what have you posted?</h2>
-                    <p class="mb-0 text-white lead">Click on the delete button if any item is handed over to the owner!.</p>
-                </div>
-                <div class="col-md-3 ml-auto">
-                    <a href="{% url 'lost_and_found' %}" class="btn btn-warning btn-block btn-lg">Back to Lost and Found
-                    </a>
-                </div>
-            </div>
-        </div>
     </section>
 
 
