@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 import re
 from django.contrib.auth import authenticate, login, logout
@@ -8,7 +10,7 @@ import random
 import string
 from homepage.models import EmailVerification, TemporaryUser
 from django.contrib.auth import authenticate, login
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 
 
@@ -171,13 +173,85 @@ def logout_view(request):
     return redirect('index')
 
 
+# Global dictionary to store email and code for demonstration purposes
+# You should store this more securely in your database
+verification_codes = {}
+
+
 def forget_email_view(request):
-    return None
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        verification_code = request.POST.get('verification_code', None)
+
+        # Step 1: Send email
+        if email and not verification_code:
+            if User.objects.filter(email=email).exists():
+                code = generate_verification_code()
+
+                # Store the email and verification code in the session
+                request.session['reset_email'] = email
+                request.session['verification_code'] = code
+
+                # Send the email with the verification code
+                send_mail(
+                    'Password Reset Code',
+                    f'Your password reset code is {code}',
+                    'your-email@example.com',
+                    [email],
+                    fail_silently=False,
+                )
+
+                return JsonResponse({
+                    'status': 'success',
+                    'message': f"A reset code has been sent to {email}. Please enter the code.",
+                })
+            else:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': "No account is registered with this email."
+                })
+
+        # Step 2: Verify the code
+        elif verification_code:
+            stored_email = request.session.get('reset_email')
+            stored_code = request.session.get('verification_code')
+
+            if stored_email and stored_code and stored_code == verification_code:
+                # Code is correct, redirect to reset password page or next step
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Verification successful! Redirecting to reset password page...',
+                    'redirect_url': '/new_password/'  # Replace with the actual URL
+                })
+            else:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Invalid verification code. Please try again.'
+                })
+
+    return render(request, 'homepage/forget_password.html')
 
 
-def forget_code_view(request):
-    return None
+def new_password_view(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        retype_password = request.POST.get('retype_password')
 
+        email = request.session.get('reset_email')
 
-def forget_new_view(request):
-    return None
+        if password == retype_password:
+            try:
+                user = User.objects.get(email=email)
+
+                user.password = make_password(password)
+                user.save()
+
+                messages.success(request, 'Password updated successfully.')
+                return redirect('login')
+            except User.DoesNotExist:
+                messages.error(request, 'No user found with this email.')
+        else:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('login')
+
+    return render(request, 'homepage/new_password.html')
