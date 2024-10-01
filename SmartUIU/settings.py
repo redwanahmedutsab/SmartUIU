@@ -154,4 +154,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'uiujobbank@gmail.com'
 EMAIL_HOST_PASSWORD = 'uajvwbglayrweath'
-DEFAULT_FROM_EMAIL = 'UIU JOB BANK <uiujobbank@gmail.com>'
+DEFAULT_FROM_EMAIL = 'UIU JOB BANK <smartuiu@gmail.com>'

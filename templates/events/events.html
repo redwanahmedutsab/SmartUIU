@@ -85,7 +85,7 @@
             <div class="row mb-12">
                 <div class="col-md-4">
                     <select name="club" class="form-control">
-                        <option value="">None</option>
+                        <option value="">Select Club</option>
                         {% for club in clubs %}
                             <option value="{{ club.0 }}" {% if request.GET.club == club.0 %}selected{% endif %}>
                                 {{ club.1 }}
@@ -96,7 +96,7 @@
 
                 <div class="col-md-4">
                     <select name="sort" class="form-control">
-                        <option value="">None</option>
+                        <option value="">Sort By</option>
                         <option value="upcoming" {% if request.GET.sort == "upcoming" %}selected{% endif %}>Upcoming
                         </option>
                         <option value="new_to_old" {% if request.GET.sort == "new_to_old" %}selected{% endif %}>New to
@@ -140,9 +140,9 @@
                                     <a href="{% url 'event_single' event.id %}" class="btn btn-primary btn-block">View
                                         Details</a>
                                 </div>
-                                <div class="col">
-                                    <a href="{% url 'event' %}" class="btn btn-primary btn-block">Register Now</a>
-                                </div>
+{#                                <div class="col">#}
+{#                                    <a href="{% url 'event' %}" class="btn btn-primary btn-block">Register Now</a>#}
+{#                                </div>#}
                             </div>
 
                         </div>

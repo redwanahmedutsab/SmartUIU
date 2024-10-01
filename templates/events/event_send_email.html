@@ -254,7 +254,7 @@
 
                 <!-- Invite All Button -->
                 <div class="text-center">
-                    <form method="POST" action="{% url 'event_send_email' event.id %}">
+                    <form method="POST" action="{% url 'event_send_email' event.id %}" onsubmit="return confirm('Do you want to sent invitation to all?')">
                         {% csrf_token %}
                         <button type="submit" name="send_all" class="btn-invite">Send Invitation Email to All</button>
                     </form>

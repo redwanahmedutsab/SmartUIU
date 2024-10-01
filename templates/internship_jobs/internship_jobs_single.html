@@ -1,0 +1,253 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<style>
+    .card {
+        border-radius: 30px;
+        background: #f9f9f9;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form and Button Styles */
+    .form-control, .form-select {
+        border-radius: 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px 20px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-primary {
+        background-color: #4a90e2;
+        border: none;
+        border-radius: 30px;
+        padding: 10px 30px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #357ABD;
+    }
+
+    /* CV Template Styles */
+    .cv-container {
+        background: white;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+    }
+
+    .cv-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .cv-header h1 {
+        margin-bottom: 10px;
+        font-size: 2rem;
+    }
+
+    .cv-header h4 {
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    .cv-section {
+        margin-bottom: 20px;
+    }
+
+    .cv-section h3 {
+        font-size: 1.5rem;
+        color: #28a745;
+        margin-bottom: 10px;
+    }
+
+    .cv-section p {
+        margin: 5px 0;
+        color: #666;
+    }
+
+    .apply-button {
+        display: block;
+        margin: 20px auto;
+        width: 200px;
+    }
+</style>
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HOME -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">View Job Details</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'internship_and_job' %}">Internship and Jobs</a> <span
+                            class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>View Job Details</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="site-section">
+        <div class="container">
+            <div class="row align-items-start mb-5"> <!-- Change align-items-center to align-items-start -->
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <div class="d-flex align-items-start"> <!-- Change align-items-center to align-items-start -->
+                        <div class="border p-2 d-inline-block mr-3 rounded">
+                            <img src="{{ job.logo.url }}" alt="Company Logo" height="100" width="100">
+                        </div>
+                        <div>
+                            <h2 class="h4 font-weight-bold">{{ job.title }}</h2>
+                            <div class="mb-2">
+                                <span><span class="icon-briefcase mr-2"></span>{{ job.company }}</span>
+                            </div>
+                            <div class="mb-2">
+                                <span><span class="icon-room mr-2"></span>{{ job.location }}</span>
+                            </div>
+                            <div class="mb-2">
+                                <span><span class="icon-clock-o mr-2"></span><span
+                                        class="text-primary">{{ job.post_type }}</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">
+                        <div class="col-6">
+                        </div>
+                        <div class="col-6">
+                            {% if cv %}
+                                {% if job_check %}
+                                    <p>You have already applied for this job!</p>
+                                {% else %}
+                                    <form method="post" action="{% url 'internship_job_single' job.id %}"
+                                          onclick="return confirm('Once you apply for the job you won\'t be able to undo it. Are you sure you want to appy?')">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-block btn-secondary">Apply Now</button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <button class="btn btn-block btn-secondary"
+                                        onclick="alert('Create a CV to apply for the job!')">Apply Now
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="mb-5">
+                        <figure class="mb-5"><img src="{% static 'images/job_single_img_1.jpg' %}" alt="Job Image"
+                                                  class="img-fluid rounded"></figure>
+                        <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span
+                                class="icon-align-left mr-3"></span>Job Description</h3>
+                        <p>{{ job.description }}</p>
+                    </div>
+
+                    <div class="mb-5">
+                        <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span
+                                class="icon-rocket mr-3"></span>Responsibilities</h3>
+                        <p>{{ job.responsibilities }}</p>
+                    </div>
+
+                    <div class="mb-5">
+                        <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span class="icon-book mr-3"></span>Education
+                            Requirements</h3>
+                        <p>{{ job.education_requirements }}</p>
+                    </div>
+
+                    <div class="mb-5">
+                        <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span
+                                class="icon-turned_in mr-3"></span>Other Benefits</h3>
+                        <p>{{ job.other_benefits }}</p>
+                    </div>
+
+                    <div class="row mb-5">
+                        <div class="col-6">
+                            {% if cv %}
+                                {% if job_check %}
+                                    <p>You have already applied for this job!</p>
+                                {% else %}
+                                    <form method="post" action="{% url 'internship_job_single' job.id %}"
+                                          onclick="return confirm('Once you apply for the job you won\'t be able to undo it. Are you sure you want to appy?')">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-block btn-secondary">Apply Now</button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <button class="btn btn-block btn-secondary"
+                                        onclick="alert('Create a CV to apply for the job!')">Apply Now
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="bg-light p-4 border rounded mb-4">
+                        <h3 class="text-primary mt-3 h5 pl-3 mb-3">Job Summary</h3>
+                        <ul class="list-unstyled pl-3 mb-0">
+                            <li class="mb-2"><strong class="text-black">Published on:</strong> {{ job.created_at }}</li>
+                            <li class="mb-2"><strong class="text-black">Vacancy:</strong> {{ job_single_data.vacancy }}
+                            </li>
+                            <li class="mb-2"><strong class="text-black">Employment Status:</strong> {{ job.post_type }}
+                            </li>
+                            <li class="mb-2"><strong class="text-black">Experience:</strong> {{ job.experience_level }}
+                            </li>
+                            <li class="mb-2"><strong class="text-black">Job Location:</strong> {{ job.location }}</li>
+                            <li class="mb-2"><strong class="text-black">Salary:</strong> {{ job.salary }}</li>
+                            <li class="mb-2"><strong class="text-black">Gender:</strong> {{ job.gender }}</li>
+                            <li class="mb-2"><strong class="text-black">Application
+                                Deadline:</strong> {{ job.deadline }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-light p-4 border rounded">
+                        <h3 class="text-primary mt-3 h5 pl-3 mb-3">Share</h3>
+                        <div class="px-3">
+                            <a href="#" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-facebook"></span></a>
+                            <a href="#" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-twitter"></span></a>
+                            <a href="#" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-linkedin"></span></a>
+                            <a href="#" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-pinterest"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .site-section .d-flex {
+            /* This will make sure that elements align at the top */
+            align-items: flex-start;
+        }
+
+        /* Optional: You can add some top margin to the job title to maintain space from the logo */
+        .site-section h2 {
+            margin-top: 15px; /* Adjust as needed */
+        }
+    </style>
+
+    {% include 'expendable/footer.html' %}
+</div>
+{% include 'expendable/include.html' %}
+</body>
+</html>

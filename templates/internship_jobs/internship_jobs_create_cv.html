@@ -21,14 +21,16 @@
     {% include 'expendable/navbar.html' %}
 
     <!-- HOME -->
-    <section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static "images/hero_1.jpg" %}');" id="home-section">
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');" id="home-section">
         <div class="container">
             <div class="row">
                 <div class="col-md-7">
                     <h1 class="text-white font-weight-bold">Create Thesis Profile</h1>
                     <div class="custom-breadcrumbs">
                         <a href="#">Home</a> <span class="mx-2 slash">/</span>
-                        <a href="{% url 'internship_and_job' %}">Internship and Jobs</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'internship_and_job' %}">Internship and Jobs</a> <span
+                            class="mx-2 slash">/</span>
                         <span class="text-white"><strong>Create Thesis Profile</strong></span>
                     </div>
                 </div>
@@ -57,7 +59,7 @@
                 <a class="nav-link" data-bs-toggle="tab" href="#languages">Languages</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#awards">Awards</a>
+                <a class="nav-link" data-bs-toggle="tab" href="#awards">Awards / Certificate</a>
             </li>
         </ul>
 
@@ -67,48 +69,62 @@
             <div id="personal_profile" class="tab-pane active">
                 <form id="cv_form" method="POST" enctype="multipart/form-data">
                     <div class="row">
-                        <div class="col-md-4 text-center">
-                            <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic mb-3" id="profilePreview">
-                        </div>
+                        {#                        <div class="col-md-4 text-center">#}
+                        {#                            <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic mb-3" id="profilePreview">#}
+                        {#                        </div>#}
                         <div class="col-md-8">
                             <div class="form-group mb-3">
                                 <label for="bio">Bio</label>
-                                <textarea class="form-control" id="bio" name="bio" rows="3"></textarea>
+                                <textarea class="form-control" id="bio" name="bio" rows="3" required></textarea>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="contact_email">Contact Email</label>
-                                <input type="email" class="form-control" id="contact_email" name="contact_email">
+                                <input type="email" class="form-control" id="contact_email" name="contact_email"
+                                       required>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="contact_phone">Contact Phone</label>
-                                <input type="text" class="form-control" id="contact_phone" name="contact_phone">
+                                <input type="text" class="form-control" id="contact_phone" name="contact_phone"
+                                       required>
                             </div>
-                            <!-- New Image Field -->
+                            <div class="form-group mb-3">
+                                <label for="contact_address">Contact Address</label>
+                                <input type="text" class="form-control" id="contact_address" name="contact_address"
+                                       required>
+                            </div>
                             <div class="form-group mb-3">
                                 <label for="profile_image">Upload Profile Picture</label>
-                                <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*" onchange="previewImage(event)">
+                                <input type="file" class="form-control" id="profile_image" name="profile_image"
+                                       accept="image/*" onchange="previewImage(event)">
                             </div>
                         </div>
                     </div>
+            </div> <!-- Close personal_profile tab-pane -->
 
             <!-- Education Section -->
             <div id="education" class="tab-pane fade">
                 <div class="form-section">
                     <div class="form-group mb-3">
                         <label for="degree">Degree</label>
-                        <input type="text" class="form-control" id="degree" placeholder="Enter your degree">
+                        <input type="text" class="form-control" id="degree" placeholder="Enter your degree" required>
                     </div>
                     <div class="form-group mb-3">
                         <label for="institution">Institution</label>
-                        <input type="text" class="form-control" id="institution" placeholder="Enter institution name">
+                        <input type="text" class="form-control" id="institution" placeholder="Enter institution name"
+                               required>
                     </div>
                     <div class="form-group mb-3">
                         <label for="start_year">Start Year</label>
-                        <input type="date" class="form-control" id="start_year">
+                        <input type="date" class="form-control" id="start_year" required>
                     </div>
                     <div class="form-group mb-3">
                         <label for="end_year">End Year (Optional)</label>
                         <input type="date" class="form-control" id="end_year">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="cgpa">CGPA</label>
+                        <input type="number" step="0.01" class="form-control" id="cgpa" placeholder="Enter your CGPA"
+                               required>
                     </div>
                     <button type="button" class="btn btn-primary" onclick="addEducation()">Add Education</button>
                 </div>
@@ -117,33 +133,33 @@
                 <div class="table-responsive">
                     <table class="table table-striped" id="educationTable">
                         <thead>
-                            <tr>
-                                <th>Degree</th>
-                                <th>Institution</th>
-                                <th>Start Year</th>
-                                <th>End Year</th>
-                                <th>Actions</th>
-                            </tr>
+                        <tr>
+                            <th>Degree</th>
+                            <th>Institution</th>
+                            <th>Start Year</th>
+                            <th>End Year</th>
+                            <th>Actions</th>
+                        </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
-            </div>
+            </div> <!-- Close education tab-pane -->
 
             <!-- Experience Section -->
             <div id="experience" class="tab-pane fade">
                 <div class="form-section">
                     <div class="form-group mb-3">
                         <label for="company">Company</label>
-                        <input type="text" class="form-control" id="company" placeholder="Enter company name">
+                        <input type="text" class="form-control" id="company" placeholder="Enter company name" required>
                     </div>
                     <div class="form-group mb-3">
                         <label for="job_title">Job Title</label>
-                        <input type="text" class="form-control" id="job_title" placeholder="Enter job title">
+                        <input type="text" class="form-control" id="job_title" placeholder="Enter job title" required>
                     </div>
                     <div class="form-group mb-3">
                         <label for="start_date">Start Date</label>
-                        <input type="date" class="form-control" id="start_date">
+                        <input type="date" class="form-control" id="start_date" required>
                     </div>
                     <div class="form-group mb-3">
                         <label for="end_date">End Date (Optional)</label>
@@ -156,107 +172,125 @@
                 <div class="table-responsive">
                     <table class="table table-striped" id="experienceTable">
                         <thead>
-                            <tr>
-                                <th>Company</th>
-                                <th>Job Title</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Actions</th>
-                            </tr>
+                        <tr>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Actions</th>
+                        </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
-            </div>
+            </div> <!-- Close experience tab-pane -->
 
             <!-- Skills Section -->
             <div id="skills" class="tab-pane fade">
                 <div class="form-section">
                     <div class="form-group mb-3">
                         <label for="skill">Skill</label>
-                        <input type="text" class="form-control" id="skill" placeholder="Enter a skill">
+                        <input type="text" class="form-control" id="skill" placeholder="Enter a skill" required>
                     </div>
                     <button type="button" class="btn btn-primary" onclick="addSkill()">Add Skill</button>
                 </div>
 
                 <!-- Dynamic List for Skills -->
                 <ul class="list-group" id="skillsList"></ul>
-            </div>
+            </div> <!-- Close skills tab-pane -->
 
             <!-- Languages Section -->
             <div id="languages" class="tab-pane fade">
                 <div class="form-section">
                     <div class="form-group mb-3">
                         <label for="language">Language</label>
-                        <input type="text" class="form-control" id="language" placeholder="Enter a language">
+                        <input type="text" class="form-control" id="language" placeholder="Enter a language" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="proficiency">Proficiency</label>
+                        <select class="form-control" id="proficiency" required>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="Fluent">Fluent</option>
+                        </select>
                     </div>
                     <button type="button" class="btn btn-primary" onclick="addLanguage()">Add Language</button>
                 </div>
 
                 <!-- Dynamic List for Languages -->
                 <ul class="list-group" id="languagesList"></ul>
-            </div>
+            </div> <!-- Close languages tab-pane -->
 
             <!-- Awards Section -->
             <div id="awards" class="tab-pane fade">
                 <div class="form-section">
                     <div class="form-group mb-3">
-                        <label for="award">Award</label>
-                        <input type="text" class="form-control" id="award" placeholder="Enter an award">
+                        <label for="award">Award / Certificates Title</label>
+                        <input type="text" class="form-control" id="award" placeholder="Enter an award or certificate title" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="position">Position</label>
+                        <input type="text" class="form-control" id="position"
+                               placeholder="Enter your position">
+                    </div>
+                    <!-- Award Date Field -->
+                    <div class="form-group mb-3">
+                        <label for="award_date">Issuing Date</label>
+                        <input type="date" class="form-control" id="award_date">
                     </div>
                     <button type="button" class="btn btn-primary" onclick="addAward()">Add Award</button>
                 </div>
 
                 <!-- Dynamic List for Awards -->
                 <ul class="list-group" id="awardsList"></ul>
-            </div>
-        </div>
+            </div> <!-- Close awards tab-pane -->
+        </div> <!-- Close tab-content -->
 
         <!-- Submit Button -->
-        <div class="form-group mt-4">
-            <button type="submit" class="btn btn-success">Create Profile</button>
+        <div class="form-group mt-4 text-right">
+            <button type="button" class="btn btn-success" onclick="submitForm()">Create</button>
         </div>
-        </form> <!-- Close the form here -->
-    </div>
-</div>
 
+        </form> <!-- Close cv_form -->
+    </div> <!-- Close container -->
+</div> <!-- Close site-wrap -->
+<section class="py-5 bg-image fixed overlay"
+         style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+</section>
 {% include 'expendable/footer.html' %}
+{% include 'expendable/include.html' %}
 
 <script>
-    function previewImage(event) {
-        const imagePreview = document.getElementById('profilePreview');
-        imagePreview.src = URL.createObjectURL(event.target.files[0]);
-    }
+    const educationData = [];
+    const experienceData = [];
+    const skillsData = [];
+    const languagesData = [];
+    const awardsData = [];
 
     function addEducation() {
         const degree = document.getElementById('degree').value;
         const institution = document.getElementById('institution').value;
         const startYear = document.getElementById('start_year').value;
         const endYear = document.getElementById('end_year').value;
+        const cgpa = document.getElementById('cgpa').value;  // Get CGPA value
 
-        if (degree && institution) {
+        if (degree && institution && cgpa) {  // Ensure CGPA is required
+            educationData.push({degree, institution, startYear, endYear, cgpa});  // Include CGPA in data
             const table = document.getElementById('educationTable').getElementsByTagName('tbody')[0];
             const newRow = table.insertRow();
-            newRow.innerHTML = `
-                <td>${degree}</td>
-                <td>${institution}</td>
-                <td>${startYear}</td>
-                <td>${endYear}</td>
-                <td><button class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
-            `;
-            // Clear inputs
-            document.getElementById('degree').value = '';
-            document.getElementById('institution').value = '';
-            document.getElementById('start_year').value = '';
-            document.getElementById('end_year').value = '';
+            newRow.innerHTML = `<td>${degree}</td><td>${institution}</td><td>${startYear}</td><td>${endYear}</td><td>${cgpa}</td><td><button class="btn btn-danger" onclick="removeRow(this, educationData)">Remove</button></td>`;
+            clearEducationFields();
         } else {
-            alert("Please fill in all fields.");
+            alert("Please fill in all required fields.");
         }
     }
 
-    function removeRow(button) {
-        const row = button.parentNode.parentNode;
-        row.parentNode.removeChild(row);
+    function clearEducationFields() {
+        document.getElementById('degree').value = '';
+        document.getElementById('institution').value = '';
+        document.getElementById('start_year').value = '';
+        document.getElementById('end_year').value = '';
     }
 
     function addExperience() {
@@ -265,92 +299,161 @@
         const startDate = document.getElementById('start_date').value;
         const endDate = document.getElementById('end_date').value;
 
-        if (company && jobTitle) {
+        if (company && jobTitle && startDate) {
+            experienceData.push({company, jobTitle, startDate, endDate});
             const table = document.getElementById('experienceTable').getElementsByTagName('tbody')[0];
             const newRow = table.insertRow();
-            newRow.innerHTML = `
-                <td>${company}</td>
-                <td>${jobTitle}</td>
-                <td>${startDate}</td>
-                <td>${endDate}</td>
-                <td><button class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
-            `;
-            // Clear inputs
-            document.getElementById('company').value = '';
-            document.getElementById('job_title').value = '';
-            document.getElementById('start_date').value = '';
-            document.getElementById('end_date').value = '';
+            newRow.innerHTML = `<td>${company}</td><td>${jobTitle}</td><td>${startDate}</td><td>${endDate || ''}</td><td><button class="btn btn-danger" onclick="removeRow(this, experienceData)">Remove</button></td>`;
+            clearExperienceFields();
         } else {
-            alert("Please fill in all fields.");
+            alert("Please fill in all required fields.");
         }
+    }
+
+    function clearExperienceFields() {
+        document.getElementById('company').value = '';
+        document.getElementById('job_title').value = '';
+        document.getElementById('start_date').value = '';
+        document.getElementById('end_date').value = '';
     }
 
     function addSkill() {
         const skill = document.getElementById('skill').value;
 
         if (skill) {
-            const skillsList = document.getElementById('skillsList');
-            const newItem = document.createElement('li');
-            newItem.className = 'list-group-item d-flex justify-content-between align-items-center';
-            newItem.textContent = skill;
-            newItem.innerHTML += '<button class="btn btn-danger btn-sm" onclick="removeSkill(this)">Remove</button>';
-            skillsList.appendChild(newItem);
-            // Clear input
-            document.getElementById('skill').value = '';
+            skillsData.push(skill);
+            const list = document.getElementById('skillsList');
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+            listItem.innerText = skill;
+            listItem.innerHTML += '<button class="btn btn-danger btn-sm ms-2" onclick="removeSkill(this)">Remove</button>';
+            list.appendChild(listItem);
+            clearSkillField();
         } else {
             alert("Please enter a skill.");
         }
     }
 
+    function clearSkillField() {
+        document.getElementById('skill').value = '';
+    }
+
+    // Remove Skill Function
     function removeSkill(button) {
-        const item = button.parentNode;
-        item.parentNode.removeChild(item);
+        const listItem = button.parentElement;
+        const index = Array.from(listItem.parentNode.children).indexOf(listItem);
+        skillsData.splice(index, 1);
+        listItem.remove();
     }
 
     function addLanguage() {
         const language = document.getElementById('language').value;
+        const proficiency = document.getElementById('proficiency').value;
 
-        if (language) {
-            const languagesList = document.getElementById('languagesList');
-            const newItem = document.createElement('li');
-            newItem.className = 'list-group-item d-flex justify-content-between align-items-center';
-            newItem.textContent = language;
-            newItem.innerHTML += '<button class="btn btn-danger btn-sm" onclick="removeLanguage(this)">Remove</button>';
-            languagesList.appendChild(newItem);
-            // Clear input
-            document.getElementById('language').value = '';
+        if (language && proficiency) {
+            languagesData.push({language, proficiency});
+            const list = document.getElementById('languagesList');
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+            listItem.innerText = `${language} (${proficiency})`;
+            listItem.innerHTML += '<button class="btn btn-danger btn-sm ms-2" onclick="removeLanguage(this)">Remove</button>';
+            list.appendChild(listItem);
+            clearLanguageField();
         } else {
-            alert("Please enter a language.");
+            alert("Please fill in all required fields.");
         }
+    }
+
+    function clearLanguageField() {
+        document.getElementById('language').value = '';
+        document.getElementById('proficiency').value = '';
     }
 
     function removeLanguage(button) {
-        const item = button.parentNode;
-        item.parentNode.removeChild(item);
+        const listItem = button.parentElement;
+        const index = Array.from(listItem.parentNode.children).indexOf(listItem);
+        languagesData.splice(index, 1);
+        listItem.remove();
     }
+
+    // Assuming you have awardsData declared as an array globally
 
     function addAward() {
         const award = document.getElementById('award').value;
+        const position = document.getElementById('position').value;
+        const awardDate = document.getElementById('award_date').value;
 
-        if (award) {
-            const awardsList = document.getElementById('awardsList');
-            const newItem = document.createElement('li');
-            newItem.className = 'list-group-item d-flex justify-content-between align-items-center';
-            newItem.textContent = award;
-            newItem.innerHTML += '<button class="btn btn-danger btn-sm" onclick="removeAward(this)">Remove</button>';
-            awardsList.appendChild(newItem);
-            // Clear input
-            document.getElementById('award').value = '';
+        if (award && position && awardDate) {
+            awardsData.push({title: award, position: position, awardDate: awardDate});
+            const list = document.getElementById('awardsList');
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+            listItem.innerText = `${award} - ${position} (${awardDate})`;
+            listItem.innerHTML += '<button class="btn btn-danger btn-sm ms-2" onclick="removeAward(this)">Remove</button>';
+            list.appendChild(listItem);
+            clearAwardField();
         } else {
-            alert("Please enter an award.");
+            alert("Please fill in all required fields.");
         }
     }
 
+    function clearAwardField() {
+        document.getElementById('award').value = '';
+        document.getElementById('position').value = '';
+        document.getElementById('award_date').value = '';
+    }
+
     function removeAward(button) {
-        const item = button.parentNode;
-        item.parentNode.removeChild(item);
+        const listItem = button.parentElement;
+        const index = Array.from(listItem.parentNode.children).indexOf(listItem);
+        awardsData.splice(index, 1);
+        listItem.remove();
+    }
+
+    // Before form submission, append awardsData to the form
+    document.getElementById('yourFormId').addEventListener('submit', function (e) {
+        const awardsInput = document.createElement('input');
+        awardsInput.type = 'hidden';
+        awardsInput.name = 'awards';
+        awardsInput.value = JSON.stringify(awardsData); // Convert awardsData array to JSON string
+        this.appendChild(awardsInput);
+    });
+
+
+    // Remove Row Function (for Education and Experience)
+    function removeRow(button, dataArray) {
+        const row = button.parentElement.parentElement;
+        const index = Array.from(row.parentNode.children).indexOf(row);
+        dataArray.splice(index, 1);
+        row.remove();
+    }
+
+    // Submit Form Function
+    function submitForm() {
+        const formData = new FormData(document.getElementById('cv_form'));
+        formData.append('education', JSON.stringify(educationData));
+        formData.append('experience', JSON.stringify(experienceData));
+        formData.append('skills', JSON.stringify(skillsData));
+        formData.append('languages', JSON.stringify(languagesData));
+        formData.append('awards', JSON.stringify(awardsData));
+
+        fetch('{% url "internship_job_create_cv" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Profile created successfully!');
+                    window.location.href = '{% url "internship_and_job" %}';  // Redirect after success
+                } else {
+                    alert('An error occurred. Please try again.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
     }
 </script>
-
 </body>
 </html>

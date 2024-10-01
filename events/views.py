@@ -136,13 +136,11 @@ def event_registration_view(request, id):
     return redirect('event_single', id=id)
 
 
-@login_required(login_url='/login')
 def send_invitation_email(recipient_email, event):
     subject = f"Invitation to {event.title}"
 
-    # Create the email content using a template
     html_message = render_to_string('emails/invitation_email.html', {'event': event})
-    plain_message = strip_tags(html_message)  # Strip HTML tags for plain text version
+    plain_message = strip_tags(html_message)
 
     send_mail(
         subject,
@@ -167,6 +165,7 @@ def event_send_email_view(request, id):
         else:
             user_id = request.POST.get('user_id')
             registration = registrations.get(user__id=user_id)
+            print(registration.user.email)
             send_invitation_email(registration.user.email, event)
             messages.success(request, 'Invitation emails sent successfully to the registered users!')
 
@@ -193,11 +192,9 @@ def event_registered_view(request):
 
 @login_required(login_url='/login')
 def event_edit_view(request, id):
-    # Get the event object by ID or show 404 if not found
     event = get_object_or_404(Event, id=id)
 
     if request.method == 'POST':
-        # Update the event fields with POST data
         event.title = request.POST.get('event_title')
         event.description = request.POST.get('event_description')
         event.date = request.POST.get('event_date')
@@ -205,15 +202,13 @@ def event_edit_view(request, id):
         event.location = request.POST.get('event_location')
         event.club = request.POST.get('club')
 
-        # Check if a file was uploaded for the event banner
         if request.FILES.get('event_banner'):
             event.banner = request.FILES['event_banner']
 
-        event.save()  # Save the edited event
+        event.save()
         messages.success(request, 'Event updated successfully!')
-        return redirect('event_edit', id=event.id)  # Redirect to the event detail page
+        return redirect('event_edit', id=event.id)
 
-    # Render the form pre-filled with event data
     return render(request, 'events/event_edit.html', {'event': event})
 
 

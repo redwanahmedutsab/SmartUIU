@@ -48,7 +48,7 @@ def course_materials_add_view(request):
 
 @login_required(login_url='/login')
 def course_materials_my_materials_view(request):
-    materials = CourseMaterial.objects.all()
+    materials = CourseMaterial.objects.filter(user_id=request.user)
     return render(request, 'course_materials/course_materials_my_materials.html', {'materials': materials})
 
 

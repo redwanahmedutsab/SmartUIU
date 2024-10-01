@@ -1,0 +1,226 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="custom-site-wrap">
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HOME -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');" id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Edit Thesis Profile</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'internship_and_job' %}">Internship and Jobs</a> <span
+                            class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Edit Thesis Profile</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="custom-container mt-5 mb-5 mr-5 ml-5">
+        <form method="POST" action="{% url 'internship_job_edit_cv' %}" id="cv-form">
+            {% csrf_token %}
+
+            <!-- Header Section with Edit Button -->
+            <div class="custom-header d-flex align-items-center">
+                <h1 class="flex-grow-1">
+                    <span id="display-full-name">{{ cv_profile.user.get_full_name }}</span>
+                    <input type="text" name="full_name" class="form-control d-none"
+                           value="{{ cv_profile.user.get_full_name }}">
+                </h1>
+                <img src="{{ cv_profile.profile_image.url }}" class="rounded-circle" height="150" width="150">
+            </div>
+
+            <!-- Profile Information Section -->
+            <div class="custom-section custom-profile mt-5">
+                <h2>Profile</h2>
+                <p id="display-bio">{{ cv_profile.bio }}</p>
+                <textarea name="bio" id="edit-bio" class="form-control d-none">{{ cv_profile.bio }}</textarea>
+            </div>
+
+            <!-- Contact Information Section -->
+            <div class="custom-section custom-contact-info mt-5">
+                <h2>Contact Information</h2>
+                <ul class="list-unstyled">
+                    <li><strong>Phone:</strong> <span id="display-phone">{{ cv_profile.contact_phone }}</span>
+                        <input type="text" name="contact_phone" class="form-control d-none"
+                               value="{{ cv_profile.contact_phone }}">
+                    </li>
+                    <li><strong>Email:</strong> <span id="display-email">{{ cv_profile.contact_email }}</span>
+                        <input type="email" name="contact_email" class="form-control d-none"
+                               value="{{ cv_profile.contact_email }}">
+                    </li>
+                    <li><strong>Address:</strong> <span id="display-address">{{ cv_profile.address }}</span>
+                        <input type="text" name="address" class="form-control d-none" value="{{ cv_profile.address }}">
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Work Experience Section -->
+            <div class="custom-section custom-work-experience mt-5">
+                <h2>Work Experience</h2>
+                <ul class="list-unstyled">
+                    {% for experience in cv_profile.experiences.all %}
+                        <li>
+                            <strong id="display-position-{{ experience.id }}">{{ experience.position }}</strong>
+                            <input type="text" name="experience_position_{{ experience.id }}"
+                                   class="form-control d-none" value="{{ experience.position }}">
+
+                            <span id="display-company-{{ experience.id }}">{{ experience.company }}</span>
+                            <input type="text" name="experience_company_{{ experience.id }}" class="form-control d-none"
+                                   value="{{ experience.company }}">
+
+                            <br> {{ experience.start_date|date:"F Y" }} –
+                            {% if experience.end_date %}
+                                {{ experience.end_date|date:"F Y" }}
+                            {% else %}
+                                Present
+                            {% endif %}
+                            <br> <span id="display-description-{{ experience.id }}">{{ experience.description }}</span>
+                            <textarea name="experience_description_{{ experience.id }}"
+                                      id="edit-description-{{ experience.id }}"
+                                      class="form-control d-none">{{ experience.description }}</textarea>
+                        </li>
+                    {% empty %}
+                        <li>No work experience available.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Education Section -->
+            <div class="custom-section custom-education mt-5">
+                <h2>Education</h2>
+                <ul class="list-unstyled">
+                    {% for education in cv_profile.educations.all %}
+                        <li>
+                            <strong id="display-institution-{{ education.id }}">{{ education.institution }}</strong>
+                            <input type="text" name="education_institution_{{ education.id }}"
+                                   class="form-control d-none" value="{{ education.institution }}">
+
+                            <br> Degree: <span id="display-degree-{{ education.id }}">{{ education.degree }}</span>
+                            <input type="text" name="education_degree_{{ education.id }}" class="form-control d-none"
+                                   value="{{ education.degree }}">
+
+                            <br> CGPA: <span id="display-cgpa-{{ education.id }}">{{ education.cgpa }}/ 4.00</span>
+                            <input type="number" step="0.01" name="education_cgpa_{{ education.id }}"
+                                   class="form-control d-none" value="{{ education.cgpa }}">
+
+                            <br> From: <span
+                                id="display-start-year-{{ education.id }}">{{ education.start_year }}</span>
+                            <input type="text" name="education_start_year_{{ education.id }}"
+                                   class="form-control d-none" value="{{ education.start_year }}">
+                            To: <span id="display-end-year-{{ education.id }}">{{ education.end_year }}</span>
+                            <input type="text" name="education_end_year_{{ education.id }}" class="form-control d-none"
+                                   value="{{ education.end_year }}">
+                        </li>
+                    {% empty %}
+                        <li>No education details available.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="custom-section custom-skills mt-5">
+                <h2>Skills</h2>
+                <ul class="list-unstyled">
+                    {% for skill in cv_profile.skills.all %}
+                        <li>
+                            <span id="display-skill-{{ skill.id }}">{{ skill.skill_name }} - Good</span>
+                            <input type="text" name="skill_name_{{ skill.id }}" class="form-control d-none"
+                                   value="{{ skill.skill_name }}">
+                        </li>
+                    {% empty %}
+                        <li>No skills listed.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Languages Section -->
+            <div class="custom-section custom-languages mt-5">
+                <h2>Languages</h2>
+                <ul class="list-unstyled">
+                    {% for language in cv_profile.languages.all %}
+                        <li>
+                            <strong id="display-language-{{ language.id }}">{{ language.language }}</strong>
+                            <input type="text" name="language_name_{{ language.id }}" class="form-control d-none"
+                                   value="{{ language.language }}">
+                            <br> Proficiency: <span
+                                id="display-proficiency-{{ language.id }}">{{ language.proficiency }}</span>
+                            <input type="text" name="language_proficiency_{{ language.id }}" class="form-control d-none"
+                                   value="{{ language.proficiency }}">
+                        </li>
+                    {% empty %}
+                        <li>No languages listed.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Awards Section -->
+            <div class="custom-section custom-awards mt-5">
+                <h2>Awards / Certificates</h2>
+                <ul class="list-unstyled">
+                    {% for award in cv_profile.awards.all %}
+                        <li>
+                            <strong id="display-award-title-{{ award.id }}">Title: {{ award.title }}</strong>
+                            <input type="text" name="award_title_{{ award.id }}" class="form-control d-none"
+                                   value="{{ award.title }}">
+
+                            <br> Position: <span id="display-position-{{ award.id }}">{{ award.position }}</span>
+                            <input type="text" name="award_position_{{ award.id }}" class="form-control d-none"
+                                   value="{{ award.position }}">
+
+                            <br> Awarded On: <span
+                                id="display-date-awarded-{{ award.id }}">{{ award.date_awarded|date:"Y-m-d" }}</span>
+                            <input type="date" name="award_date_awarded_{{ award.id }}" class="form-control d-none"
+                                   value="{{ award.date_awarded|date:"Y-m-d" }}">
+                        </li>
+                    {% empty %}
+                        <li>No awards listed.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-4">
+                <button type="button" id="edit-button" class="btn btn-primary">Edit Details</button>
+                <button type="submit" id="update-button" class="btn btn-success d-none">Update</button>
+                <button type="button" id="delete-button" class="btn btn-danger">Delete CV</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    {% include 'expendable/footer.html' %}
+</div>
+
+{% include 'expendable/include.html' %}
+<script>
+    document.getElementById('delete-button').addEventListener('click', function () {
+        if (confirm('Are you sure you want to delete this CV? This action cannot be undone.')) {
+            document.getElementById('cv-form').action = "{% url 'delete_cv' cv_profile.id %}";
+            document.getElementById('cv-form').submit();
+        }
+    });
+
+    document.getElementById('edit-button').addEventListener('click', function () {
+        document.querySelectorAll('.d-none').forEach(function (element) {
+            element.classList.remove('d-none');
+        });
+        this.classList.add('d-none');
+        document.getElementById('update-button').classList.remove('d-none');
+    });
+</script>
+</body>
+</html>
