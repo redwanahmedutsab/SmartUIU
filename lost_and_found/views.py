@@ -24,7 +24,6 @@ def home(request):
         if search_location:
             items = items.filter(location__icontains=search_location)
 
-    # Order items by post_time
     items = items.order_by('post_time').reverse()
 
     return render(request, 'lost_and_found/lost_and_found.html', {
@@ -38,14 +37,12 @@ def home(request):
 @login_required(login_url='/login')
 def lost_and_found_user_section_view(request):
     if request.method == 'POST':
-        # Handle item deletion
         item_id = request.POST.get('item_id')
         if item_id:
             item = get_object_or_404(Item, id=item_id, user=request.user)
             item.delete()
-        return redirect('lost_and_found_user_section')  # Redirect to the same view
+        return redirect('lost_and_found_user_section')
 
-    # Handle displaying items
     items = Item.objects.filter(user=request.user)
     return render(request, 'lost_and_found/lost_and_found_user_section.html', {'items': items})
 
@@ -89,10 +86,9 @@ def lost_and_found_single_view(request, id):
 
 @login_required(login_url='/login')
 def lost_and_found_edit_view(request, id):
-    item = get_object_or_404(Item, id=id)  # Get the specific item by ID
+    item = get_object_or_404(Item, id=id)
     if request.method == 'POST':
-        # Update the item with the submitted data
-        item_image = request.FILES.get('item_image', item.item_image)  # Keep the existing image if not updated
+        item_image = request.FILES.get('item_image', item.item_image)
         item.email = request.POST.get('email', item.email)
         item.mobile = request.POST.get('mobile', item.mobile)
         item.item_name = request.POST.get('item_name', item.item_name)
@@ -101,11 +97,9 @@ def lost_and_found_edit_view(request, id):
         item.description = request.POST.get('description', item.description)
         item.post_status = int(request.POST.get('post_status', item.post_status))
 
-        # Save the updated item to the database
         item.item_image = item_image
         item.save()
 
-        return redirect('lost_and_found_edit', id)  # Redirect to the lost and found page or any other page
+        return redirect('lost_and_found_edit', id)
 
-    # Render the template with the item data
     return render(request, 'lost_and_found/lost_and_found_edit.html', {'item': item})
