@@ -20,40 +20,20 @@
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
     <!-- HOME -->
-    <section class="section-hero home-section overlay inner-page bg-image"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
-
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');" id="home-section">
         <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center mb-5">
-                    <h1 class="text-white font-weight-bold">Welcome to the blog section</h1>
-                    <p class="text-white font-weight-bold">Find success stories of many UIUIANS!</p>
-                </div>
-                <div class="col-md-12">
-                    <form method="post" class="search-jobs-form">
-                        <div class="row mb-5 justify-content-center">
-                            <div class="col-5">
-                                <input type="text" class="form-control form-control-lg"
-                                       placeholder="Journey to google...">
-                            </div>
-                            <div class="col-2">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search">
-                                    <span class="icon-search icon mr-2"></span>Search Item
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-md-12 popular-keywords">
-                                <!-- Keywords content goes here -->
-                            </div>
-                        </div>
-                    </form>
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">My Blogs</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'blog' %}">Blogs</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>My Blogs</strong></span>
+                    </div>
                 </div>
             </div>
         </div>
-        <a href="#next" class="scroll-button smoothscroll">
-            <span class=" icon-keyboard_arrow_down"></span>
-        </a>
     </section>
 
 
@@ -73,9 +53,8 @@
                         <div class="card h-100 shadow-sm border-0">
                             <div class="card-img-top">
                                 {% if blog.photo %}
-                                    <img src="{{ blog.photo.url }}" alt="Blog Image" class="img-fluid rounded-top"
-                                         style="max-height: 250px; object-fit: cover; width: 50%; margin-left: 80px">
-                                {% else %}
+<img src="{{ blog.photo.url }}" alt="Blog Image" class="img-fluid rounded-top"
+                                         style="height: 300px; width: 500px; object-fit: cover; display: block; margin-left: auto; margin-right: auto;">                                {% else %}
                                     <img src="{% static 'images/smartuiu.png' %}" alt="Default Image"
                                          class="img-fluid rounded-top"
                                          style="max-height: 250px; object-fit: cover; width: 100%;">
@@ -96,7 +75,7 @@
                                 <a href="{% url 'blog_edit' blog.id %}" class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-eye"></i> Edit Blog
                                 </a>
-                                <form action="{% url 'blog_delete' blog.id %}" method="POST" style="display: inline;">
+                                <form action="{% url 'blog_delete' blog.id %}" method="POST" style="display: inline;" onclick="return confirm('Are you sure you want to delete the blog?')">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-outline-danger btn-sm">
                                         <i class="fas fa-trash"></i> Delete
@@ -162,22 +141,9 @@
 
         </div>
     </section>
-    <section class="py-5 bg-image overlay-primary fixed overlay"
+    <section class="py-5 bg-image"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');">
 
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h2 class="text-white">Goto to blogs home.</h2>
-{#                    <p class="mb-0 text-white lead">Click on the register button and fill the found item's#}
-{#                        information.</p>#}
-                </div>
-                <div class="col-md-3 ml-auto">
-                    <a href="{% url 'blog' %}" class="btn btn-warning btn-block btn-lg">Back to Blog Home
-                    </a>
-                </div>
-            </div>
-        </div>
     </section>
 
 

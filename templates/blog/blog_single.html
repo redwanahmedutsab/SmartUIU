@@ -27,11 +27,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-7">
-                    <h1 class="text-white font-weight-bold">{{ blog.title }}</h1>
+                    <h1 class="text-white font-weight-bold">View Blog</h1>
                     <div class="custom-breadcrumbs">
-                        <a href="#">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
                         <a href="{% url 'blog' %}">Blogs</a> <span class="mx-2 slash">/</span>
-                        <span class="text-white"><strong>{{ blog.title }}</strong></span>
+                        <span class="text-white"><strong>View Blog</strong></span>
                     </div>
                 </div>
             </div>
@@ -61,8 +61,168 @@
                     <p class="text-muted">By {{ blog.author.get_full_name }} | Posted
                         on {{ blog.created_at|date:"M d, Y" }}</p>
                     <div class="mb-4">
-                        {{ blog.content }}
+                        {{ blog.content|safe }}
                     </div>
+                    <div class="mb-4">
+                        <strong>Tags:</strong>
+                        {% if blog.tags.exists %}
+                            <ul class="list-inline">
+                                {% for tag in blog.tags.all %}
+                                    <li class="list-inline-item">
+                                        <a href="{% url 'tag_search' tag.name %}" class="badge btn-outline-primary"
+                                           style="text-decoration: none;">
+                                            {{ tag.name }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No tags available.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="reaction-buttons mb-4 d-flex justify-content-center align-items-center">
+                        <form method="post" action="{% url 'toggle_reaction' blog.id %}" class="reaction-form d-flex">
+                            {% csrf_token %}
+                            <button type="button" class="btn btn-outline-primary like-button me-2
+            {% if user_reaction and user_reaction.reaction == 'like' %}active{% endif %}"
+                                    data-blog-id="{{ blog.id }}">
+                                <i class="bi bi-hand-thumbs-up fs-5"></i>
+                                <span class="ms-1">Like</span>
+                                <span class="badge bg-transparent ms-2 like-count"
+                                      data-blog-id="{{ blog.id }}">{{ like }}</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary dislike-button ml-1
+            {% if user_reaction and user_reaction.reaction == 'dislike' %}active{% endif %}"
+                                    data-blog-id="{{ blog.id }}">
+                                <i class="bi bi-hand-thumbs-down fs-5"></i>
+                                <span class="ms-1">Dislike</span>
+                                <span class="badge bg-transparent ms-2 dislike-count"
+                                      data-blog-id="{{ blog.id }}">{{ dislike }}</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <style>
+                        .reaction-buttons {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+                        .reaction-buttons .btn {
+                            transition: background-color 0.3s, color 0.3s;
+                        }
+
+                        .reaction-buttons .btn:hover {
+                            background-color: #e7f3ff; /* Light blue on hover for like */
+                        }
+
+                        .reaction-buttons .btn-outline-primary {
+                            border-color: #007bff;
+                        }
+
+                        .reaction-buttons .btn-outline-primary:hover {
+                            background-color: #007bff;
+                            color: white;
+                        }
+
+                        .reaction-buttons .btn-outline-secondary {
+                            border-color: #6c757d;
+                        }
+
+                        .reaction-buttons .btn-outline-secondary:hover {
+                            background-color: #6c757d;
+                            color: white;
+                        }
+
+                        .reaction-buttons .badge {
+                            font-size: 0.8rem; /* Adjust badge size */
+                            padding: 0.3em 0.6em; /* Padding for the badge */
+                            border-radius: 1em; /* Round badges */
+                        }
+
+                        .like-button.active, .dislike-button.active {
+                            background-color: #007bff; /* Change this to the desired fill color for like */
+                            color: white;
+                        }
+
+                        .dislike-button.active {
+                            background-color: #dc3545; /* Change this to the desired fill color for dislike */
+                            color: white;
+                        }
+
+                    </style>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const likeButtons = document.querySelectorAll('.like-button');
+                            const dislikeButtons = document.querySelectorAll('.dislike-button');
+
+                            const handleReactionToggle = async (button, reactionType) => {
+                                const blogId = button.getAttribute('data-blog-id');
+
+                                try {
+                                    const response = await fetch(`/blog/blog/${blogId}/toggle_reaction/`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRFToken': '{{ csrf_token }}', // Include CSRF token for security
+                                        },
+                                        body: JSON.stringify({reaction_type: reactionType}),
+                                    });
+
+                                    if (response.ok) {
+                                        const data = await response.json();
+                                        updateReactionCount(data.blog_id, data.like_count, data.dislike_count);
+                                        updateButtonStyles(data.action, button, reactionType);
+                                    } else {
+                                        console.error('Error toggling reaction:', response.statusText);
+                                    }
+                                } catch (error) {
+                                    console.error('Error:', error);
+                                }
+                            };
+
+                            const updateReactionCount = (blogId, likeCount, dislikeCount) => {
+                                const likeCountBadge = document.querySelector(`.like-count[data-blog-id="${blogId}"]`);
+                                const dislikeCountBadge = document.querySelector(`.dislike-count[data-blog-id="${blogId}"]`);
+
+                                if (likeCountBadge) {
+                                    likeCountBadge.textContent = likeCount;
+                                }
+
+                                if (dislikeCountBadge) {
+                                    dislikeCountBadge.textContent = dislikeCount;
+                                }
+                            };
+
+                            const updateButtonStyles = (action, button, reactionType) => {
+                                const oppositeButton = reactionType === 'like' ? button.nextElementSibling : button.previousElementSibling;
+
+                                if (action === 'toggled') {
+                                    button.classList.toggle('active'); // Fill color for the liked/disliked button
+                                    oppositeButton.classList.remove('active'); // Remove fill color from the opposite button
+                                } else if (action === 'removed') {
+                                    button.classList.remove('active'); // Remove fill color if removed
+                                }
+                            };
+
+                            likeButtons.forEach(button => {
+                                button.addEventListener('click', function () {
+                                    handleReactionToggle(button, 'like');
+                                });
+                            });
+
+                            dislikeButtons.forEach(button => {
+                                button.addEventListener('click', function () {
+                                    handleReactionToggle(button, 'dislike');
+                                });
+                            });
+                        });
+                    </script>
+
+
                 </div>
 
                 <div class="col-lg-4">
@@ -77,102 +237,176 @@
                     <div class="bg-light p-3 border rounded">
                         <h3 class="text-primary h5 mb-3">Share This Blog</h3>
                         <div class="social-share">
-                            <a href="#" class="btn btn-outline-primary btn-sm"><span class="icon-facebook"></span></a>
-                            <a href="#" class="btn btn-outline-info btn-sm"><span class="icon-twitter"></span></a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm"><span class="icon-linkedin"></span></a>
-                            <a href="#" class="btn btn-outline-danger btn-sm"><span class="icon-pinterest"></span></a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}&quote={{ blog.title }}"
+                               class="btn btn-outline-primary btn-sm" target="_blank">
+                                <span class="icon-facebook"></span>
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ blog.title }}&via=yourtwitterhandle"
+                               class="btn btn-outline-info btn-sm" target="_blank">
+                                <span class="icon-twitter"></span>
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}"
+                               class="btn btn-outline-secondary btn-sm" target="_blank">
+                                <span class="icon-linkedin"></span>
+                            </a>
+                            <a href="https://pinterest.com/pin/create/button/?url={{ request.build_absolute_uri }}&media={{ blog.photo.url }}&description={{ blog.title }}"
+                               class="btn btn-outline-danger btn-sm" target="_blank">
+                                <span class="icon-pinterest"></span>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <h3 class="h5 mb-4 text-primary">Comments</h3>
-                    {% if blog.comments.all %}
-                        <ul class="list-unstyled">
-                            {% for comment in blog.comments.all %}
-                                <li class="mb-4">
-                                    <div class="p-3 bg-white border rounded shadow-sm">
-                                        <p><strong>{{ comment.author.get_full_name }}</strong></p>
-                                        <p class="mb-2">{{ comment.content }}</p>
-                                        <p class="text-muted small">Posted on {{ comment.created_at|date:"M d, Y" }}</p>
 
-                                        {% if comment.author == request.user %}
-                                            <form method="post" action="{% url 'comment_delete' comment.id %}"
-                                                  class="d-inline">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                            </form>
-                                        {% endif %}
+            <!-- Comments Section -->
+            <h3 class="h5 mb-4 text-primary">Comments</h3>
+            {% if blog.comments.exists %}
+                <ul class="list-unstyled">
+                    {% for comment in blog.comments.all %}
+                        <!-- Main Comment -->
+                        <li class="mb-4">
+                            <div class="p-3 bg-white border rounded shadow-sm">
+                                <p><strong>{{ comment.author.get_full_name }}</strong></p>
+                                <p class="mb-2">{{ comment.content }}</p>
+                                <p class="text-muted small">Posted on {{ comment.created_at|date:"M d, Y" }}</p>
 
-                                        <!-- Reply Form -->
-                                        <form method="post" action="{% url 'blog_single' blog.id %}" class="mt-2">
+                                <!-- Reply Form for Comment -->
+                                <div class="d-flex align-items-center mt-2">
+                                    <!-- Reply Form -->
+                                    <form method="post" action="{% url 'blog_single' blog.id %}" class="d-flex"
+                                          style="flex-grow: 1;">
+                                        {% csrf_token %}
+                                        <input type="text" name="content" class="form-control me-2"
+                                               placeholder="Write a reply..."
+                                               style="border-radius: 20px; height: 30px; flex-grow: 1;">
+                                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                        <button type="submit" name="submit_reply"
+                                                class="btn btn-outline-secondary btn-sm mr-1 ml-1">Reply
+                                        </button>
+                                    </form>
+
+                                    <!-- Delete Button (Visible only to author) -->
+                                    {% if comment.author == request.user %}
+                                        <form method="post" action="{% url 'comment_delete' comment.id %}"
+                                              class="ms-2">
                                             {% csrf_token %}
-                                            <input type="text" name="content" class="form-control mb-2"
-                                                   placeholder="Write a reply..."
-                                                   style="border-radius: 20px; height: 38px;">
-                                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                                            <button type="submit" name="submit_reply"
-                                                    class="btn btn-outline-secondary btn-sm">Reply
+                                            <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                                Delete
                                             </button>
                                         </form>
+                                    {% endif %}
+                                </div>
 
-                                        <!-- Display Replies -->
-                                        {% if comment.replies.all %}
-                                            <ul class="list-unstyled pl-4 mt-3">
-                                                {% for reply in comment.replies.all %}
+
+                                <!-- Display Replies (First level) -->
+                                {% if comment.replies.exists %}
+                                    <div class="pl-4 mt-3 border-left border-primary">
+                                        <ul class="list-unstyled">
+                                            {% for reply in comment.replies.all %}
+                                                <!-- First-level reply -->
+                                                {% if reply.parent_reply is None %}
                                                     <li class="mb-2">
                                                         <div class="p-2 bg-light border rounded">
-                                                            <p><strong>{{ reply.author.get_full_name }}:</strong></p>
+                                                            <p class="text-info mb-0"><i class="icon-reply"></i>
+                                                                <strong>{{ reply.author.get_full_name }}</strong>
+                                                            </p>
                                                             <p class="mb-1">{{ reply.content }}</p>
                                                             <p class="text-muted small">Posted
                                                                 on {{ reply.created_at|date:"M d, Y" }}</p>
 
-                                                            <!-- Delete Button for Reply -->
                                                             {% if reply.author == request.user %}
                                                                 <form method="post"
                                                                       action="{% url 'reply_delete' reply.id %}"
                                                                       class="d-inline">
                                                                     {% csrf_token %}
-                                                                    <button type="submit" class="btn btn-danger btn-sm">
-                                                                        Delete
+                                                                    <button type="submit"
+                                                                            class="btn btn-danger btn-sm">Delete
                                                                     </button>
                                                                 </form>
                                                             {% endif %}
+
+                                                            <!-- Nested Reply Form -->
+                                                            <form method="post"
+                                                                  action="{% url 'blog_single' blog.id %}"
+                                                                  class="mt-2">
+                                                                {% csrf_token %}
+                                                                <input type="text" name="content"
+                                                                       class="form-control mb-2"
+                                                                       placeholder="Reply to this reply..."
+                                                                       style="border-radius: 20px; height: 38px;">
+                                                                <input type="hidden" name="reply_id"
+                                                                       value="{{ reply.id }}">
+                                                                <button type="submit" name="submit_nested_reply"
+                                                                        class="btn btn-outline-secondary btn-sm">
+                                                                    Reply
+                                                                </button>
+                                                            </form>
+
+                                                            <!-- Display Nested Replies (Second level) -->
+                                                            {% if reply.child_replies.exists %}
+                                                                <div class="pl-4 mt-2 border-left border-info bg-light">
+                                                                    <ul class="list-unstyled">
+                                                                        {% for nested_reply in reply.child_replies.all %}
+                                                                            <!-- Second-level nested reply -->
+                                                                            <li class="mb-2">
+                                                                                <div class="p-2 bg-white border rounded">
+                                                                                    <p class="text-info mb-0"><i
+                                                                                            class="icon-reply"></i>
+                                                                                        <strong>{{ nested_reply.author.get_full_name }}</strong>
+                                                                                    </p>
+                                                                                    <p class="mb-1">{{ nested_reply.content }}</p>
+                                                                                    <p class="text-muted small">
+                                                                                        Posted
+                                                                                        on {{ nested_reply.created_at|date:"M d, Y" }}</p>
+
+                                                                                    {% if nested_reply.author == request.user %}
+                                                                                        <form method="post"
+                                                                                              action="{% url 'reply_delete' nested_reply.id %}"
+                                                                                              class="d-inline">
+                                                                                            {% csrf_token %}
+                                                                                            <button type="submit"
+                                                                                                    class="btn btn-danger btn-sm">
+                                                                                                Delete
+                                                                                            </button>
+                                                                                        </form>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                            </li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                </div>
+                                                            {% endif %}
                                                         </div>
                                                     </li>
-                                                {% endfor %}
-                                            </ul>
-                                        {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
                                     </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>No comments yet.</p>
-                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No comments yet.</p>
+            {% endif %}
 
-                    <!-- Comment Form -->
-                    <h4 class="h6 text-primary">Leave a Comment</h4>
-                    <form method="post" action="{% url 'blog_single' blog.id %}"
-                          class="bg-white p-3 border rounded shadow-sm d-flex align-items-center">
-                        {% csrf_token %}
-                        <input type="text" name="content" class="form-control me-2" placeholder="Write a comment..."
-                               style="border-radius: 20px; height: 38px;">
-                        <button type="submit" name="submit_comment" class="btn btn-primary btn-sm ml-3">Submit</button>
-                    </form>
-                </div>
-            </div>
+            <!-- Comment Form -->
+            <h4 class="h6 text-primary">Leave a Comment</h4>
+            <form method="post" action="{% url 'blog_single' blog.id %}"
+                  class="bg-white p-3 border rounded shadow-sm d-flex align-items-center">
+                {% csrf_token %}
+                <input type="text" name="content" class="form-control me-2" placeholder="Write a comment..."
+                       style="border-radius: 20px; height: 38px;">
+                <button type="submit" name="submit_comment" class="btn btn-primary btn-sm ml-3">Submit</button>
+            </form>
         </div>
     </section>
 
     {% include 'expendable/footer.html' %}
-
 </div>
 
 {% include 'expendable/include.html' %}
-
-
 </body>
 </html>

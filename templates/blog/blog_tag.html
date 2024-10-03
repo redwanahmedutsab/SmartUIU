@@ -26,18 +26,7 @@
         <div class="container">
             <div class="row align-items-center justify-content-center">
                 <div class="col-md-12 text-center">
-                    <h1 class="text-white font-weight-bold">Welcome to the blog section</h1>
-                    <p class="text-white font-weight-bold">Find success stories of many UIUIANS!</p>
-                </div>
-                <div class="container">
-                    <div class="row align-items-center justify-content-center">
-                        <div class="col-md-6 text-center">
-                            <div class="d-grid gap-3">
-                                <a href="{% url 'blog_post' %}" class="btn btn-warning btn-lg custom-btn shadow-lg">Post Blog</a>
-                                <a href="{% url 'blog_my_blog' %}" class="btn btn-info btn-lg custom-btn shadow-lg">Edit Blog</a>
-                            </div>
-                        </div>
-                    </div>
+                    <h1 class="text-white font-weight-bold">Found these based</h1>
                 </div>
                 <style>
                     .custom-btn {
@@ -85,37 +74,37 @@
         <div class="container">
 
             <!-- Search and Filter -->
-            <form method="GET" action="{% url 'blog' %}">
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" placeholder="Blog Title or Tags" name="search" id="search"
-                               value="{{ search_term }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <select class="form-control" name="sort" id="sort">
-                            <option value="" {% if sort_order == "" %}selected{% endif %}>Sort by order</option>
-                            <option value="new_to_old" {% if sort_order == "new_to_old" %}selected{% endif %}>New to Old</option>
-                            <option value="old_to_new" {% if sort_order == "old_to_new" %}selected{% endif %}>Old to New</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-4">
-                        <input type="date" class="form-control" placeholder="Select Date" name="specific_date" id="specific_date"
-                               value="{{ specific_date }}">  <!-- Updated to match the view parameter -->
-                    </div>
-
-                    <div class="col-md-12 mt-3 text-center">
-                        <button type="submit" class="btn btn-primary">Search</button>
-                        <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
-                    </div>
-                </div>
-            </form>
+{#            <form method="GET" action="{% url 'blog' %}">#}
+{#                <div class="row mb-4">#}
+{#                    <div class="col-md-4">#}
+{#                        <input type="text" class="form-control" placeholder="Blog Title or Tags" name="search" id="search"#}
+{#                               value="{{ search_term }}">#}
+{#                    </div>#}
+{##}
+{#                    <div class="col-md-4">#}
+{#                        <select class="form-control" name="sort" id="sort">#}
+{#                            <option value="" {% if sort_order == "" %}selected{% endif %}>Sort by order</option>#}
+{#                            <option value="new_to_old" {% if sort_order == "new_to_old" %}selected{% endif %}>New to Old</option>#}
+{#                            <option value="old_to_new" {% if sort_order == "old_to_new" %}selected{% endif %}>Old to New</option>#}
+{#                        </select>#}
+{#                    </div>#}
+{##}
+{#                    <div class="col-md-4">#}
+{#                        <input type="date" class="form-control" placeholder="Select Date" name="specific_date" id="specific_date"#}
+{#                               value="{{ specific_date }}">  <!-- Updated to match the view parameter -->#}
+{#                    </div>#}
+{##}
+{#                    <div class="col-md-12 mt-3 text-center">#}
+{#                        <button type="submit" class="btn btn-primary">Search</button>#}
+{#                        <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </form>#}
 
             <!-- Title -->
             <div class="row mb-5 justify-content-center">
                 <div class="col-md-7 text-center">
-                    <h2 class="section-title mb-2">{{ blogs.count }} Blogs Published</h2>
+                    <h2 class="section-title mb-2">{{ blogs.count }} Blogs Found with "{{ tag }}"</h2>
                 </div>
             </div>
 

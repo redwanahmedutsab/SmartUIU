@@ -40,71 +40,106 @@
     </section>
 
 
-<form class="p-5 p-md-5 border rounded bg-white shadow-lg" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <h3 class="text-center text-dark mb-5 border-bottom pb-4 display-4 font-weight-bold">Create Your Blog</h3>
+    <form class="p-5 p-md-5 border rounded bg-white shadow-lg" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3 class="text-center text-dark mb-5 border-bottom pb-4 display-4 font-weight-bold">Create Your Blog</h3>
 
-    <div class="form-group mb-4">
-        <label for="blog-title" class="h5 font-weight-bold">Blog Title</label>
-        <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="title" id="blog-title"
-               placeholder="Enter a catchy blog title" required>
-    </div>
+        <div class="form-group mb-4">
+            <label for="blog-title" class="h5 font-weight-bold">Blog Title</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="title"
+                   id="blog-title"
+                   placeholder="Enter a catchy blog title" required>
+        </div>
 
-    <div class="form-group mb-4">
-        <label for="blog-photo" class="h5 font-weight-bold">Upload Blog Photo</label><br>
-        <label class="btn btn-primary btn-md btn-file shadow-sm rounded-pill">
-            <i class="fas fa-upload"></i> Browse File
-            <input type="file" name="photo" id="blog-photo" hidden onchange="showFileName()">
-        </label>
-        <span id="file-name" class="ml-3 text-muted"></span>
-    </div>
-
-    <div class="form-group mb-4">
-        <label for="content" class="h5 font-weight-bold">Blog Content</label>
-        <textarea class="form-control form-control-lg border-0 shadow-sm rounded" name="content" id="editor-1"
-                  placeholder="Write your blog content here..." rows="10" required></textarea>
-    </div>
-
-    <div class="form-group mb-4">
-        <label for="email" class="h5 font-weight-bold">Email (Author)</label>
-        <input type="email" class="form-control form-control-lg border-0 shadow-sm rounded" name="email"
-               value="{{ user.email }}" readonly>
-    </div>
-
-    <div class="form-group mb-4">
-        <label for="time_date" class="h5 font-weight-bold">Publish Date & Time</label>
-        <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" id="time_date"
-               name="time_date" value="{{ timezone.now }}" readonly>
-    </div>
-
-    <button type="submit" class="btn btn-success btn-lg btn-block shadow-lg rounded-pill mt-4">
-        <i class="fas fa-paper-plane"></i> Publish Blog
-    </button>
-
-    <script>
-        CKEDITOR.replace('editor-1');
-
-        // Show file name when a user selects an image
-        function showFileName() {
-            var input = document.getElementById('blog-photo');
-            var fileName = document.getElementById('file-name');
-            if (input.files.length > 0) {
-                fileName.textContent = input.files[0].name;
-            } else {
-                fileName.textContent = '';
+        <div class="form-group mb-4">
+            <label for="blog-photo" class="h5 font-weight-bold">Upload Blog Photo</label><br>
+                <label class="btn btn-primary btn-md btn-file shadow-sm rounded-pill"
+                       style="width: 300px; text-align: center;">
+                    <i class="fas fa-upload"></i> Browse File
+                    <input type="file" name="photo" id="blog-photo" hidden
+                           onchange="showFileName(); previewImage(event);" required>
+                </label>
+                <span id="file-name" class="ml-3 text-muted"></span>
+            <!-- Image Preview -->
+            <div id="image-preview" style="margin-top: 20px; display: none;">
+                <img id="uploaded-image" src="#" alt="Uploaded Image"
+                     style="max-width: 100%; height: 300px; object-fit: cover; border: 2px solid #ccc; padding: 5px; border-radius: 5px;">
+            </div>
+        </div>
+        <script>
+            function showFileName() {
+                var input = document.getElementById('blog-photo');
+                var fileName = input.files[0].name;
+                document.getElementById('file-name').textContent = fileName;
             }
-        }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            var now = new Date();
-            var dateTimeInput = document.getElementById('time_date');
-            dateTimeInput.value = now.toISOString().slice(0, 16).replace("T", " ");
-        });
-    </script>
-</form>
+            function previewImage(event) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var output = document.getElementById('uploaded-image');
+                    output.src = reader.result;
+                    document.getElementById('image-preview').style.display = 'block';
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        </script>
+
+
+        <div class="form-group mb-4">
+            <label for="content" class="h5 font-weight-bold">Blog Content</label>
+            <textarea class="form-control form-control-lg border-0 shadow-sm rounded" name="content" id="editor-1"
+                      placeholder="Write your blog content here..." rows="10" required></textarea>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="new-tags" class="h5 font-weight-bold">Tags (Enter tags separated by commas)</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="new_tags"
+                   id="new-tags"
+                   placeholder="eg. uiu, google, facebook" required>
+        </div>
+
+
+        <div class="form-group mb-4">
+            <label for="email" class="h5 font-weight-bold">Email (Author)</label>
+            <input type="email" class="form-control form-control-lg border-0 shadow-sm rounded" name="email"
+                   value="{{ user.email }}" readonly required>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="time_date" class="h5 font-weight-bold">Publish Date & Time</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" id="time_date"
+                   name="time_date" value="{{ timezone.now }}" readonly required>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg btn-block shadow-lg rounded-pill mt-4">
+            <i class="fas fa-paper-plane"></i> Publish Blog
+        </button>
+
+        <script>
+            CKEDITOR.replace('editor-1');
+
+            // Show file name when a user selects an image
+            function showFileName() {
+                var input = document.getElementById('blog-photo');
+                var fileName = document.getElementById('file-name');
+                if (input.files.length > 0) {
+                    fileName.textContent = input.files[0].name;
+                } else {
+                    fileName.textContent = '';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var now = new Date();
+                var dateTimeInput = document.getElementById('time_date');
+                dateTimeInput.value = now.toISOString().slice(0, 16).replace("T", " ");
+            });
+        </script>
+    </form>
     {% include 'expendable/footer.html' %}
 
 </div>
+
 
 {% include 'expendable/include.html' %}
 

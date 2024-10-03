@@ -5,9 +5,28 @@
 
 <body id="top">
 {% include 'expendable/chatbot_and_loading.html' %}
+<style>
+    .image-box {
+        width: 100%;
+        max-width: 300px; /* Set a maximum width for the rectangle */
+        height: 200px; /* Fixed height for the rectangular box */
+        border: 2px solid #ddd; /* Border around the box */
+        border-radius: 5px; /* Slight rounding of corners */
+        overflow: hidden; /* Ensures the image doesn't overflow */
+        display: none; /* Initially hidden */
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .image-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ensures the image covers the box without distortion */
+    }
+</style>
 
 <div class="site-wrap">
-
     <div class="site-mobile-menu site-navbar-target">
         <div class="site-mobile-menu-header">
             <div class="site-mobile-menu-close mt-3">
@@ -16,7 +35,6 @@
         </div>
         <div class="site-mobile-menu-body"></div>
     </div> <!-- .site-mobile-menu -->
-
 
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
@@ -39,10 +57,9 @@
         </div>
     </section>
 
-
     <div class="container mt-5 mb-5 col-sm-8">
         <div class="form-container">
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data" id="thesisProfileForm">
                 {% csrf_token %}
                 <!-- Full Name -->
                 <div class="form-group">
@@ -55,23 +72,46 @@
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" class="form-control" id="email" name="email" value="{{ email }}"
-                           placeholder="Enter your email"
-                           readonly>
+                           placeholder="Enter your email" readonly>
                 </div>
 
                 <!-- Department -->
                 <div class="form-group">
                     <label for="department">Department</label>
-                    <input type="text" class="form-control" id="department" name="department"
-                           placeholder="Enter your department" required>
+                    <select class="form-control" id="department" name="department" required>
+                        <option value="" disabled selected>Select your department</option>
+                        <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                        <option value="Electrical and Electronics Engineering">Electrical and Electronics Engineering
+                        </option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                        <option value="Business Administration">Business Administration</option>
+                        <option value="Media and Journalism">Media and Journalism</option>
+                        <option value="Pharmacy">Pharmacy</option>
+                    </select>
                 </div>
 
                 <!-- University ID -->
-                <div class="form-group">
-                    <label for="university_id">University ID</label>
-                    <input type="text" class="form-control" id="university_id" name="university_id"
-                           placeholder="Enter your university ID" required>
-                </div>
+<div class="form-group">
+    <label for="university_id">University ID</label>
+    <input type="text" class="form-control" id="university_id" name="university_id"
+           placeholder="Enter your university ID"
+           maxlength="10"
+           pattern="0\d{9}"
+           title="University ID must start with '0' and contain exactly 10 digits"
+           required>
+</div>
+
+<script>
+    document.getElementById('thesisProfileForm').addEventListener('submit', function(event) {
+        var universityIdInput = document.getElementById('university_id');
+        var universityIdPattern = /^0\d{9}$/;  // Regular expression for validating the university ID
+
+        if (!universityIdPattern.test(universityIdInput.value)) {
+            alert("Please enter a valid University ID starting with '0' and containing exactly 10 digits.");
+            event.preventDefault();  // Prevent form submission if validation fails
+        }
+    });
+</script>
 
                 <!-- Skills -->
                 <div class="form-group">
@@ -97,7 +137,12 @@
                 <!-- Profile Picture -->
                 <div class="form-group">
                     <label for="profile_picture">Profile Picture</label>
-                    <input type="file" class="form-control-file" id="profile_picture" name="profile_picture">
+                    <div class="image-box" id="profile_image_container">
+                        <img id="profile_image_preview" src="{% static 'images/default_profile.jpg' %}"
+                             alt="Profile Picture" class="img-fluid">
+                    </div>
+                    <input type="file" class="form-control-file mt-3" id="profile_picture" name="profile_picture"
+                           onchange="previewImage(event)">
                 </div>
 
                 <!-- Availability -->
@@ -111,14 +156,31 @@
 
                 <!-- Contact Information -->
                 <div class="form-group">
-                    <label for="contact_info">Contact Information</label>
-                    <input type="text" class="form-control" id="contact_info" name="contact_info"
-                           placeholder="Enter your contact info (phone, etc.)">
-                </div>
+    <label for="contact_info">Phone Number</label>
+    <input type="tel" class="form-control" id="contact_info" name="contact_info"
+           placeholder="Enter your phone number"
+           maxlength="11"
+           pattern="01[0-9]{9}"
+           title="Phone number must start with '01' and contain exactly 11 digits"
+           required>
+</div>
+
+<script>
+    document.getElementById('thesisProfileForm').addEventListener('submit', function(event) {
+        var phoneInput = document.getElementById('contact_info');
+        var phonePattern = /^01\d{9}$/;  // Regular expression for validating the phone number
+
+        if (!phonePattern.test(phoneInput.value)) {
+            alert("Please enter a valid phone number starting with '01' and containing exactly 11 digits.");
+            event.preventDefault();  // Prevent form submission if validation fails
+        }
+    });
+</script>
+
 
                 <!-- Thesis Topic -->
                 <div class="form-group">
-                    <label for="thesis_topic">Thesis Topic</label>
+                    <label for="thesis_topic">Thesis Topic (Expected)</label>
                     <textarea class="form-control" id="thesis_topic" name="thesis_topic" rows="3"
                               placeholder="Enter your thesis topic"></textarea>
                 </div>
@@ -128,8 +190,36 @@
             </form>
         </div>
     </div>
-    {% include 'expendable/footer.html' %}
 
+    <!-- Script for Image Preview -->
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('profile_image_preview');
+                var container = document.getElementById('profile_image_container');
+
+                // Set the new image source and display the image box
+                output.src = reader.result;
+                container.style.display = "flex";
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        document.getElementById('thesisProfileForm').addEventListener('submit', function (event) {
+            var requiredFields = ['name', 'department', 'university_id', 'skills', 'research_interests', 'availability'];
+            for (var i = 0; i < requiredFields.length; i++) {
+                var field = document.getElementById(requiredFields[i]);
+                if (!field.value) {
+                    alert("Please fill out all required fields.");
+                    event.preventDefault();  // Prevent form submission if validation fails
+                    break;
+                }
+            }
+        });
+    </script>
+
+    {% include 'expendable/footer.html' %}
 </div>
 {% include 'expendable/include.html' %}
 

@@ -48,31 +48,38 @@
                                     <img src="{{ thesis.profile_picture.url }}" alt="Profile Picture"
                                          class="rounded-circle" width="200px" height="200px">
                                 </div>
-                                <h2 class="text-primary">{{ thesis.user.username }}</h2>
+                                <h2 class="text-primary">{{ thesis.user.get_full_name }}</h2>
                                 <p class="text-muted">{{ thesis.department }}</p>
-                                <span class="badge badge-success">{{ thesis.availability|yesno:"Available,Unavailable" }}</span>
+                                {% if thesis.availability %}
+                                    <span class="badge badge-success">Available</span>
+                                {% else %}
+                                    <span class="badge badge-danger">Not Available</span>
+                                {% endif %}
                             </div>
                             <div class="col-md-8">
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><strong>University
-                                        ID:</strong> {{ thesis.university_id }}</li>
+                                    <li class="list-group-item"><strong>University ID:</strong> {{ thesis.university_id }}</li>
                                     <li class="list-group-item"><strong>Email:</strong> {{ thesis.email }}</li>
                                     <li class="list-group-item"><strong>Contact:</strong> {{ thesis.contact_info }}</li>
-                                    <li class="list-group-item"><strong>Research
-                                        Interests:</strong> {{ thesis.research_interests }}</li>
+                                    <li class="list-group-item"><strong>Research Interests:</strong> {{ thesis.research_interests }}</li>
                                     <li class="list-group-item"><strong>Skills:</strong> {{ thesis.skills }}</li>
-                                    <li class="list-group-item"><strong>Thesis Topic:</strong> {{ thesis.thesis_topic }}
-                                    </li>
-                                    <li class="list-group-item"><strong>Thesis
-                                        Supervisor:</strong> {{ thesis.thesis_supervisor }}</li>
+                                    <li class="list-group-item"><strong>Thesis Topic:</strong> {{ thesis.thesis_topic }}</li>
+                                    <li class="list-group-item"><strong>Thesis Supervisor:</strong> {{ thesis.thesis_supervisor }}</li>
                                 </ul>
-                                <div class="mt-4">
-                                    <a href="mailto:{{ thesis.email }}" class="btn btn-primary btn-sm">
+                                <div class="mt-4 d-flex justify-content-end">
+                                    <a href="mailto:{{ thesis.email }}" class="btn btn-primary btn-sm mr-1">
                                         <i class="fas fa-envelope"></i> Contact via Email
                                     </a>
-                                    <a href="tel:{{ thesis.contact_info }}" class="btn btn-light btn-sm">
+                                    <a href="tel:{{ thesis.contact_info }}" class="btn btn-secondary btn-sm">
                                         <i class="fas fa-phone"></i> Call
                                     </a>
+                                    <!-- Add Member Button -->
+                                    <form method="POST" action="{% url 'event_single' thesis.id %}" class="d-inline mr-1">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success btn-sm ml-1">
+                                            <i class="fas fa-user-plus"></i> Add Member
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -85,6 +92,16 @@
     <!-- FOOTER -->
     {% include 'expendable/footer.html' %}
 </div>
+<style>.btn-success {
+    background-color: #5ea3ee; /* Green color for Add Member button */
+    border-color: #536ff1; /* Match border with background */
+}
+
+.btn-success:hover {
+    background-color: #4cea54; /* Darker green on hover */
+    border-color: #48ee68; /* Darker border on hover */
+}
+</style>
 
 <!-- SCRIPTS -->
 {% include 'expendable/include.html' %}

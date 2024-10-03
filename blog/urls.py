@@ -10,4 +10,6 @@ urlpatterns = [
     path('blog/edit/<int:blog_id>/', views.edit_blog, name='blog_edit'),
     path('comment_delete/<int:id>/', views.comment_delete, name='comment_delete'),
     path('reply_delete/<int:id>/', views.reply_delete, name='reply_delete'),  # URL for reply deletion
+    path('blog/<int:blog_id>/toggle_reaction/', views.toggle_reaction, name='toggle_reaction'),
+    path('tag_search/<str:tag_name>/', views.tag_search, name='tag_search'),
 ]

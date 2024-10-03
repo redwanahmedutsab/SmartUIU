@@ -29,78 +29,10 @@
                 <div class="col-md-12 text-center mb-5">
                     <h1 class="text-white font-weight-bold">Thesis Group Management</h1>
                     <p class="text-white font-weight-bold">
-                        {% if user.has_group %}
-                            Manage your thesis group!
-                        {% else %}
-                            Create your thesis group now!
-                        {% endif %}
                     </p>
                 </div>
 
                 <!-- Check if user has a group -->
-                <div class="col-md-12">
-                    {% if not user.has_group %}
-                        <!-- Group Creation Form -->
-                        <form method="post" class="create-group-form">
-                            {% csrf_token %}
-                            <div class="row mb-5 justify-content-center">
-                                <div class="col-5">
-                                    <input type="text" name="group_name" class="form-control form-control-lg"
-                                           placeholder="Group Name" required>
-                                </div>
-                                <div class="col-5">
-                                    <input type="text" name="group_name" class="form-control form-control-lg"
-                                           placeholder="Group Name" required>
-                                </div>
-                                <div class="col-8">
-                                    <input type="text" name="description" class="form-control form-control-lg mt-1"
-                                           placeholder="Description" required>
-                                </div>
-                                <div class="col-6 mt-1">
-                                    <button type="submit" class="btn btn-primary btn-lg btn-block text-white">
-                                        <span class="icon-plus-circle icon mr-2"></span>Create Group
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    {% else %}
-                        <!-- Group Details -->
-                        <div class="group-info">
-                            <h2 class="text-white">Your Group: {{ user.group.name }}</h2>
-                            <p class="text-white">
-                                Members: {{ user.group.members.count }}/{{ user.group.max_members }}</p>
-                            <p class="text-white">Invite more members below:</p>
-                        </div>
-
-                        <!-- Invite Members Form -->
-                        <form method="post" class="invite-member-form">
-                            {% csrf_token %}
-                            <div class="row justify-content-center">
-                                <div class="col-10">
-                                    <input type="text" name="invite_member" class="form-control form-control-lg"
-                                           placeholder="Enter University ID or Email" required>
-                                    <button type="submit" class="btn btn-secondary mt-3">Send Invite</button>
-                                </div>
-                            </div>
-                        </form>
-
-                        <!-- List of invited members -->
-                        <div class="row justify-content-center">
-                            <div class="col-md-12 invited-members-list">
-                                <h5 class="text-white">Invited Members:</h5>
-                                <ul>
-                                    {% for member in user.group.invited_members %}
-                                        <li>{{ member.name }} - {{ member.status }}</li>
-                                    {% empty %}
-                                        <li>No members invited yet.</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
         <a href="#next" class="scroll-button smoothscroll">
             <span class="icon-keyboard_arrow_down"></span>
         </a>

@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-
 from .models import ThesisMemberProfile
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -9,9 +8,7 @@ from django.contrib import messages
 @login_required(login_url='/login')
 def home(request):
     current_user_id = request.user.id
-
     thesis_profiles = ThesisMemberProfile.objects.exclude(user_id=current_user_id)
-
     user_profile_exists = ThesisMemberProfile.objects.filter(user_id=current_user_id).exists()
 
     return render(request, 'thesis_finder/thesis_finder.html', {
@@ -26,10 +23,6 @@ def thesis_finder_profile_view(request):
     user_info = ThesisMemberProfile.objects.get(user_id=user_id)
 
     if request.method == 'POST':
-        if 'delete_profile' in request.POST:
-            user_info.delete()
-            return redirect('thesis_finder')
-
         user_info.name = request.POST.get('name')
         user_info.department = request.POST.get('department')
         user_info.university_id = request.POST.get('university_id')
@@ -105,3 +98,13 @@ def thesis_member_create_profile_view(request):
 @login_required(login_url='/login')
 def thesis_finder_group_view(request):
     return render(request, 'thesis_finder/thesis_finder_groups.html')
+
+
+@login_required(login_url='/login')
+def thesis_finder_profile_delete_view(request):
+    if request.method == 'POST':
+        user_id = request.user.id
+        user_info = ThesisMemberProfile.objects.get(user_id=user_id)
+        user_info.delete()
+        return redirect('thesis_finder')
+    return render(request, 'thesis_finder/thesis_finder.html')

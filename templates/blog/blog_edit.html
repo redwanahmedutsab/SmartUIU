@@ -7,30 +7,18 @@
 {% include 'expendable/chatbot_and_loading.html' %}
 
 <div class="site-wrap">
-
-    <div class="site-mobile-menu site-navbar-target">
-        <div class="site-mobile-menu-header">
-            <div class="site-mobile-menu-close mt-3">
-                <span class="icon-close2 js-menu-toggle"></span>
-            </div>
-        </div>
-        <div class="site-mobile-menu-body"></div>
-    </div> <!-- .site-mobile-menu -->
-
-
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
-    <!-- HOME -->
+
     <section class="section-hero overlay inner-page bg-image"
-             style="background-image: url('{% static "images/hero_1.jpg" %}');"
-             id="home-section">
+             style="background-image: url('{% static "images/hero_1.jpg" %}');" id="home-section">
         <div class="container">
             <div class="row">
                 <div class="col-md-7">
                     <h1 class="text-white font-weight-bold">Edit Blog</h1>
                     <div class="custom-breadcrumbs">
-                        <a href="#">Home</a> <span class="mx-2 slash">/</span>
-                        <a href="{% url 'blog' %}">Blog</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'blog' %}">Blogs</a> <span class="mx-2 slash">/</span>
                         <span class="text-white"><strong>Edit Blog</strong></span>
                     </div>
                 </div>
@@ -38,108 +26,79 @@
         </div>
     </section>
 
-    <style>
-        /* Custom Form Container Styling */
-        .form-container {
-            background-color: #f8f9fa; /* Softer background for the form */
-            border-radius: 20px; /* Smooth round borders */
-            padding: 2rem; /* Extra padding */
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-        }
+    <!-- Blog Edit Form -->
+    <form class="p-5 p-md-5 border rounded bg-white shadow-lg" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3 class="text-center text-dark mb-5 border-bottom pb-4 display-4 font-weight-bold">Edit Your Blog</h3>
 
-        /* Heading Styling */
-        .form-container h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            color: #343a40;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Input and Textarea Styling */
-        .form-control, .form-control-file {
-            background-color: #fff; /* White background for clean look */
-            border: none; /* Remove default borders */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            padding: 1rem; /* Add padding for readability */
-        }
-
-        .form-control:focus {
-            border: 2px solid #28a745; /* Highlight active input with green border */
-            outline: none; /* Remove default outline */
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2); /* Highlighted shadow */
-        }
-
-        /* Button Styling */
-        .btn {
-            font-size: 1.1rem;
-            font-weight: bold;
-            padding: 0.75rem 1.25rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-success {
-            background-color: #28a745;
-            border: none;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            border: none;
-        }
-
-        /* Button Hover Effect */
-        .btn:hover {
-            transform: translateY(-2px); /* Lift on hover */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Add depth on hover */
-        }
-
-        /* Blog Image Styling */
-        .img-fluid {
-            border-radius: 15px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for image */
-            margin-top: 1rem;
-        }
-    </style>
-
-    <div class="container mt-5 mb-5 col-sm-8">
-        <div class="form-container">
-            <h2 class="text-center mb-4">Edit Blog Post</h2>
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-
-                <!-- Blog Title -->
-                <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title"
-                           value="{{ form.title.value }}" placeholder="Enter blog title" required>
-                </div>
-
-                <!-- Blog Content -->
-                <div class="form-group">
-                    <label for="content">Content</label>
-                    <textarea class="form-control" id="content" name="content" rows="5"
-                              placeholder="Enter blog content" required>{{ form.content.value }}</textarea>
-                </div>
-
-                <!-- Blog Photo -->
-                <div class="form-group">
-                    <label for="photo">Photo</label>
-                    <input type="file" class="form-control-file" id="photo" name="photo">
-                    {% if blog.photo %}
-                        <img src="{{ blog.photo.url }}" alt="Blog Image" class="img-fluid mt-2"
-                             style="max-width: 150px;">
-                    {% endif %}
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
-            </form>
-
+        <div class="form-group mb-4 mr-5 ml-5">
+            <label for="blog-title" class="h5 font-weight-bold">Blog Title</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="title"
+                   id="blog-title" value="{{ blog.title }}" placeholder="Enter a catchy blog title" required>
         </div>
-    </div>
+
+        <div class="form-group mb-4 mr-5 ml-5">
+            <label for="blog-photo" class="h5 font-weight-bold">Upload Blog Photo</label><br>
+            <label class="btn btn-primary btn-md btn-file shadow-sm rounded-pill"
+                   style="width: 300px; text-align: center;">
+                <i class="fas fa-upload"></i> Browse File
+                <input type="file" name="photo" id="blog-photo" hidden onchange="showFileName(); previewImage(event);">
+            </label>
+            <span id="file-name" class="ml-3 text-muted">{{ blog.photo.name }}</span>
+            <!-- Image Preview -->
+            <div id="image-preview" style="margin-top: 20px;">
+                <img id="uploaded-image" src="{{ blog.photo.url }}" alt="Uploaded Image"
+                     style="max-width: 100%; height: 300px; object-fit: cover; border: 2px solid #ccc; padding: 5px; border-radius: 5px;">
+            </div>
+        </div>
+
+        <div class="form-group mb-4 mr-5 ml-5">
+            <label for="content" class="h5 font-weight-bold">Blog Content</label>
+            <textarea class="form-control form-control-lg border-0 shadow-sm rounded" name="content" id="editor-1"
+                      placeholder="Write your blog content here..." rows="10" required>{{ blog.content }}</textarea>
+        </div>
+
+        <div class="form-group mb-4 mr-5 ml-5">
+            <label for="new-tags" class="h5 font-weight-bold">Tags (Enter tags separated by commas)</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="new_tags"
+                   id="new-tags"
+                   value="
+                           {% for tag in blog.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
+                   placeholder="eg. uiu, google, facebook" required>
+        </div>
+
+        <div class="form-group mb-4 mr-5 ml-5">
+            <label for="email" class="h5 font-weight-bold">Email (Author)</label>
+            <input type="email" class="form-control form-control-lg border-0 shadow-sm rounded" name="email"
+                   value="{{ user.email }}" readonly required>
+        </div>
+
+        <div class="form-group mb-4 mr-5 ml-5">
+            <label for="time_date" class="h5 font-weight-bold">Publish Date & Time</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" id="time_date"
+                   name="time_date" value="{{ blog.updated_at }}" readonly required>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg btn-block shadow-lg rounded-pill mt-4 mr-5">
+            <i class="fas fa-paper-plane"></i> Save Changes
+        </button>
+
+        <script>
+            CKEDITOR.replace('editor-1');
+
+            function previewImage(event) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var output = document.getElementById('uploaded-image');
+                    output.src = reader.result;
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        </script>
+    </form>
     {% include 'expendable/footer.html' %}
 </div>
-{% include 'expendable/include.html' %}
 
+{% include 'expendable/include.html' %}
 </body>
 </html>
