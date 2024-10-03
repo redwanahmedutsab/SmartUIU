@@ -1,5 +1,4 @@
 import json
-
 from django.http import JsonResponse
 from django.utils import timezone
 from .models import Comment, Reply, Tag, LikeDislike
@@ -236,4 +235,4 @@ def toggle_reaction(request, blog_id):
 @login_required(login_url='/login')
 def tag_search(request, tag_name):
     blog = Blog.objects.filter(tags__name__icontains=tag_name)
-    return render(request, 'blog/blog_tag.html', {'blogs': blog, 'tag':tag_name})
+    return render(request, 'blog/blog_tag.html', {'blogs': blog, 'tag': tag_name})
