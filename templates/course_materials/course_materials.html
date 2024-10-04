@@ -28,7 +28,56 @@
                     <p class="text-white font-weight-bold">Find course materials and questions that you need!</p>
                 </div>
             </div>
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-md-6 text-center">
+                        <div class="d-grid gap-3">
+                            <a href="{% url 'course_materials_add' %}" class="btn btn-warning btn-lg custom-btn shadow-lg">Add
+                                Material</a>
+                            <a href="{% url 'course_materials_my_materials' %}" class="btn btn-info btn-lg custom-btn shadow-lg">Edit
+                                Material</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <style>
+            .custom-btn {
+                font-size: 1.3rem;
+                padding: 15px 20px;
+                border-radius: 50px;
+                transition: transform 0.3s ease, background-color 0.3s ease;
+                letter-spacing: 1px;
+            }
+
+            .custom-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .btn-warning {
+                background-color: #e0c9a5;
+                border: none;
+            }
+
+            .btn-warning:hover {
+                background-color: #e68900;
+            }
+
+            .btn-info {
+                background-color: #17a2b8;
+                border: none;
+            }
+
+            .btn-info:hover {
+                background-color: #138496;
+            }
+
+            /* Shadow effect for a more impactful design */
+            .shadow-lg {
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+        </style>
     </section>
 
     <section class="site-section" id="next">
@@ -379,36 +428,11 @@
                 }
             </style>
         </div>
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-5 ml-auto">
-                    <div class="d-flex justify-content-between">
-                        <a href="{% url 'course_materials_add' %}"
-                           class="btn btn-outline-success btn-lg custom-button">Add Course Materials</a>
-                        <a href="{% url 'course_materials_my_materials' %}"
-                           class="btn btn-outline-success btn-lg custom-button">View Posted Items</a>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Custom CSS -->
-        <style>
-            .custom-button {
-                border-color: #62c3e5; /* Purple border */
-                color: #72ce72; /* Green text */
-                background-color: white; /* White background */
-            }
-
-            .custom-button:hover {
-                background-color: purple; /* Purple background on hover */
-                color: white; /* White text on hover */
-            }
-        </style>
 
     </section>
 
-    <section class="py-5 bg-image fixed overlay"
+    <section class="py-5 bg-image"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');">
     </section>
     {% include 'expendable/footer.html' %}

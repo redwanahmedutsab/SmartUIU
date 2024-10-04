@@ -33,25 +33,51 @@
                 <h5 class="mb-0">Edit Course Material Details</h5>
             </div>
             <div class="card-body">
-                <form method="post" action="{% url 'edit_course_material' course_material.id %}" enctype="multipart/form-data">
+                <form method="post" action="{% url 'edit_course_material' course_material.id %}"
+                      enctype="multipart/form-data">
                     {% csrf_token %}
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="degree" class="form-label">Degree Name</label>
-                            <select id="degree" name="degree" class="form-control" required onchange="updateTrimester()">
-                                <option value="bscse" {% if course_material.degree == 'bscse' %}selected{% endif %}>B.Sc. in Computer Science & Engineering</option>
-                                <option value="mscse" {% if course_material.degree == 'mscse' %}selected{% endif %}>M.Sc. in Computer Science & Engineering</option>
-                                <option value="bsds" {% if course_material.degree == 'bsds' %}selected{% endif %}>B.Sc. in Data Science</option>
-                                <option value="bseee" {% if course_material.degree == 'bseee' %}selected{% endif %}>B.Sc. in Electrical & Electronics Engineering</option>
-                                <option value="bsce" {% if course_material.degree == 'bsce' %}selected{% endif %}>B.Sc. in Civil Engineering</option>
-                                <option value="bt" {% if course_material.degree == 'bt' %}selected{% endif %}>B.Sc. in Bio Technology & Genetic Engineering</option>
-                                <option value="msj" {% if course_material.degree == 'msj' %}selected{% endif %}>Media and Journalism</option>
-                                <option value="bae" {% if course_material.degree == 'bae' %}selected{% endif %}>B.A. in English</option>
-                                <option value="mba" {% if course_material.degree == 'mba' %}selected{% endif %}>Masters of Business Administration</option>
-                                <option value="bba" {% if course_material.degree == 'bba' %}selected{% endif %}>Bachelor of Business Administration</option>
-                                <option value="bp" {% if course_material.degree == 'bp' %}selected{% endif %}>B. Pharma.</option>
-                                <option value="bse" {% if course_material.degree == 'bse' %}selected{% endif %}>B.Sc. in Economics</option>
+                            <select id="degree" name="degree" class="form-control" required
+                                    onchange="updateTrimester()">
+                                <option value="bscse" {% if course_material.degree == 'bscse' %}selected{% endif %}>
+                                    B.Sc. in Computer Science & Engineering
+                                </option>
+                                <option value="mscse" {% if course_material.degree == 'mscse' %}selected{% endif %}>
+                                    M.Sc. in Computer Science & Engineering
+                                </option>
+                                <option value="bsds" {% if course_material.degree == 'bsds' %}selected{% endif %}>B.Sc.
+                                    in Data Science
+                                </option>
+                                <option value="bseee" {% if course_material.degree == 'bseee' %}selected{% endif %}>
+                                    B.Sc. in Electrical & Electronics Engineering
+                                </option>
+                                <option value="bsce" {% if course_material.degree == 'bsce' %}selected{% endif %}>B.Sc.
+                                    in Civil Engineering
+                                </option>
+                                <option value="bt" {% if course_material.degree == 'bt' %}selected{% endif %}>B.Sc. in
+                                    Bio Technology & Genetic Engineering
+                                </option>
+                                <option value="msj" {% if course_material.degree == 'msj' %}selected{% endif %}>Media
+                                    and Journalism
+                                </option>
+                                <option value="bae" {% if course_material.degree == 'bae' %}selected{% endif %}>B.A. in
+                                    English
+                                </option>
+                                <option value="mba" {% if course_material.degree == 'mba' %}selected{% endif %}>Masters
+                                    of Business Administration
+                                </option>
+                                <option value="bba" {% if course_material.degree == 'bba' %}selected{% endif %}>Bachelor
+                                    of Business Administration
+                                </option>
+                                <option value="bp" {% if course_material.degree == 'bp' %}selected{% endif %}>B.
+                                    Pharma.
+                                </option>
+                                <option value="bse" {% if course_material.degree == 'bse' %}selected{% endif %}>B.Sc. in
+                                    Economics
+                                </option>
                             </select>
                         </div>
 
@@ -109,25 +135,98 @@
                     <div class="mb-3">
                         <label for="material_type" class="form-label">Material Type</label>
                         <select id="material_type" name="material_type" class="form-control" required>
-                            <option value="Class Test" {% if course_material.material_type == 'Class Test' %}selected{% endif %}>Class Test</option>
-                            <option value="Mid Question" {% if course_material.material_type == 'Mid Question' %}selected{% endif %}>Mid Question</option>
-                            <option value="Final Question" {% if course_material.material_type == 'Final Question' %}selected{% endif %}>Final Question</option>
-                            <option value="Assignment" {% if course_material.material_type == 'Assignment' %}selected{% endif %}>Assignment</option>
-                            <option value="Slides" {% if course_material.material_type == 'Slides' %}selected{% endif %}>Slides</option>
-                            <option value="Notes" {% if course_material.material_type == 'Notes' %}selected{% endif %}>Notes</option>
+                            <option value="Class Test"
+                                    {% if course_material.material_type == 'Class Test' %}selected{% endif %}>Class Test
+                            </option>
+                            <option value="Mid Question"
+                                    {% if course_material.material_type == 'Mid Question' %}selected{% endif %}>Mid
+                                Question
+                            </option>
+                            <option value="Final Question"
+                                    {% if course_material.material_type == 'Final Question' %}selected{% endif %}>Final
+                                Question
+                            </option>
+                            <option value="Assignment"
+                                    {% if course_material.material_type == 'Assignment' %}selected{% endif %}>Assignment
+                            </option>
+                            <option value="Slides"
+                                    {% if course_material.material_type == 'Slides' %}selected{% endif %}>Slides
+                            </option>
+                            <option value="Notes" {% if course_material.material_type == 'Notes' %}selected{% endif %}>
+                                Notes
+                            </option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label for="material_description" class="form-label">Material Description</label>
-                        <textarea id="material_description" name="material_description" class="form-control"
-                                  rows="4">{{ course_material.material_description }}</textarea>
+                        <label for="material_description" class="form-label">Term</label>
+                        <select id="material_description" name="material_description" class="form-control" required>
+                            <option value="">Select Term</option>
+                            <option value="Summer 2024"
+                                    {% if course_material.material_description == "Summer 2024" %}selected{% endif %}>
+                                Summer 2024
+                            </option>
+                            <option value="Spring 2024"
+                                    {% if course_material.material_description == "Spring 2024" %}selected{% endif %}>
+                                Spring 2024
+                            </option>
+                            <option value="Fall 2023"
+                                    {% if course_material.material_description == "Fall 2023" %}selected{% endif %}>Fall
+                                2023
+                            </option>
+                            <option value="Summer 2023"
+                                    {% if course_material.material_description == "Summer 2023" %}selected{% endif %}>
+                                Summer 2023
+                            </option>
+                            <option value="Spring 2023"
+                                    {% if course_material.material_description == "Spring 2023" %}selected{% endif %}>
+                                Spring 2023
+                            </option>
+                            <option value="Fall 2022"
+                                    {% if course_material.material_description == "Fall 2022" %}selected{% endif %}>Fall
+                                2022
+                            </option>
+                            <option value="Summer 2022"
+                                    {% if course_material.material_description == "Summer 2022" %}selected{% endif %}>
+                                Summer 2022
+                            </option>
+                            <option value="Spring 2022"
+                                    {% if course_material.material_description == "Spring 2022" %}selected{% endif %}>
+                                Spring 2022
+                            </option>
+                            <option value="Fall 2021"
+                                    {% if course_material.material_description == "Fall 2021" %}selected{% endif %}>Fall
+                                2021
+                            </option>
+                            <option value="Summer 2021"
+                                    {% if course_material.material_description == "Summer 2021" %}selected{% endif %}>
+                                Summer 2021
+                            </option>
+                            <option value="Spring 2021"
+                                    {% if course_material.material_description == "Spring 2021" %}selected{% endif %}>
+                                Spring 2021
+                            </option>
+                            <option value="Fall 2020"
+                                    {% if course_material.material_description == "Fall 2020" %}selected{% endif %}>Fall
+                                2020
+                            </option>
+                            <option value="Summer 2020"
+                                    {% if course_material.material_description == "Summer 2020" %}selected{% endif %}>
+                                Summer 2020
+                            </option>
+                            <option value="Spring 2020"
+                                    {% if course_material.material_description == "Spring 2020" %}selected{% endif %}>
+                                Spring 2020
+                            </option>
+                        </select>
                     </div>
+
 
                     <div class="mb-3">
                         <label for="materials" class="form-label">Upload New Materials (Optional)</label>
                         <input type="file" id="materials" name="materials" class="form-control" multiple>
-                        <small class="form-text text-muted">You can upload new files here. Previous files will remain unchanged.</small>
+                        <small class="form-text text-muted">You can upload new files here. Previous files will remain
+                            unchanged.</small>
                     </div>
 
                     <h5>Existing Files:</h5>

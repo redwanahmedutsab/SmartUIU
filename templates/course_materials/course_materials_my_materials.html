@@ -49,6 +49,7 @@
                     <tr>
                         <th>Degree Name</th>
                         <th>Trimester/ Semester</th>
+                        <th>Term</th>
                         <th>Course Title</th>
                         <th>Material Type</th>
                         <th>Admin</th>
@@ -87,6 +88,7 @@
                                 {% endif %}
                             </td>
                             <td>{{ material.trimester }}</td>
+                            <td>{{ material.material_description }}</td>
                             <td>{{ material.course_title }}</td>
                             <td>{{ material.material_type }}</td>
                             <td>{{ material.user.get_full_name }}</td>

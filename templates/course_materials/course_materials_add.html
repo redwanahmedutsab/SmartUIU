@@ -51,7 +51,6 @@
                             <label for="degree" class="form-label">Degree Name</label>
                             <select id="degree" name="degree" class="form-control" required
                                     onchange="updateTrimester()">
-                                <!-- Option values should match those handled in your script -->
                                 <option value="bscse">B.Sc. in Computer Science & Engineering</option>
                                 <option value="mscse">M.Sc. in Computer Science & Engineering</option>
                                 <option value="bsds">B.Sc. in Data Science</option>
@@ -103,15 +102,18 @@
 
                     <div class="mb-3">
                         <label for="course_title" class="form-label">Course Name (Write full name)</label>
-                        <input type="text" id="course_title" name="course_title" placeholder="e.g. System Analysis & Design" class="form-control" required>
+                        <input type="text" id="course_title" name="course_title"
+                               placeholder="e.g. System Analysis & Design" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="course_title" class="form-label">Course Code (Follow the given format)</label>
-                        <input type="text" id="course_code" name="course_code" placeholder="e.g. CSE 3411" class="form-control" required>
+                        <input type="text" id="course_code" name="course_code" placeholder="e.g. CSE 3411"
+                               class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="material_type" class="form-label">Material Type</label>
                         <select id="material_type" name="material_type" class="form-control" required>
+                            <option value="">Select Material Type</option>
                             <option value="Class Test">Class Test</option>
                             <option value="Mid Question">Mid Question</option>
                             <option value="Final Question">Final Question</option>
@@ -121,10 +123,26 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="material_description" class="form-label">Material Description</label>
-                        <textarea id="material_description" name="material_description" class="form-control"
-                                  rows="4"></textarea>
+                        <label for="material_description" class="form-label">Term</label>
+                        <select id="material_description" name="material_description" class="form-control" required>
+                            <option value="">Select Term</option>
+                            <option value="Summer 2024">Summer 2024</option>
+                            <option value="Spring 2024">Spring 2024</option>
+                            <option value="Fall 2023">Fall 2023</option>
+                            <option value="Summer 2023">Summer 2023</option>
+                            <option value="Spring 2023">Spring 2023</option>
+                            <option value="Fall 2022">Fall 2022</option>
+                            <option value="Summer 2022">Summer 2022</option>
+                            <option value="Spring 2022">Spring 2022</option>
+                            <option value="Fall 2021">Fall 2021</option>
+                            <option value="Summer 2021">Summer 2021</option>
+                            <option value="Spring 2021">Spring 2021</option>
+                            <option value="Fall 2020">Fall 2020</option>
+                            <option value="Summer 2020">Summer 2020</option>
+                            <option value="Spring 2020">Spring 2020</option>
+                        </select>
                     </div>
+
                     <div class="mb-3">
                         <label for="materials" class="form-label">Upload Materials</label>
                         <input type="file" id="materials" name="materials" class="form-control" multiple required>
@@ -132,7 +150,7 @@
                     <div class="mb-3">
                         <label for="admin_email" class="form-label">Admin Email</label>
                         <input type="email" id="admin_email" name="admin_email" class="form-control"
-                               value="{{ user.email }}" readonly>
+                               value="{{ user.email }}" readonly required>
                     </div>
                     <button type="submit" class="btn btn-primary">Upload Material</button>
                 </form>
@@ -148,7 +166,7 @@
     {% include 'expendable/footer.html' %}
 
 </div>
-    {% include 'expendable/include.html' %}
+{% include 'expendable/include.html' %}
 
 
 </body>
