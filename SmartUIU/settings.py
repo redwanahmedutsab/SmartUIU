@@ -48,12 +48,12 @@ INSTALLED_APPS = [
     'thesis_finder',
     'django_extensions',
     'blog',
-    'homefinder',
     'internship_and_job',
     'course_materials_and_feedback',
     'marketplace',
     'django_browser_reload',
     'events',
+    'study_group_app',
 ]
 
 MIDDLEWARE = [

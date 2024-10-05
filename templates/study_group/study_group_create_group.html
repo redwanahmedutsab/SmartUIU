@@ -1,0 +1,176 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Create Study Group</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'study_group' %}">Study Groups</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Create Group</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <form class="p-5 p-md-5 border rounded bg-white shadow-lg" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3 class="text-center text-dark mb-5 border-bottom pb-4 display-4 font-weight-bold">Create Your Group</h3>
+
+        <!-- Group Name -->
+        <div class="form-group mb-4">
+            <label for="group-name" class="h5 font-weight-bold">Group Name</label>
+            <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="name"
+                   id="group-name" placeholder="Enter the group name" required>
+        </div>
+
+        <!-- Group Description -->
+        <div class="form-group mb-4">
+            <label for="group-description" class="h5 font-weight-bold">Description</label>
+            <textarea class="form-control form-control-lg border-0 shadow-sm rounded" name="description"
+                      id="group-description" placeholder="Describe the group..." rows="4" required></textarea>
+        </div>
+
+        <!-- Group Photo -->
+        <div class="form-group mb-4">
+            <label for="group-photo" class="h5 font-weight-bold">Upload Logo</label><br>
+            <label class="btn btn-primary btn-md btn-file shadow-sm rounded-pill"
+                   style="width: 200px; text-align: center;">
+                <i class="fas fa-upload"></i> Browse File
+                <input type="file" name="photo" id="group-photo" hidden onchange="showFileName(); previewImage(event);">
+            </label>
+            <span id="file-name" class="ml-3 text-muted"></span>
+
+            <!-- Image Preview -->
+            <div id="image-preview" style="margin-top: 20px; display: none;">
+                <img id="uploaded-image" src="#" alt="Uploaded Image"
+                     style="width: 200px; height: 200px; object-fit: cover; border: 2px solid #ccc; padding: 5px; border-radius: 50%;">
+            </div>
+        </div>
+
+        <!-- Add Members -->
+        <div class="form-group mb-4">
+            <label for="group-members" class="h5 font-weight-bold">Add Members</label>
+            <select class="form-control form-control-lg border-0 shadow-sm rounded" id="group-members" name="member">
+                <option value="" disabled selected>Select a member</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.get_full_name }} - {{ user.email }}</option>
+                {% endfor %}
+            </select>
+            <button type="button" class="btn btn-info mt-3" id="add-member-btn">Add Now</button>
+        </div>
+
+        <!-- Table of Added Members -->
+        <h5 class="font-weight-bold mt-4">Added Members:</h5>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="added-members-list">
+            <!-- Added members will be shown here -->
+            </tbody>
+        </table>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success btn-lg btn-block shadow-lg rounded-pill mt-4">
+            <i class="fas fa-paper-plane"></i> Create Group
+        </button>
+    </form>
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+{% include 'expendable/include.html' %}
+
+<!-- JavaScript to Add and Remove Members -->
+<script>
+    const addMemberBtn = document.getElementById('add-member-btn');
+    const memberSelect = document.getElementById('group-members');
+    const membersList = document.getElementById('added-members-list');
+    let addedMembers = [];
+
+    // Add member to the list
+    addMemberBtn.addEventListener('click', function () {
+        const memberId = memberSelect.value;
+        const memberText = memberSelect.options[memberSelect.selectedIndex].text;
+
+        if (addedMembers.includes(memberId)) {
+            alert('This member is already added.');
+            return;
+        }
+
+        addedMembers.push(memberId);
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${memberText.split(' - ')[0]}</td>
+            <td>${memberText.split(' - ')[1]}</td>
+            <td><button type="button" class="btn btn-danger btn-sm remove-member-btn">Remove</button></td>
+        `;
+        membersList.appendChild(row);
+
+        // Add hidden input for members
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'members';
+        input.value = memberId;
+        input.id = `member-${memberId}`;
+        document.querySelector('form').appendChild(input);
+
+        // Add remove functionality
+        row.querySelector('.remove-member-btn').addEventListener('click', function () {
+            row.remove();
+            document.getElementById(`member-${memberId}`).remove();
+            addedMembers = addedMembers.filter(id => id !== memberId);
+        });
+    });
+
+    // Show file name when user selects an image
+    function showFileName() {
+        const input = document.getElementById('group-photo');
+        const fileName = document.getElementById('file-name');
+        fileName.textContent = input.files.length > 0 ? input.files[0].name : '';
+    }
+
+    // Preview image before upload
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const output = document.getElementById('uploaded-image');
+            output.src = reader.result;
+            document.getElementById('image-preview').style.display = 'block';
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+
+</body>
+</html>

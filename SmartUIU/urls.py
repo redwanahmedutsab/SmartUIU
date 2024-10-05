@@ -1,15 +1,17 @@
 from django.urls import path, include
+from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('admin/', admin.site.urls),  # Ensure this line is present
     path('', include('homepage.urls')),
     path('lost_and_found/', include('lost_and_found.urls')),
     path('thesis_finder/', include('thesis_finder.urls')),
     path('blog/', include('blog.urls')),
     path('marketplace/', include('marketplace.urls')),
     path('course_materials_and_feedback/', include('course_materials_and_feedback.urls')),
-    path('homefinder/', include('homefinder.urls')),
+    path('study_group_app/', include('study_group_app.urls')),
     path('internship_and_job/', include('internship_and_job.urls')),
     path('events/', include('events.urls')),
     path("__reload__/", include("django_browser_reload.urls")),

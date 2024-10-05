@@ -1,0 +1,171 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HERO SECTION -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Edit Profile</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Edit Profile</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROFILE EDIT FORM -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Edit Your Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" id="profileForm" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="first_name">First Name</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name"
+                                           value="{{ user.first_name }}" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="last_name">Last Name</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name"
+                                           value="{{ user.last_name }}" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                           value="{{ user.email }}" readonly required>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="checkbox" id="changePasswordCheckbox" name="change_password">
+                                    <label for="changePasswordCheckbox">Change Password</label>
+                                </div>
+
+                                <div class="form-group" id="oldPasswordGroup" style="display: none;">
+                                    <label for="old_password">Old Password</label>
+                                    <input type="password" class="form-control" id="old_password" name="old_password">
+                                </div>
+
+                                <div class="form-group" id="newPasswordGroup" style="display: none;">
+                                    <label for="password">New Password</label>
+                                    <input type="password" class="form-control" id="password" name="password">
+                                    <small class="form-text text-muted">Leave blank if you don't want to change the
+                                        password.</small>
+                                </div>
+
+                                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+                                    <label for="confirm_password">Confirm Password</label>
+                                    <input type="password" class="form-control" id="confirm_password"
+                                           name="confirm_password">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="profile_image">Profile Image</label>
+                                    <input type="file" class="form-control-file" id="profile_image"
+                                           name="profile_image">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" id="updateProfileButton">Update Profile
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'expendable/footer.html' %}
+</div>
+{% include 'expendable/include.html' %}
+
+<script>
+    $(document).ready(function() {
+        $('#changePasswordCheckbox').change(function() {
+            const isChecked = $(this).is(':checked');
+
+            // Show or hide password fields based on checkbox status
+            if (isChecked) {
+                $('#oldPasswordGroup').show();
+                $('#newPasswordGroup').show();
+                $('#confirmPasswordGroup').show();
+            } else {
+                $('#oldPasswordGroup').hide();
+                $('#newPasswordGroup').hide();
+                $('#confirmPasswordGroup').hide();
+                // Clear password fields
+                $('#old_password').val('');
+                $('#password').val('');
+                $('#confirm_password').val('');
+            }
+        });
+
+        $('#profileForm').submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            let formData = new FormData(this); // Create a FormData object
+
+            // Prepare password fields
+            const oldPassword = $('#changePasswordCheckbox').is(':checked') ? $('#old_password').val() : '';
+            const newPassword = $('#changePasswordCheckbox').is(':checked') ? $('#password').val() : '';
+            const confirmPassword = $('#changePasswordCheckbox').is(':checked') ? $('#confirm_password').val() : '';
+
+            // Append password fields to formData
+            formData.append('old_password', oldPassword);
+            formData.append('password', newPassword);
+            formData.append('confirm_password', confirmPassword);
+
+            console.log('Form data:', Array.from(formData.entries())); // Log form data for debugging
+
+            // Send the AJAX request
+            $.ajax({
+                type: 'POST',
+                url: '{% url "profile" %}',  // Replace with your URL pattern name
+                data: formData,
+                processData: false, // Prevent jQuery from automatically transforming the data into a query string
+                contentType: false, // Set content type to false for FormData
+                success: function(response) {
+                    // Handle success response
+                    alert(response.success);
+                    // Optionally, you can redirect or update the UI
+                },
+                error: function(xhr) {
+                    // Handle error response
+                    const errorMessage = xhr.responseJSON ? xhr.responseJSON.error : 'An error occurred';
+                    alert(errorMessage);  // Display error message
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

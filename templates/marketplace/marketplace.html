@@ -29,26 +29,55 @@
                     <h1 class="text-white font-weight-bold">Explore Items for Sale</h1>
                     <p class="text-white">Discover a variety of items listed by users!</p>
                 </div>
-                <div class="col-md-12">
-                    <form method="post" class="search-items-form">
-                        <div class="row mb-5 justify-content-center">
-                            <div class="col-5">
-                                <input type="text" class="form-control form-control-lg"
-                                       placeholder="Search for items..." name="search">
-                            </div>
-                            <div class="col-2">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search">
-                                    <span class="icon-search icon mr-2"></span>Search
-                                </button>
-                            </div>
+                <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-md-6 text-center">
+                        <div class="d-grid gap-3">
+                            <a href="{% url 'marketplace_post' %}" class="btn btn-warning btn-lg custom-btn shadow-lg">Post Item</a>
+                            <a href="{% url 'marketplace_my_post' %}" class="btn btn-info btn-lg custom-btn shadow-lg">Edit Item</a>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-        <a href="#next" class="scroll-button smoothscroll">
-            <span class=" icon-keyboard_arrow_down"></span>
-        </a>
+        <style>
+            .custom-btn {
+                font-size: 1.3rem;
+                padding: 15px 20px;
+                border-radius: 50px;
+                transition: transform 0.3s ease, background-color 0.3s ease;
+                letter-spacing: 1px;
+            }
+
+            .custom-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .btn-warning {
+                background-color: #e0c9a5;
+                border: none;
+            }
+
+            .btn-warning:hover {
+                background-color: #e68900;
+            }
+
+            .btn-info {
+                background-color: #17a2b8;
+                border: none;
+            }
+
+            .btn-info:hover {
+                background-color: #138496;
+            }
+
+            /* Shadow effect for a more impactful design */
+            .shadow-lg {
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+        </style>
+            </div>
     </section>
 
     <!-- ITEM LIST -->
@@ -135,53 +164,13 @@
                 }
             </style>
 
-            <!-- Pagination Section -->
-            <div class="row pagination-wrap mt-5">
-                <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">
-                    <span>Showing {{ items.paginator.per_page }} of {{ items.paginator.count }} Items</span>
-                </div>
-                <div class="col-md-6 text-center text-md-right">
-                    <div class="custom-pagination ml-auto">
-                        {% if items.has_previous %}
-                            <a href="?page=1" class="prev">First</a>
-                            <a href="?page={{ items.previous_page_number }}" class="prev">Prev</a>
-                        {% endif %}
-                        <div class="d-inline-block">
-                            {% for num in items.paginator.page_range %}
-                                {% if items.number == num %}
-                                    <a href="?page={{ num }}" class="active">{{ num }}</a>
-                                {% else %}
-                                    <a href="?page={{ num }}">{{ num }}</a>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        {% if items.has_next %}
-                            <a href="?page={{ items.next_page_number }}" class="next">Next</a>
-                            <a href="?page={{ items.paginator.num_pages }}" class="next">Last</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
         </div>
     </section>
 
     <!-- Call to Action -->
-    <section class="py-5 bg-image overlay-primary fixed overlay"
+    <section class="py-5 bg-image"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');">
 
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h2 class="text-white">Ready to Sell Your Items?</h2>
-                    <p class="mb-0 text-white lead">Post your items and reach potential buyers.</p>
-                </div>
-                <div class="col-md-4 ml-auto">
-                    <a href="{% url 'marketplace_post' %}" class="btn btn-warning btn-block btn-lg">Post Item</a>
-                    <a href="{% url 'marketplace_my_post' %}" class="btn btn-warning btn-block btn-lg">View My Items</a>
-                </div>
-            </div>
-        </div>
     </section>
 
     {% include 'expendable/footer.html' %}

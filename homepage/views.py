@@ -1,13 +1,16 @@
 from django.contrib import messages
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 import re
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 import random
 import string
+
+from django.utils import translation
+
 from homepage.models import EmailVerification, TemporaryUser
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse, HttpResponse
@@ -255,3 +258,40 @@ def new_password_view(request):
             return redirect('login')
 
     return render(request, 'homepage/new_password.html')
+
+
+@login_required(login_url='/login')
+def profile_view(request):
+    if request.method == "POST":
+        user = request.user
+
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
+        if email:
+            user.email = email
+
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if old_password and new_password and confirm_password:
+            if not user.check_password(old_password):
+                return JsonResponse({'error': "Old password is incorrect."}, status=400)
+
+            if new_password != confirm_password:
+                return JsonResponse({'error': "New passwords do not match."}, status=400)
+
+            user.set_password(new_password)
+            update_session_auth_hash(request, user)
+
+        user.save()
+
+        return JsonResponse({'success': "Profile updated successfully."}, status=200)
+
+    return render(request, 'expendable/profile.html')

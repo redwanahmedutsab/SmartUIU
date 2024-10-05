@@ -58,13 +58,33 @@ def home(request):
 @login_required(login_url='/login')
 def marketplace_single_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    return render(request, 'marketplace/marketplace_single.html', {'product': product})
+
+    # Get all tags of the current product
+    related_products = Product.objects.filter(tags__in=product.tags.all()).exclude(id=product.id).distinct()
+    print(related_products)
+    return render(request, 'marketplace/marketplace_single.html', {
+        'product': product,
+        'related_products': related_products
+    })
+
+
+@login_required(login_url='/login')
+def marketplace_single_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    current_product_tags = product.tags.all()
+
+    related_products = Product.objects.filter(tags__in=current_product_tags).exclude(id=product.id).distinct()
+    print(related_products)
+    return render(request, 'marketplace/marketplace_single.html', {
+        'product': product,
+        'related_products': related_products
+    })
 
 
 @login_required(login_url='/login')
 def marketplace_my_post_view(request):
     if request.method == 'POST':
-        # Handle product deletion
         product_id = request.POST.get('delete_product_id')
         if product_id:
             product = get_object_or_404(Product, id=product_id, seller=request.user)

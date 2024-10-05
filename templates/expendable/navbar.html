@@ -30,7 +30,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="{% url 'course_materials' %}">Course Materials</a></li>
-                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Study Group Creation</a></li>
+                            <li><a class="dropdown-item" href="{% url 'study_group' %}">Study Group Creation</a></li>
                             <li><a class="dropdown-item" href="{% url 'thesis_finder' %}">Thesis Member Finder</a></li>
                         </ul>
                     </li>
@@ -78,8 +78,8 @@
         </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="{% url 'login' %}">Profile</a>
-                            <a class="dropdown-item" href="{% url 'login' %}">Dashboard</a>
+                            <a class="dropdown-item" href="{% url 'profile' %}">{{ user.get_full_name }}</a>
+                            <a class="dropdown-item" href="{% url 'login' %}">Notifications</a>
                             <a class="dropdown-item" href="{% url 'login' %}">Settings</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>

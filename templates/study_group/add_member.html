@@ -1,0 +1,198 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static "images/hero_1.jpg" %}');"
+             id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Edit Study Group Members</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'study_group' %}">Study Groups</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Edit Members</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <form class="p-5 p-md-5 border rounded bg-white shadow-lg" method="post">
+        {% csrf_token %}
+        <h3 class="text-center text-dark mb-5 border-bottom pb-4 display-4 font-weight-bold">Manage Group Members</h3>
+
+        <!-- Add Members -->
+        <div class="form-group mb-4">
+            <label for="group-members" class="h5 font-weight-bold">Add Members</label>
+            <select class="form-control form-control-lg border-0 shadow-sm rounded" id="group-members" name="member">
+                <option value="" disabled selected>Select a member</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.get_full_name }} - {{ user.email }}</option>
+                {% endfor %}
+            </select>
+            <button type="button" class="btn btn-info mt-3" id="add-member-btn">Add Now</button>
+        </div>
+
+        <!-- Table of Current Members -->
+        <h5 class="font-weight-bold mt-4">Current Members:</h5>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="added-members-list">
+            {% for member in members %}
+                <tr id="member-{{ member.user.id }}">
+                    <td>{{ member.user.get_full_name }}</td>
+                    <td>{{ member.user.email }}</td>
+                    <td>
+                        {% if member.user.id != user.id %}
+                            <button type="button" class="btn btn-danger btn-sm remove-member-btn"
+                                    data-member-id="{{ member.user.id }}">Remove
+                            </button>
+                        {% else %}
+                            <p>Admin</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <input type="hidden" name="members" value="{{ member.user.id }}" id="member-{{ member.user.id }}-input">
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success btn-lg btn-block shadow-lg rounded-pill mt-4">
+            <i class="fas fa-paper-plane"></i> Update Group Members
+        </button>
+    </form>
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+{% include 'expendable/include.html' %}
+
+<!-- JavaScript to Add and Remove Members -->
+<script>
+    const addMemberBtn = document.getElementById('add-member-btn');
+    const memberSelect = document.getElementById('group-members');
+    const membersList = document.getElementById('added-members-list');
+    let addedMembers = [];
+    let removedMembers = [];
+
+    // Add member to the list
+    addMemberBtn.addEventListener('click', function () {
+        const memberId = memberSelect.value;
+        const memberText = memberSelect.options[memberSelect.selectedIndex].text;
+
+        if (!memberId) {
+            alert('Please select a member to add.');
+            return;
+        }
+
+        if (addedMembers.includes(memberId)) {
+            alert('This member is already added.');
+            return;
+        }
+
+        addedMembers.push(memberId);
+
+        const row = document.createElement('tr');
+        row.id = `member-${memberId}`;
+        row.innerHTML = `
+            <td>${memberText.split(' - ')[0]}</td>
+            <td>${memberText.split(' - ')[1]}</td>
+            <td><button type="button" class="btn btn-danger btn-sm remove-member-btn" data-member-id="${memberId}">Remove</button></td>
+        `;
+        membersList.appendChild(row);
+
+        // Add hidden input for new member
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'added_members'; // Changed name for clarity
+        input.value = memberId;
+        document.querySelector('form').appendChild(input);
+
+        // Add remove functionality
+        row.querySelector('.remove-member-btn').addEventListener('click', function () {
+            // Remove the row from the table
+            row.remove();
+            // Remove the hidden input
+            const inputToRemove = document.querySelector(`input[value="${memberId}"][name="added_members"]`);
+            if (inputToRemove) {
+                inputToRemove.remove();
+            }
+            // Remove from addedMembers array
+            addedMembers = addedMembers.filter(id => id !== memberId);
+            // Add to removed members
+            if (!removedMembers.includes(memberId)) {
+                removedMembers.push(memberId);
+            }
+        });
+    });
+
+    // Remove existing members
+    document.querySelectorAll('.remove-member-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const memberId = btn.dataset.memberId;
+            const row = document.getElementById(`member-${memberId}`);
+            if (row) {
+                row.remove(); // Remove the row from the table
+                // Remove the hidden input associated with this member
+                document.getElementById(`member-${memberId}-input`).remove();
+
+                // Add to removed members if it's not already in the list
+                if (!removedMembers.includes(memberId)) {
+                    removedMembers.push(memberId);
+                }
+            }
+        });
+    });
+
+    // Before form submission, append removed members and current members to the form
+    document.querySelector('form').addEventListener('submit', function() {
+        // Create a hidden input for removed members
+        removedMembers.forEach(memberId => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'removed_members'; // Changed name for clarity
+            input.value = memberId;
+            document.querySelector('form').appendChild(input);
+        });
+
+        // Add hidden inputs for all members currently in the table (to send all members)
+        document.querySelectorAll('#added-members-list tr').forEach(row => {
+            const memberId = row.id.split('-')[1];
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'members'; // Sending all current members
+            input.value = memberId;
+            document.querySelector('form').appendChild(input);
+        });
+    });
+</script>
+
+</body>
+</html>

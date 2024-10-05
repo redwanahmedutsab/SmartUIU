@@ -54,10 +54,13 @@
             <textarea class="form-control form-control-lg border-0 shadow-sm rounded" name="description"
                       id="product-description" placeholder="Describe the product" rows="5" required></textarea>
         </div>
+        <script>
+            CKEDITOR.replace('product-description');
+        </script>
 
         <!-- Product Price -->
         <div class="form-group mb-4">
-            <label for="product-price" class="h5 font-weight-bold">Product Price</label>
+            <label for="product-price" class="h5 font-weight-bold">Product Price (Taka)</label>
             <input type="number" class="form-control form-control-lg border-0 shadow-sm rounded" name="price"
                    id="product-price" placeholder="Enter the product price" step="0.01" required>
         </div>
@@ -80,8 +83,21 @@
         <div class="form-group mb-4">
             <label for="phone" class="h5 font-weight-bold">Phone Number</label>
             <input type="text" class="form-control form-control-lg border-0 shadow-sm rounded" name="phone"
-                   id="phone" placeholder="Enter phone number" required>
+                   id="phone" placeholder="Enter phone number" required
+                   pattern="01[0-9]{9}" minlength="11" maxlength="11"
+                   title="Phone number must start with 01 and be 11 digits long">
         </div>
+        <script>
+            document.getElementById('phone').addEventListener('input', function (e) {
+                const value = e.target.value;
+                if (!/^01\d{0,9}$/.test(value)) {
+                    e.target.setCustomValidity("Phone number must start with 01 and be 11 digits long");
+                } else {
+                    e.target.setCustomValidity("");
+                }
+            });
+        </script>
+
 
         <!-- Location -->
         <div class="form-group mb-4">

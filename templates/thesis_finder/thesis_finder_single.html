@@ -61,8 +61,14 @@
                                     <li class="list-group-item"><strong>University ID:</strong> {{ thesis.university_id }}</li>
                                     <li class="list-group-item"><strong>Email:</strong> {{ thesis.email }}</li>
                                     <li class="list-group-item"><strong>Contact:</strong> {{ thesis.contact_info }}</li>
-                                    <li class="list-group-item"><strong>Research Interests:</strong> {{ thesis.research_interests }}</li>
-                                    <li class="list-group-item"><strong>Skills:</strong> {{ thesis.skills }}</li>
+                                    <li class="list-group-item"><strong>Research Interests:</strong>
+                                        <div id="research-interests-tags" class="tags-container"></div>
+                                        <span class="d-none" id="research-interests">{{ thesis.research_interests }}</span>
+                                    </li>
+                                    <li class="list-group-item"><strong>Skills:</strong>
+                                        <div id="skills-tags" class="tags-container"></div>
+                                        <span class="d-none" id="skills">{{ thesis.skills }}</span>
+                                    </li>
                                     <li class="list-group-item"><strong>Thesis Topic:</strong> {{ thesis.thesis_topic }}</li>
                                     <li class="list-group-item"><strong>Thesis Supervisor:</strong> {{ thesis.thesis_supervisor }}</li>
                                 </ul>
@@ -71,15 +77,8 @@
                                         <i class="fas fa-envelope"></i> Contact via Email
                                     </a>
                                     <a href="tel:{{ thesis.contact_info }}" class="btn btn-secondary btn-sm">
-                                        <i class="fas fa-phone"></i> Call
+                                        <i class="fas fa-phone"></i> Contact via Call
                                     </a>
-                                    <!-- Add Member Button -->
-                                    <form method="POST" action="{% url 'event_single' thesis.id %}" class="d-inline mr-1">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-success btn-sm ml-1">
-                                            <i class="fas fa-user-plus"></i> Add Member
-                                        </button>
-                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -92,18 +91,70 @@
     <!-- FOOTER -->
     {% include 'expendable/footer.html' %}
 </div>
-<style>.btn-success {
-    background-color: #5ea3ee; /* Green color for Add Member button */
-    border-color: #536ff1; /* Match border with background */
-}
 
-.btn-success:hover {
-    background-color: #4cea54; /* Darker green on hover */
-    border-color: #48ee68; /* Darker border on hover */
-}
+<style>
+    .profile-card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .btn-success {
+        background-color: #5ea3ee;
+        border-color: #536ff1;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .btn-success:hover {
+        background-color: #4cea54;
+        border-color: #48ee68;
+    }
+
+    .tags-container {
+        margin-top: 10px;
+    }
+
+    .badge-info {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+    .badge-info:hover {
+        background-color: #138496;
+    }
+
+    @media (max-width: 768px) {
+        .profile-card {
+            padding: 2rem;
+        }
+        .profile-img img {
+            width: 150px;
+            height: 150px;
+        }
+    }
 </style>
 
-<!-- SCRIPTS -->
+<script>
+    function createTags(containerId, spanId) {
+        const container = document.getElementById(containerId);
+        const values = document.getElementById(spanId).innerText;
+        const items = values.split(',').map(item => item.trim());
+
+        items.forEach(item => {
+            if (item) {
+                const tag = document.createElement('span');
+                tag.className = 'badge badge-info mr-1'; // Bootstrap badge class
+                tag.innerText = item;
+                container.appendChild(tag);
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        createTags('research-interests-tags', 'research-interests');
+        createTags('skills-tags', 'skills');
+    });
+</script>
+
 {% include 'expendable/include.html' %}
 </body>
 </html>

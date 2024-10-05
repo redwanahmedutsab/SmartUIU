@@ -32,22 +32,22 @@
                     <p class="text-white font-weight-bold">Find members for your thesis group to achieve your career
                         goals!</p>
                 </div>
-            </div>
-            <div class="container mt-5">
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-md-6 text-center">
-                        <div class="d-grid gap-3">
-                            {% if user %}
-                                <a href="{% url 'thesis_finder_profile' %}"
-                                   class="btn btn-warning btn-lg mb-3 custom-btn shadow-lg">Edit
-                                    My Profile</a>
-                            {% else %}
-                                <a href="{% url 'thesis_finder_create_profile' %}"
-                                   class="btn btn-warning btn-lg mb-3 custom-btn shadow-lg">Create Profile</a>
-                            {% endif %}
-                            <a href="{% url 'thesis_finder_group' %}"
-                               class="btn btn-info btn-lg mb-3 custom-btn shadow-lg">Thesis Group</a>
+                <div class="container mt-5">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-md-6 text-center">
+                            <div class="d-grid gap-3">
+                                {% if user %}
+                                    <a href="{% url 'thesis_finder_profile' %}"
+                                       class="btn btn-warning btn-lg mb-1 custom-btn shadow-lg">Edit
+                                        My Profile</a>
+                                {% else %}
+                                    <a href="{% url 'thesis_finder_create_profile' %}"
+                                       class="btn btn-warning btn-lg mb-1 custom-btn shadow-lg">Create Profile</a>
+                                {% endif %}
+                                <a href="{% url 'thesis_finder_group' %}"
+                                   class="btn btn-info btn-lg mb-1 custom-btn shadow-lg">Thesis Group</a>
 
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -156,24 +156,6 @@
                     </li>
                 {% endfor %}
             </ul>
-
-            <div class="row pagination-wrap">
-                <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">
-                    <span>Showing {{ items.count }} Of {{ items.count }} Items</span>
-                </div>
-                <div class="col-md-6 text-center text-md-right">
-                    <div class="custom-pagination ml-auto">
-                        <a href="#" class="prev">Prev</a>
-                        <div class="d-inline-block">
-                            <a href="#" class="active">1</a>
-                            <a href="#">2</a>
-                            <a href="#">3</a>
-                            <a href="#">4</a>
-                        </div>
-                        <a href="#" class="next">Next</a>
-                    </div>
-                </div>
-            </div>
 
         </div>
     </section>
