@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Tag(models.Model):
@@ -74,3 +75,14 @@ class LikeDislike(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.reaction} on {self.blog.title}"
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.CharField(max_length=255)
+    blog = models.ForeignKey('Blog', on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Notification for {self.user} - {self.message}"

@@ -1,10 +1,8 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
-from .models import Group, GroupMember, Message
+from .models import Group, GroupMember, Message, NotificationStudy
 
 
 @login_required(login_url='/login')
@@ -45,6 +43,7 @@ def study_group_create_group_view(request):
     return render(request, 'study_group/study_group_create_group.html', {'users': users})
 
 
+# old
 # @login_required(login_url='/login')
 # def study_group_chat_view(request, id):
 #     group = get_object_or_404(Group, id=id)
@@ -107,6 +106,177 @@ def study_group_create_group_view(request):
 #     return render(request, 'study_group/study_group_chat.html',
 #                   {'group': group, 'messages': message_list, 'all_groups': all_groups, 'current_group': current_group})
 
+# new
+# @login_required(login_url='/login')
+# def study_group_chat_view(request, id):
+#     group = get_object_or_404(Group, id=id)
+#     updated_messages = Message.objects.filter(group=group).order_by('timestamp')
+#     current_group = get_object_or_404(Group, id=id)
+#
+#     # Function to check if it's an AJAX request
+#     is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+#
+#     if request.method == 'GET' and is_ajax:  # Check if it's an AJAX GET request
+#         # Prepare the message list for the AJAX response
+#         message_list = [
+#             {
+#                 'sender': message.sender.get_full_name(),
+#                 'username': message.sender.username,
+#                 'content': message.content,
+#                 'file_url': message.file.url if message.file else None,
+#                 'timestamp': message.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+#                 'is_mine': message.sender == request.user,
+#             }
+#             for message in updated_messages
+#         ]
+#         return JsonResponse({'success': True, 'messages': message_list})
+#
+#     elif request.method == 'POST' and is_ajax:  # Check if it's an AJAX POST request
+#         message_content = request.POST.get('message')
+#         message_file = request.FILES.get('file')
+#
+#         # Check if content exists before creating the message
+#         if message_content:
+#             # Create the new message
+#             message = Message.objects.create(
+#                 content=message_content,
+#                 file=message_file,  # This can be None if no file is uploaded
+#                 sender=request.user,
+#                 group=group
+#             )
+#
+#             # After the new message is posted, requery updated messages
+#             updated_messages = Message.objects.filter(group=group).order_by('timestamp')
+#
+#             # Prepare the message list
+#             message_list = [
+#                 {
+#                     'sender': msg.sender.get_full_name(),
+#                     'username': msg.sender.username,
+#                     'content': msg.content,
+#                     'file_url': msg.file.url if msg.file else None,
+#                     'timestamp': msg.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+#                     'is_mine': msg.sender == request.user,
+#                 }
+#                 for msg in updated_messages
+#             ]
+#
+#             return JsonResponse({'success': True, 'messages': message_list})
+#
+#         return JsonResponse({'success': False, 'error': 'Message content cannot be empty.'})
+#
+#     # Fetch user’s created groups and groups they are members of
+#     created_groups = Group.objects.filter(creator=request.user)
+#     member_groups = Group.objects.filter(group_members__user=request.user)
+#     all_groups = created_groups | member_groups
+#     all_groups = all_groups.distinct()
+#
+#     # Prepare message list for the GET request (non-AJAX)
+#     message_list = [
+#         {
+#             'sender': message.sender.get_full_name(),
+#             'username': message.sender.username,
+#             'content': message.content,
+#             'file_url': message.file.url if message.file else None,
+#             'timestamp': message.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+#             'is_mine': message.sender == request.user,
+#         }
+#         for message in updated_messages
+#     ]
+#
+#     # For non-AJAX requests, render the HTML template
+#     return render(request, 'study_group/study_group_chat.html',
+#                   {'group': group, 'messages': message_list, 'all_groups': all_groups, 'current_group': current_group})
+
+
+# @login_required(login_url='/login')
+# def study_group_chat_view(request, id):
+#     group = get_object_or_404(Group, id=id)
+#     updated_messages = Message.objects.filter(group=group).order_by('timestamp')
+#     current_group = get_object_or_404(Group, id=id)
+#
+#     # Function to check if it's an AJAX request
+#     is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+#
+#     if request.method == 'GET' and is_ajax:  # Check if it's an AJAX GET request
+#         # Prepare the message list for the AJAX response
+#         message_list = [
+#             {
+#                 'sender': message.sender.get_full_name(),
+#                 'username': message.sender.username,
+#                 'content': message.content,
+#                 'file_url': message.file.url if message.file else None,
+#                 'timestamp': message.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+#                 'is_mine': message.sender == request.user,
+#             }
+#             for message in updated_messages
+#         ]
+#         return JsonResponse({'success': True, 'messages': message_list})
+#
+#     elif request.method == 'POST' and is_ajax:  # Check if it's an AJAX POST request
+#         message_content = request.POST.get('message')
+#         message_file = request.FILES.get('file')
+#
+#         if message_content:
+#             message = Message.objects.create(
+#                 content=message_content,
+#                 file=message_file,
+#                 sender=request.user,
+#                 group=group
+#             )
+#
+#             group_members = GroupMember.objects.filter(group=group).exclude(user=request.user)
+#             for member in group_members:
+#                 NotificationStudy.objects.create(
+#                     user=request.user,
+#                     group_id=group.id,
+#                     group_name=group.name,  # Store the group name
+#                     message_content=message_content  # Store the message content
+#                 )
+#
+#             # After the new message is posted, requery updated messages
+#             updated_messages = Message.objects.filter(group=group).order_by('timestamp')
+#
+#             # Prepare the message list
+#             message_list = [
+#                 {
+#                     'sender': msg.sender.get_full_name(),
+#                     'username': msg.sender.username,
+#                     'content': msg.content,
+#                     'file_url': msg.file.url if msg.file else None,
+#                     'timestamp': msg.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+#                     'is_mine': msg.sender == request.user,
+#                 }
+#                 for msg in updated_messages
+#             ]
+#
+#             return JsonResponse({'success': True, 'messages': message_list})
+#
+#         return JsonResponse({'success': False, 'error': 'Message content cannot be empty.'})
+#
+#     # Fetch user’s created groups and groups they are members of
+#     created_groups = Group.objects.filter(creator=request.user)
+#     member_groups = Group.objects.filter(group_members__user=request.user)
+#     all_groups = created_groups | member_groups
+#     all_groups = all_groups.distinct()
+#
+#     # Prepare message list for the GET request (non-AJAX)
+#     message_list = [
+#         {
+#             'sender': message.sender.get_full_name(),
+#             'username': message.sender.username,
+#             'content': message.content,
+#             'file_url': message.file.url if message.file else None,
+#             'timestamp': message.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+#             'is_mine': message.sender == request.user,
+#         }
+#         for message in updated_messages
+#     ]
+#
+#     # For non-AJAX requests, render the HTML template
+#     return render(request, 'study_group/study_group_chat.html',
+#                   {'group': group, 'messages': message_list, 'all_groups': all_groups, 'current_group': current_group})
+
 @login_required(login_url='/login')
 def study_group_chat_view(request, id):
     group = get_object_or_404(Group, id=id)
@@ -135,15 +305,24 @@ def study_group_chat_view(request, id):
         message_content = request.POST.get('message')
         message_file = request.FILES.get('file')
 
-        # Check if content exists before creating the message
         if message_content:
             # Create the new message
             message = Message.objects.create(
                 content=message_content,
-                file=message_file,  # This can be None if no file is uploaded
+                file=message_file,
                 sender=request.user,
                 group=group
             )
+
+            group_members = GroupMember.objects.filter(group=group).exclude(user=request.user)
+
+            for member in group_members:
+                NotificationStudy.objects.create(
+                    user=member.user,
+                    group_id=group.id,
+                    group=group,
+                    message_content=message_content
+                )
 
             # After the new message is posted, requery updated messages
             updated_messages = Message.objects.filter(group=group).order_by('timestamp')

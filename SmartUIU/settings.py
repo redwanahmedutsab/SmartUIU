@@ -81,6 +81,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'blog.templatetags.context_processors.notifications_processor',
+                'study_group_app.templatetags.context_processors.notifications_processor',
             ],
         },
     },

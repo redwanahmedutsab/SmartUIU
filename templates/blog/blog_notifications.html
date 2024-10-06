@@ -1,0 +1,223 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HOME -->
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+
+        <!-- Custom CSS for Buttons and Notifications -->
+        <style>
+            .custom-btn {
+                font-size: 1.3rem;
+                padding: 15px 20px;
+                border-radius: 50px;
+                transition: transform 0.3s ease, background-color 0.3s ease;
+                letter-spacing: 1px;
+            }
+
+            .custom-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .btn-warning {
+                background-color: #e0c9a5;
+                border: none;
+            }
+
+            .btn-warning:hover {
+                background-color: #e68900;
+            }
+
+            .btn-info {
+                background-color: #17a2b8;
+                border: none;
+            }
+
+            .btn-info:hover {
+                background-color: #138496;
+            }
+
+            .btn-success {
+                background-color: #28a745;
+                border: none;
+            }
+
+            .btn-success:hover {
+                background-color: #218838;
+            }
+
+            /* Shadow effect for a more impactful design */
+            .shadow-lg {
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Styles for Notifications Section */
+            #notifications {
+                padding: 20px;
+                background-color: #f9f9f9;
+                border-radius: 10px;
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            #mark-all-read {
+                font-size: 1.1rem;
+                border-radius: 25px;
+                transition: background-color 0.3s ease;
+            }
+
+            #mark-all-read:hover {
+                background-color: #e68900;
+                color: #fff;
+            }
+
+            /* Notification styling */
+            .notification {
+                padding: 15px;
+                margin-bottom: 10px;
+                border-radius: 8px;
+                transition: background-color 0.3s ease, box-shadow 0.3s ease;
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .notification.unread {
+                background-color: #fff5e6;
+                border-left: 5px solid #ffa500;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            }
+
+            .notification.read {
+                background-color: #f0f0f0;
+                border-left: 5px solid #ccc;
+                box-shadow: none;
+            }
+
+            .notification:hover {
+                background-color: #eaeaea;
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .notification a {
+                text-decoration: none;
+                color: #333;
+                font-weight: 500;
+                flex-grow: 1;
+            }
+
+            .notification .time-stamp {
+                font-size: 0.8rem;
+                color: #777;
+                margin-left: 10px;
+            }
+        </style>
+
+    </section>
+
+    <!-- Notifications Section -->
+    <section class="site-section" id="next">
+        <div class="container">
+            <div class="row mb-5 justify-content-center">
+                <div class="col-md-7 text-center">
+                    <h1 class="section-title mb-2">Notifications</h1>
+                </div>
+            </div>
+
+            <section class="site-section" id="notifications">
+                <div class="container">
+                    <button id="mark-all-read" class="btn btn-warning mb-3"
+                            onclick="location.href='{% url 'mark_all_read' %}'">Mark All as Read
+                    </button>
+                    <ul class="list-group">
+                        <!-- Unread Notifications (Blog and Study) -->
+                        <h5>Unread Notifications</h5>
+
+                        <!-- Blog Unread Notifications -->
+                        {% for notification in all_notifications %}
+                            {% if not notification.is_read %}
+                                <li class="notification unread">
+                                    <a href="{% url 'blog_single' notification.blog_id %}">{{ notification.message }}</a>
+                                    <span class="time-stamp">{{ notification.created_at|date:"M d, Y H:i" }}</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- Study Group Unread Notifications -->
+                        {% for notification in all_notifications_study %}
+                            {% if not notification.is_read %}
+                                <li class="notification unread">
+                                    <a href="{% url 'study_group_chat' notification.group_id %}">{{ notification.group_name }}: {{ notification.message_content }}</a>
+                                    <span class="time-stamp">{{ notification.created_at|date:"M d, Y H:i" }}</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- If no unread notifications at all -->
+                        {% if not all_notifications|length and not all_notifications_study|length %}
+                            <li class="notification">No unread notifications available.</li>
+                        {% endif %}
+
+                        <!-- Read Notifications (Blog and Study) -->
+                        <h5>Read Notifications</h5>
+
+                        <!-- Blog Read Notifications -->
+                        {% for notification in all_notifications %}
+                            {% if notification.is_read %}
+                                <li class="notification read">
+                                    <a href="{% url 'blog_single' notification.blog_id %}">{{ notification.message }}</a>
+                                    <span class="time-stamp">{{ notification.created_at|date:"M d, Y H:i" }}</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- Study Group Read Notifications -->
+                        {% for notification in all_notifications_study %}
+                            {% if notification.is_read %}
+                                <li class="notification read">
+                                    <a href="{% url 'study_group_chat' notification.group_id %}">{{ notification.group_name }}: {{ notification.message_content }}</a>
+                                    <span class="time-stamp">{{ notification.created_at|date:"M d, Y H:i" }}</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- If no read notifications at all -->
+                        {% if not all_notifications|length and not all_notifications_study|length %}
+                            <li class="notification">No read notifications available.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <section class="py-5 bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+    </section>
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+{% include 'expendable/include.html' %}
+</body>
+</html>

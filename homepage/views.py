@@ -8,9 +8,6 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect
 import random
 import string
-
-from django.utils import translation
-
 from homepage.models import EmailVerification, TemporaryUser
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse, HttpResponse

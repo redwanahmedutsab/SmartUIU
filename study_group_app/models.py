@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Group(models.Model):
@@ -42,3 +43,21 @@ class Message(models.Model):
 
     def __str__(self):
         return f"{self.sender.username} [{self.timestamp}]: {self.content[:20] or self.file.name}"
+
+
+class NotificationStudy(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='study_notifications')  # Change to avoid conflict
+    group_name = models.CharField(max_length=100)  # Store the group name directly
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='notifications')
+    message_content = models.TextField()  # Store the message content
+    created_at = models.DateTimeField(default=timezone.now)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Notification for {self.user.username} in {self.group_name} - {self.message_content[:20]}"
+
+    def mark_as_read(self):
+        """Mark this notification as read."""
+        self.is_read = True
+        self.save()
