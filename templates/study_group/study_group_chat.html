@@ -5,224 +5,223 @@
     {% include 'expendable/head.html' %}
     <style>
         /* Global Styles */
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: 'Roboto', sans-serif;
-    background-color: #f5f7fa; /* Light, subtle background */
-}
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f7fa; /* Light, subtle background */
+        }
 
-/* Wrapper for the entire chat layout */
-.study-chat-wrapper {
-    display: flex;
-    height: 100vh;
-    background-color: #ffffff;
-    max-width: 1300px;
-    margin: 0 auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    overflow: hidden;
-}
+        /* Wrapper for the entire chat layout */
+        .study-chat-wrapper {
+            display: flex;
+            height: 100vh;
+            background-color: #ffffff;
+            max-width: 1300px;
+            margin: 0 auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
 
-/* Sidebar for Groups */
-.study-chat-sidebar {
-    width: 300px;
-    background-color: #f1f3f5; /* Soft grey-blue */
-    color: #455a64; /* Muted dark blue-grey */
-    padding: 30px 20px;
-    box-shadow: inset 2px 0 10px rgba(0, 0, 0, 0.1);
-}
+        /* Sidebar for Groups */
+        .study-chat-sidebar {
+            width: 300px;
+            background-color: #f1f3f5; /* Soft grey-blue */
+            color: #455a64; /* Muted dark blue-grey */
+            padding: 30px 20px;
+            box-shadow: inset 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-.study-chat-sidebar-title {
-    font-size: 2rem;
-    margin-bottom: 30px;
-    font-weight: bold;
-    text-align: center;
-    color: #37474f; /* Dark blue-grey for title */
-}
+        .study-chat-sidebar-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-align: center;
+            color: #37474f; /* Dark blue-grey for title */
+        }
 
-.study-chat-group-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+        .study-chat-group-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-.study-group-item {
-    margin-bottom: 15px;
-}
+        .study-group-item {
+            margin-bottom: 15px;
+        }
 
-.study-group-link {
-    display: block;
-    padding: 12px;
-    text-decoration: none;
-    font-size: 1.2rem;
-    color: #000000;
-    background-color: #e8e8e8; /* Cool blue-grey */
-    border-radius: 10px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
+        .study-group-link {
+            display: block;
+            padding: 12px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            color: #000000;
+            background-color: #e8e8e8; /* Cool blue-grey */
+            border-radius: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-.study-group-link:hover {
-    background-color: #ffffff; /* Darker blue-grey on hover */
-    transform: translateY(-3px);
-}
+        .study-group-link:hover {
+            background-color: #ffffff; /* Darker blue-grey on hover */
+            transform: translateY(-3px);
+        }
 
-/* Chat Box */
-.study-chat-box {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
-    background-color: #ffffff; /* White background for contrast */
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 0 15px 15px 0;
-}
+        /* Chat Box */
+        .study-chat-box {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            background-color: #ffffff; /* White background for contrast */
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 0 15px 15px 0;
+        }
 
-.study-chat-title {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #37474f; /* Dark blue-grey */
-    text-align: center;
-    text-transform: uppercase;
-    border-bottom: 2px solid #eceff1; /* Light grey divider */
-    padding-bottom: 10px;
-}
+        .study-chat-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #37474f; /* Dark blue-grey */
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom: 2px solid #eceff1; /* Light grey divider */
+            padding-bottom: 10px;
+        }
 
-.study-chat-messages {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding-right: 15px;
-    margin-bottom: 20px;
-    background-color: #f7f9fc; /* Very light blue */
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.05);
-}
+        .study-chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 15px;
+            margin-bottom: 20px;
+            background-color: #f7f9fc; /* Very light blue */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
 
-.study-chat-message {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    max-width: 80%;
-}
+        .study-chat-message {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            max-width: 80%;
+        }
 
-.study-my-message {
-    align-self: flex-end;
-    background-color: #d0e9ff; /* Soft light blue for user's messages */
-    color: #1a237e;
-    margin-left: auto;
-    text-align: end;
-}
+        .study-my-message {
+            align-self: flex-end;
+            background-color: #d0e9ff; /* Soft light blue for user's messages */
+            color: #1a237e;
+            margin-left: auto;
+            text-align: end;
+        }
 
-.study-other-message {
-    align-self: flex-start;
-    background-color: #ffffff; /* White background for others' messages */
-    color: #333;
-}
+        .study-other-message {
+            align-self: flex-start;
+            background-color: #ffffff; /* White background for others' messages */
+            color: #333;
+        }
 
-.study-message-sender {
-    font-size: 0.9rem;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #78909c; /* Grey-blue for sender name */
-}
+        .study-message-sender {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #78909c; /* Grey-blue for sender name */
+        }
 
-.study-message-content {
-    font-size: 1rem;
-    margin-bottom: 5px;
-}
+        .study-message-content {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
 
-.study-message-time {
-    font-size: 0.8rem;
-    color: #90a4ae; /* Light grey-blue for timestamp */
-}
+        .study-message-time {
+            font-size: 0.8rem;
+            color: #90a4ae; /* Light grey-blue for timestamp */
+        }
 
-/* Chat Input */
-.study-chat-input {
-    display: flex;
-    padding-top: 15px;
-    border-top: 2px solid #eceff1; /* Light grey divider */
-    background-color: #f7f9fc; /* Light background for input area */
-    border-radius: 0 0 15px 15px;
-    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
-    justify-content: flex-end;
-}
+        /* Chat Input */
+        .study-chat-input {
+            display: flex;
+            padding-top: 15px;
+            border-top: 2px solid #eceff1; /* Light grey divider */
+            background-color: #f7f9fc; /* Light background for input area */
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+            justify-content: flex-end;
+        }
 
-.study-input-field {
-    flex-grow: 1;
-    padding: 12px 20px;
-    font-size: 1rem;
-    border: 2px solid #cfd8dc; /* Light grey-blue border */
-    border-radius: 30px;
-    outline: none;
-    transition: border-color 0.3s ease;
-    max-width: 100%;
-    width: 40%;
-}
+        .study-input-field {
+            flex-grow: 1;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: 2px solid #cfd8dc; /* Light grey-blue border */
+            border-radius: 30px;
+            outline: none;
+            transition: border-color 0.3s ease;
+            max-width: 100%;
+            width: 40%;
+        }
 
-.study-input-field:focus {
-    border-color: #42a5f5; /* Light blue focus state */
-}
+        .study-input-field:focus {
+            border-color: #42a5f5; /* Light blue focus state */
+        }
 
-.study-send-button {
-    margin-left: 10px;
-    padding: 12px 30px;
-    background-color: #42a5f5; /* Light blue button */
-    color: #ffffff;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+        .study-send-button {
+            margin-left: 10px;
+            padding: 12px 30px;
+            background-color: #42a5f5; /* Light blue button */
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-.study-send-button:hover {
-    background-color: #1e88e5; /* Darker blue on hover */
-}
+        .study-send-button:hover {
+            background-color: #1e88e5; /* Darker blue on hover */
+        }
 
-/* Style for the group logo */
-.study-group-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    vertical-align: middle;
-    object-fit: cover;
-}
+        /* Style for the group logo */
+        .study-group-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            vertical-align: middle;
+            object-fit: cover;
+        }
 
-/* Add specific styles for the active (currently selected) group */
-.study-current-group {
-    background-color: rgba(133, 197, 136, 0.25); /* Light green for active group */
-    color: #000000; /* Dark green for text */
-    font-weight: bold;
-    border-left: 5px solid #66bb6a; /* Bold green border for active group */
-}
+        .study-current-group {
+            background-color: rgba(133, 197, 136, 0.25);
+            color: #000000;
+            font-weight: bold;
+            border-left: 5px solid #66bb6a;
+        }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .study-chat-wrapper {
-        flex-direction: column;
-    }
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .study-chat-wrapper {
+                flex-direction: column;
+            }
 
-    .study-chat-sidebar {
-        width: 100%;
-        box-shadow: none;
-        border-radius: 15px 15px 0 0;
-    }
+            .study-chat-sidebar {
+                width: 100%;
+                box-shadow: none;
+                border-radius: 15px 15px 0 0;
+            }
 
-    .study-chat-box {
-        border-radius: 0 0 15px 15px;
-    }
+            .study-chat-box {
+                border-radius: 0 0 15px 15px;
+            }
 
-    .study-input-field {
-        max-width: 60%;
-    }
-}
+            .study-input-field {
+                max-width: 60%;
+            }
+        }
 
     </style>
 </head>
@@ -259,8 +258,14 @@ body, html {
                 <li class="study-group-item">
                     <a href="{% url 'study_group_chat' group.id %}"
                        class="study-group-link {% if group.id == current_group.id %}study-current-group{% endif %}">
-                        <img src="{{ group.image.url }}" alt="Group Logo" class="study-group-logo">
-                        {{ group.name }}
+                        {% if group.image %}
+                            <img src="{{ group.image.url }}" alt="Group Logo" class="study-group-logo">
+                            {{ group.name }}
+                        {% else %}
+                            <img src="{% static 'images/smartuiu.png' %}" alt="Group Logo" class="study-group-logo">
+                            {{ group.name }}
+                        {% endif %}
+
                     </a>
                 </li>
             {% empty %}
@@ -342,7 +347,7 @@ body, html {
                 <div class="study-chat-message ${messageClass}">
                     <div class="study-message-sender">${message.sender}</div>
                     <div class="study-message-content">${message.content}</div>
-                    ${message.file_url ? `<a href="${message.file_url}" target="_blank">Download File</a>` : ''}
+                    ${message.file_url ? `<a href="${message.file_url}" target="_blank">Download</a>` : ''}
                     <div class="study-message-time">${message.timestamp}</div>
                 </div>
             `;
@@ -376,7 +381,7 @@ body, html {
 
         // Load messages initially and set interval for auto-reloading
         loadMessages();
-        setInterval(loadMessages, 5000); // Reload messages every 5 seconds
+        setInterval(loadMessages, 1000); // Reload messages every 5 seconds
 
         // Initial scroll to the bottom
         scrollToBottom();
