@@ -112,6 +112,78 @@ userInput.addEventListener('keyup', function (event) {
     }
 });
 
+// function sendMessage() {
+//     const userInput = document.getElementById('user-input');
+//     const chatBox = document.getElementById('chat-box');
+//
+//     const userMessage = userInput.value.trim();
+//     if (userMessage !== '') {
+//         const userMsgDiv = document.createElement('div');
+//         userMsgDiv.classList.add('user-msg');
+//         userMsgDiv.textContent = userMessage;
+//         chatBox.appendChild(userMsgDiv);
+//
+//         let botMessage = "I'm sorry, I don't understand.";
+//         let matchedResponse = false;
+//
+//         for (const query in responses) {
+//             const lcsLength = longestCommonSubsequence(userMessage.toLowerCase(), query.toLowerCase());
+//             const similarity = lcsLength / Math.max(userMessage.length, query.length);
+//             if (similarity > 0.3) {
+//                 botMessage = responses[query];
+//                 matchedResponse = true;
+//                 break;
+//             }
+//         }
+//
+//         setTimeout(function () {
+//             const botMsgDiv = document.createElement('div');
+//             botMsgDiv.classList.add('bot-msg');
+//             chatBox.appendChild(botMsgDiv);
+//
+//             if (!matchedResponse) {
+//                 botMsgDiv.textContent = "I couldn't find an exact answer. Would you like to contact a person for help?";
+//
+//                 // Create Yes and No buttons
+//                 const yesButton = document.createElement('button');
+//                 yesButton.textContent = 'Yes';
+//                 yesButton.classList.add('yes-button');
+//
+//                 const noButton = document.createElement('button');
+//                 noButton.textContent = 'No';
+//                 noButton.classList.add('no-button');
+//
+//                 chatBox.appendChild(yesButton);
+//                 chatBox.appendChild(noButton);
+//
+//                 // Handle Yes button click
+//                 yesButton.addEventListener('click', function () {
+//                     startCrispChat();
+//                     botMsgDiv.textContent = "Starting the chat with a representative...";
+//                     chatBox.removeChild(yesButton);
+//                     chatBox.removeChild(noButton);
+//                 });
+//
+//                 // Handle No button click
+//                 noButton.addEventListener('click', function () {
+//                     botMsgDiv.textContent = "Okay, feel free to ask me anything else!";
+//                     chatBox.removeChild(yesButton);
+//                     chatBox.removeChild(noButton);
+//                 });
+//
+//                 chatBox.scrollTop = chatBox.scrollHeight;
+//             } else {
+//                 botMsgDiv.textContent = botMessage;
+//             }
+//
+//             chatBox.scrollTop = chatBox.scrollHeight;
+//         }, 500);
+//
+//         userInput.value = ''; // Clear input field after sending message
+//     }
+// }
+
+
 function sendMessage() {
     const userInput = document.getElementById('user-input');
     const chatBox = document.getElementById('chat-box');
@@ -123,16 +195,19 @@ function sendMessage() {
         userMsgDiv.textContent = userMessage;
         chatBox.appendChild(userMsgDiv);
 
-        let botMessage = "I'm sorry, I don't understand.";
+        let bestProbability = 0;
+        let bestResponse = "I'm sorry, I don't understand."; // Default message if no match is found
         let matchedResponse = false;
 
         for (const query in responses) {
             const lcsLength = longestCommonSubsequence(userMessage.toLowerCase(), query.toLowerCase());
             const similarity = lcsLength / Math.max(userMessage.length, query.length);
-            if (similarity > 0.3) {
-                botMessage = responses[query];
-                matchedResponse = true;
-                break;
+
+            // Check if the similarity is greater than the best probability found so far
+            if (similarity > bestProbability) {
+                bestProbability = similarity; // Update best probability
+                bestResponse = responses[query]; // Update best response
+                matchedResponse = true; // Mark that we found a matching response
             }
         }
 
@@ -141,7 +216,7 @@ function sendMessage() {
             botMsgDiv.classList.add('bot-msg');
             chatBox.appendChild(botMsgDiv);
 
-            if (!matchedResponse) {
+            if (!matchedResponse || bestProbability < 0.3) { // Check if there was a good match
                 botMsgDiv.textContent = "I couldn't find an exact answer. Would you like to contact a person for help?";
 
                 // Create Yes and No buttons
@@ -173,10 +248,10 @@ function sendMessage() {
 
                 chatBox.scrollTop = chatBox.scrollHeight;
             } else {
-                botMsgDiv.textContent = botMessage;
+                botMsgDiv.textContent = bestResponse; // Show the best response found
             }
 
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
         }, 500);
 
         userInput.value = ''; // Clear input field after sending message
