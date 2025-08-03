@@ -101,7 +101,3 @@ We welcome contributions! Please open issues or pull requests for:
 - ✨ New Features
 - 🧪 Testing Help
 - 📖 Documentation
-
-```bash
-git clone https://github.com/your-username/smartuiu.git
-cd smartuiu
