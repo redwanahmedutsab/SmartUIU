@@ -13,6 +13,10 @@ import os
 from pathlib import Path
 import pymysql
 import ssl
+import certifi
+
+# Create an SSL context using certifi’s certificate bundle
+ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 ssl.get_default_verify_paths()  # Verify default SSL certificate paths
 
@@ -98,7 +102,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'SmartUIU',
         'USER': 'root',
-        'PASSWORD': 'v*FDN4J9UaH)yF7',
+        'PASSWORD': '',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
