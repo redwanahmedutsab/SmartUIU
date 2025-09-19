@@ -34,27 +34,8 @@
                     <div class="col-md-6 text-center">
                         <div class="d-grid gap-3">
 
-                            {% if role == "student" %}
-                                <a href="{% url 'course_materials_add' %}"
-                                   class="btn btn-warning btn-lg custom-btn shadow-lg">Book Appointment</a>
-                                <a href="{% url 'student_bookings' %}"
-                                   class="btn btn-info btn-lg custom-btn shadow-lg">Edit Appointments</a>
-
-                            {% elif role == "faculty" %}
-                                <a href="{% url 'teacher_schedule' %}"
-                                   class="btn btn-success btn-lg custom-btn shadow-lg">Add Appointment</a>
-                                <a href="{% url 'manage_appointments' %}"
-                                   class="btn btn-info btn-lg custom-btn shadow-lg">Edit Appointments</a>
-
-                            {% elif role == "admin" %}
-                                <a href="{% url 'teacher_schedule' %}"
-                                   class="btn btn-success btn-lg custom-btn shadow-lg">Add Appointment</a>
-                                <a href="{% url 'manage_appointments' %}"
-                                   class="btn btn-info btn-lg custom-btn shadow-lg">Edit Appointments</a>
-
-                            {% else %}
-                                <p class="text-white">Your email domain is not recognized. Please contact support.</p>
-                            {% endif %}
+                            <a href="{% url 'student_bookings' %}"
+                               class="btn btn-info btn-lg custom-btn shadow-lg">Edit Appointments</a>
 
                         </div>
                     </div>

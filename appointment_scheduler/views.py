@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
+from django.shortcuts import render
 from django.db.models import Q
+from django.contrib import messages
+from datetime import datetime, timedelta
 
 
 def home(request):
@@ -29,15 +31,13 @@ def home(request):
     else:
         role = "unknown"
 
-    # Get search query params
+    # Search filters (only needed for students browsing faculties)
     query_name = request.GET.get('name', '').strip()
     query_designation = request.GET.get('designation', '').strip()
     query_department = request.GET.get('department', '').strip()
 
-    # Start with all faculties
     faculties = FacultyProfile.objects.all()
 
-    # Apply filters if any
     if query_name:
         faculties = faculties.filter(
             Q(first_name__icontains=query_name) | Q(last_name__icontains=query_name)
@@ -47,17 +47,22 @@ def home(request):
     if query_department:
         faculties = faculties.filter(department__icontains=query_department)
 
-    return render(
-        request,
-        'appointment_scheduler/appointment_scheduler.html',
-        {
-            "role": role,
+    # Decide which template
+    if role == "student":
+        template = "appointment_scheduler/appointment_scheduler_student_home.html"
+        context = {
             "faculties": faculties,
             "query_name": query_name,
             "query_designation": query_designation,
             "query_department": query_department,
         }
-    )
+    else:
+        template = "appointment_scheduler/appointment_scheduler_faculty_home.html"
+        context = {}
+
+    print(role)
+
+    return render(request, template, context)
 
 
 @login_required
@@ -153,3 +158,117 @@ def remove_booking(request, booking_id):
 
         # Redirect back to bookings page
         return redirect('student_bookings')
+
+
+@login_required
+def faculty_set_schedule(request):
+    # Get faculty profile safely
+    try:
+        faculty = request.user.faculty_profile
+    except FacultyProfile.DoesNotExist:
+        messages.error(request, "You do not have a faculty profile. Contact admin.")
+        return redirect('homepage')
+
+    if request.method == 'POST':
+        days = request.POST.getlist('days')
+        start_times = request.POST.getlist('start_time[]')
+        end_times = request.POST.getlist('end_time[]')
+        interval_str = request.POST.get('interval')
+
+        print(days)
+        print(start_times)
+        print(end_times)
+        print(interval_str)
+
+        # Validate interval
+        try:
+            interval = int(interval_str)
+        except (ValueError, TypeError):
+            messages.error(request, "Interval must be a number.")
+            return redirect('faculty_set_schedule')
+
+        slots_created = 0
+
+        # Loop over each selected day and time range
+        for day in days:
+            for i in range(len(start_times)):
+                st = start_times[i]
+                et = end_times[i]
+
+                try:
+                    start_dt = datetime.strptime(st, "%H:%M")
+                    end_dt = datetime.strptime(et, "%H:%M")
+                except ValueError:
+                    messages.warning(request, f"Invalid time format for slot {i + 1}. Skipping.")
+                    continue
+
+                current_time = start_dt
+
+                while current_time + timedelta(minutes=interval) <= end_dt:
+                    slot_start = current_time.time()
+                    slot_end = (current_time + timedelta(minutes=interval)).time()
+
+                    # Avoid overlapping slots
+                    if not FacultyAvailability.objects.filter(
+                            faculty=faculty,
+                            day_of_week=day,
+                            start_time=slot_start,
+                            end_time=slot_end
+                    ).exists():
+                        FacultyAvailability.objects.create(
+                            faculty=faculty,
+                            day_of_week=day,
+                            start_time=slot_start,
+                            end_time=slot_end,
+                            duration_minutes=interval
+                        )
+                        slots_created += 1
+
+                    current_time += timedelta(minutes=interval)
+
+        messages.success(request, f"{slots_created} slots created successfully!")
+        return redirect('faculty_manage_schedule')
+
+    return render(request, 'appointment_scheduler/appointment_schedule_teacher.html', {'faculty': faculty})
+
+
+@login_required
+def faculty_manage_schedule(request):
+    # Handle missing faculty profile safely
+    try:
+        faculty = request.user.faculty_profile
+    except FacultyProfile.DoesNotExist:
+        messages.error(request, "You do not have a faculty profile. Contact admin.")
+        return redirect('homepage')
+
+    availabilities = faculty.availabilities.all().order_by('day_of_week', 'start_time')
+    return render(request, 'appointment_scheduler/appointment_schedule_teacher.html', {
+        'availabilities': availabilities,
+    })
+
+
+@login_required
+def faculty_create_profile(request):
+    # Try to get existing profile or None
+    faculty, created = FacultyProfile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        # Update fields from form
+        faculty.first_name = request.POST.get('first_name', request.user.first_name)
+        faculty.last_name = request.POST.get('last_name', request.user.last_name)
+        faculty.designation = request.POST.get('designation', faculty.designation)
+        # Optional: department (if you have a field in form)
+        faculty.department = request.POST.get('department', faculty.department)
+
+        # Handle image upload
+        if request.FILES.get('image'):
+            faculty.image = request.FILES['image']
+
+        faculty.save()
+        messages.success(request, "Profile updated successfully!")
+        return redirect('faculty_profile_create')  # reload the same page
+
+    context = {
+        'faculty': faculty
+    }
+    return render(request, 'appointment_scheduler/appointment_faculty_profile.html', context)

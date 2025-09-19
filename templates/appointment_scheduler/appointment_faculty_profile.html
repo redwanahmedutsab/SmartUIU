@@ -1,0 +1,331 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<style>
+    /* General Body */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #f0f4f8;
+        color: #333;
+    }
+
+    /* Hero Section */
+    .section-hero {
+        background-blend-mode: overlay;
+        background-size: cover;
+        background-position: center;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    }
+
+    .glow-text {
+        text-shadow: 0 0 8px #00c3ff, 0 0 15px #ff00d4, 0 0 20px #fffa00;
+        animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 8px #00c3ff, 0 0 15px #ff00d4, 0 0 20px #fffa00;
+        }
+        to {
+            text-shadow: 0 0 20px #00c3ff, 0 0 30px #ff00d4, 0 0 40px #fffa00;
+        }
+    }
+
+    /* Faculty Form Card */
+    .faculty-form-card {
+        background: linear-gradient(145deg, #ffffff, #e0f7ff);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .faculty-form-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Input Fields */
+    .form-control {
+        border-radius: 12px;
+        padding: 0.7rem 1rem;
+        border: 1px solid #ccc;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .form-control:focus {
+        border-color: #00c3ff;
+        box-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
+    }
+
+    /* File Input */
+    input[type="file"] {
+        border: 1px dashed #00c3ff;
+        padding: 0.5rem;
+        border-radius: 12px;
+        background: #f0f9ff;
+        transition: all 0.3s ease;
+    }
+
+    input[type="file"]:hover {
+        background: #e0f7ff;
+    }
+
+    /* Buttons */
+    .btn-glow {
+        background: linear-gradient(135deg, #00c3ff, #ff00d4);
+        color: #fff;
+        font-weight: 600;
+        border-radius: 50px;
+        padding: 0.6rem 2rem;
+        border: none;
+        box-shadow: 0 0 15px rgba(0, 195, 255, 0.5), 0 0 25px rgba(255, 0, 212, 0.5);
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .btn-glow:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 25px rgba(0, 195, 255, 0.8), 0 0 35px rgba(255, 0, 212, 0.8);
+    }
+
+    /* Slot Cards */
+    .slot-card {
+        background: linear-gradient(145deg, #fff, #d0f0ff);
+        border-radius: 15px;
+        padding: 1rem;
+        margin: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        border: 2px solid transparent;
+    }
+
+    .slot-card:hover {
+        transform: scale(1.05);
+        border: 2px solid #00c3ff;
+        box-shadow: 0 10px 20px rgba(0, 195, 255, 0.2);
+    }
+
+    .slot-card.selected {
+        background: linear-gradient(135deg, #00c3ff, #ff00d4);
+        color: #fff;
+        border: 2px solid #ff00d4;
+        box-shadow: 0 0 25px rgba(0, 195, 255, 0.6), 0 0 35px rgba(255, 0, 212, 0.6);
+    }
+
+    /* Breadcrumbs */
+    .breadcrumb .breadcrumb-item a {
+        color: #00c3ff;
+        transition: color 0.3s ease;
+    }
+
+    .breadcrumb .breadcrumb-item a:hover {
+        color: #ff00d4;
+    }
+
+    /* Images */
+    .faculty-image {
+        border: 5px solid #00c3ff;
+        transition: all 0.3s ease;
+    }
+
+    .faculty-image:hover {
+        border-color: #ff00d4;
+        box-shadow: 0 0 25px rgba(0, 195, 255, 0.6), 0 0 35px rgba(255, 0, 212, 0.6);
+    }
+
+    /* Footer */
+    footer {
+        background: #0d1b2a;
+        color: #fff;
+        padding: 2rem 0;
+        text-align: center;
+    }
+
+</style>
+
+
+<div class="site-wrap">
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HERO SECTION -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static "images/hero_1.jpg" %}') no-repeat center center; background-size: cover;"
+             id="home-section">
+        <div class="container text-center text-white">
+            <h1 class="display-4 font-weight-bold glow-text">Booking Appointment</h1>
+            <p class="lead glow-text">Schedule your appointment with ease</p>
+            <!-- Breadcrumbs -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center bg-transparent p-0 mt-3">
+                    <li class="breadcrumb-item"><a href="{% url 'homepage' %}" class="text-white">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'appointment_scheduler' %}" class="text-white">Appointments</a>
+                    </li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Book Appointment</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <div class="container my-5">
+        <div class="faculty-form-card p-4 rounded shadow-sm">
+            <form method="post" enctype="multipart/form-data" id="facultyForm">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-4 text-center">
+                        {% if faculty.image %}
+                            <img id="facultyPreview" src="{{ faculty.image.url }}" alt="{{ request.user.first_name }}"
+                                 class="faculty-image rounded-circle mb-2"
+                                 style="width: 250px; height: 250px; object-fit: cover; border-radius: 50%;">
+                        {% else %}
+                            <img id="facultyPreview" src="{% static 'images/smartuiu.png' %}" alt="Default Faculty"
+                                 class="faculty-image rounded-circle mb-2"
+                                 style="width: 250px; height: 250px; object-fit: cover; border-radius: 50%;">
+                        {% endif %}
+
+                        <input type="file" name="image" class="form-control mt-2" accept="image/*"
+                               onchange="previewFacultyImage(event)">
+                        <small class="text-muted">Optional</small>
+                    </div>
+
+                    <script>
+                        function previewFacultyImage(event) {
+                            const preview = document.getElementById('facultyPreview');
+                            const file = event.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function (e) {
+                                    preview.src = e.target.result;
+                                }
+                                reader.readAsDataURL(file);
+                            }
+                        }
+                    </script>
+                    <div class="col-md-8">
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" id="first_name" class="form-control"
+                                   value="{{ request.user.first_name }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" id="last_name" class="form-control" value="{{ request.user.last_name }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" class="form-control" value="{{ request.user.email }}"
+                                   readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="designation" class="form-label">Designation</label>
+                            <select name="designation" id="designation" class="form-control">
+                                <option value="Lecturer" {% if faculty.designation == "Lecturer" %}selected{% endif %}>
+                                    Lecturer
+                                </option>
+                                <option value="Assistant Professor"
+                                        {% if faculty.designation == "Assistant Professor" %}selected{% endif %}>
+                                    Assistant Professor
+                                </option>
+                                <option value="Associate Professor"
+                                        {% if faculty.designation == "Associate Professor" %}selected{% endif %}>
+                                    Associate Professor
+                                </option>
+                                <option value="Professor"
+                                        {% if faculty.designation == "Professor" %}selected{% endif %}>Professor
+                                </option>
+                                <option value="Vice Chancellor"
+                                        {% if faculty.designation == "Vice Chancellor" %}selected{% endif %}>Vice
+                                    Chancellor
+                                </option>
+                                <option value="Chancellor"
+                                        {% if faculty.designation == "Chancellor" %}selected{% endif %}>Chancellor
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <select name="department" id="department" class="form-control">
+                                <option value="Computer Science and Engineering"
+                                        {% if faculty.department == "Computer Science and Engineering" %}selected{% endif %}>
+                                    Computer Science and Engineering
+                                </option>
+                                <option value="Data Science"
+                                        {% if faculty.department == "Data Science" %}selected{% endif %}>
+                                    Data Science
+                                </option>
+                                <option value="Business Administration"
+                                        {% if faculty.department == "Business Administration" %}selected{% endif %}>
+                                    Business Administration
+                                </option>
+                                <option value="Media and Journalism"
+                                        {% if faculty.department == "Media and Journalism" %}selected{% endif %}>
+                                    Media and Journalism
+                                </option>
+                                <option value="Economics"
+                                        {% if faculty.department == "Economics" %}selected{% endif %}>
+                                    Economics
+                                </option>
+                                <option value="Pharmacy"
+                                        {% if faculty.department == "Pharmacy" %}selected{% endif %}>
+                                    Pharmacy
+                                </option>
+                                <option value="English"
+                                        {% if faculty.department == "English" %}selected{% endif %}>
+                                    English
+                                </option>
+                                <option value="Biotechnology and Genetic Engineering"
+                                        {% if faculty.department == "Biotechnology and Genetic Engineering" %}selected{% endif %}>
+                                    Biotechnology and Genetic Engineering
+                                </option>
+                                <option value="Electrical and Electronics Engineering"
+                                        {% if faculty.department == "Electrical and Electronics Engineering" %}selected{% endif %}>
+                                    Electrical and Electronics Engineering
+                                </option>
+                                <option value="Civil Engineering"
+                                        {% if faculty.department == "Civil Engineering" %}selected{% endif %}>
+                                    Civil Engineering
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-glow">Update Profile</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- SCRIPTS -->
+    <script>
+        const slots = document.querySelectorAll('.slot-card');
+        const selectedInput = document.getElementById('selectedSlot');
+
+        slots.forEach(slot => {
+            if (slot.dataset.booked === "1") return; // skip booked
+            slot.addEventListener('click', () => {
+                slots.forEach(s => s.classList.remove('selected'));
+                slot.classList.add('selected');
+                selectedInput.value = slot.dataset.id;
+            });
+        });
+
+        document.getElementById('appointmentForm').addEventListener('submit', (e) => {
+            if (!selectedInput.value) {
+                e.preventDefault();
+                alert('Please select a slot!');
+            }
+        });
+    </script>
+
+    {% include 'expendable/footer.html' %}
+</div>
+{% include 'expendable/include.html' %}
+</body>
+</html>

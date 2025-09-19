@@ -18,6 +18,8 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb justify-content-center bg-transparent p-0 mt-3">
                     <li class="breadcrumb-item"><a href="{% url 'homepage' %}" class="text-white">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'appointment_scheduler' %}" class="text-white">Appointments</a>
+                    </li>
                     <li class="breadcrumb-item active text-white" aria-current="page">My Bookings</li>
                 </ol>
             </nav>
@@ -36,7 +38,8 @@
                                 <strong>Department:</strong> {{ booking.availability.faculty.department }} <br>
                                 <strong>Designation:</strong> {{ booking.availability.faculty.designation }} <br>
                                 <strong>Day:</strong> {{ booking.availability.day_of_week }} <br>
-                                <strong>Time:</strong> {{ booking.start_time|time:"H:i" }} - {{ booking.end_time|time:"H:i" }}
+                                <strong>Time:</strong> {{ booking.start_time|time:"H:i" }}
+                                - {{ booking.end_time|time:"H:i" }}
                             </p>
                         </div>
                         <form method="post" class="remove-booking-form" action="{% url 'remove_booking' booking.id %}">
@@ -71,13 +74,13 @@
             border-radius: 15px;
             background: linear-gradient(145deg, #6a11cb, #2575fc);
             color: #fff;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .booking-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
         }
 
         .booking-info h5 {
@@ -107,7 +110,7 @@
         const removeForms = document.querySelectorAll('.remove-booking-form');
 
         removeForms.forEach(form => {
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 const confirmed = confirm("Are you sure you want to remove this booking?");
                 if (!confirmed) {
                     e.preventDefault();

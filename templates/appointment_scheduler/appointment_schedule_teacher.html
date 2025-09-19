@@ -1,0 +1,264 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<style>
+    /* --- General --- */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #f0f4f8;
+        color: #333;
+        scroll-behavior: smooth;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    /* --- Hero Section --- */
+    .section-hero {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .section-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .section-hero h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #fff;
+        z-index: 2;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        animation: glowText 2s infinite alternate;
+    }
+
+    .section-hero p {
+        font-size: 1.2rem;
+        color: #fff;
+        z-index: 2;
+        animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes glowText {
+        0% { text-shadow: 0 0 10px #00c3ff, 0 0 20px #ff00d4; }
+        50% { text-shadow: 0 0 20px #00c3ff, 0 0 40px #ff00d4; }
+        100% { text-shadow: 0 0 30px #00c3ff, 0 0 60px #ff00d4; }
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(20px);}
+        100% { opacity: 1; transform: translateY(0);}
+    }
+
+    /* --- Breadcrumbs --- */
+    .breadcrumb {
+        background: transparent;
+        padding: 0;
+        margin-top: 1rem;
+        z-index: 2;
+        position: relative;
+    }
+
+    .breadcrumb .breadcrumb-item a {
+        color: #00c3ff;
+        transition: color 0.3s;
+    }
+
+    .breadcrumb .breadcrumb-item a:hover {
+        color: #ff00d4;
+    }
+
+    /* --- Booking Form Card --- */
+    .booking-card {
+        max-width: 900px;
+        margin: -100px auto 3rem auto;
+        background: linear-gradient(145deg, #ffffff, #e0f7ff);
+        border-radius: 25px;
+        padding: 3rem;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        position: relative;
+        z-index: 2;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+    }
+
+    .booking-card h4 {
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        color: #00c3ff;
+        font-weight: 700;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        padding: 0.8rem 1rem;
+        border: 1px solid #ccc;
+        transition: all 0.3s;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #00c3ff;
+        box-shadow: 0 0 10px rgba(0,195,255,0.5);
+        outline: none;
+    }
+
+    .btn-glow {
+        background: linear-gradient(135deg, #00c3ff, #ff00d4);
+        color: #fff;
+        font-weight: 600;
+        border-radius: 50px;
+        padding: 0.7rem 2rem;
+        border: none;
+        box-shadow: 0 0 15px rgba(0,195,255,0.5), 0 0 25px rgba(255,0,212,0.5);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-glow:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 25px rgba(0,195,255,0.8), 0 0 35px rgba(255,0,212,0.8);
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+        .section-hero h1 {
+            font-size: 2.2rem;
+        }
+        .section-hero p {
+            font-size: 1rem;
+        }
+        .booking-card {
+            margin: -60px 1rem 2rem 1rem;
+            padding: 2rem;
+        }
+    }
+</style>
+
+<div class="site-wrap">
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HERO SECTION -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background: url('{% static "images/hero_1.jpg" %}') no-repeat center center; background-size: cover;">
+        <div class="container text-center">
+            <h1>Book Your Appointment</h1>
+            <p>Schedule your meeting with our faculty easily and quickly</p>
+
+            <!-- Breadcrumbs -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'appointment_scheduler' %}">Appointments</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Book Appointment</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- BOOKING FORM CARD -->
+    <div class="booking-card">
+        <h4>Set Your Schedule</h4>
+        <form method="post" id="scheduleForm" action="{% url 'faculty_set_schedule' %}">
+            {% csrf_token %}
+
+            <!-- Days -->
+            <div class="mb-3">
+                <label for="days" class="form-label">Select Days</label>
+                <select id="days" name="days" class="form-control" multiple>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+            </div>
+
+            <!-- Time Slots -->
+            <div class="mb-3" id="timeSlotsContainer">
+                <label class="form-label">Time Slots</label>
+                <div class="time-slot-row mb-2">
+                    <input type="text" name="start_time[]" class="form-control timepicker d-inline-block w-45 me-2" placeholder="Start Time">
+                    <input type="text" name="end_time[]" class="form-control timepicker d-inline-block w-45" placeholder="End Time">
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-glow mb-3" onclick="addTimeSlot()">Add Another Time Slot</button>
+
+            <!-- Interval -->
+            <div class="mb-3">
+                <label for="interval" class="form-label">Time Slice (minutes)</label>
+                <input type="number" id="interval" name="interval" class="form-control" placeholder="e.g., 30">
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-glow">Save Schedule</button>
+            </div>
+        </form>
+    </div>
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+<!-- JS Libraries -->
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    // Select2
+    $('#days').select2({placeholder: "Select Days"});
+
+    // Flatpickr
+    flatpickr("#start_date", {altInput: true, altFormat: "F j, Y", dateFormat: "Y-m-d", minDate: "today"});
+    flatpickr(".timepicker", {enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true});
+
+    // Add dynamic time slots
+    function addTimeSlot() {
+        const container = document.getElementById('timeSlotsContainer');
+        const row = document.createElement('div');
+        row.classList.add('time-slot-row', 'mb-2');
+        row.innerHTML = `
+            <input type="text" name="start_time[]" class="form-control timepicker d-inline-block w-45 me-2" placeholder="Start Time">
+            <input type="text" name="end_time[]" class="form-control timepicker d-inline-block w-45" placeholder="End Time">
+            <button type="button" class="btn btn-sm btn-danger ms-2" onclick="removeTimeSlot(this)">Remove</button>
+        `;
+        container.appendChild(row);
+        flatpickr(row.querySelectorAll(".timepicker"), {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true
+        });
+    }
+
+    function removeTimeSlot(btn) {
+        btn.parentElement.remove();
+    }
+</script>
+
+{% include 'expendable/include.html' %}
+</body>
+</html>
