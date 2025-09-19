@@ -1,0 +1,188 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HERO SECTION -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static "images/hero_1.jpg" %}') no-repeat center center; background-size: cover;"
+             id="home-section">
+        <div class="container text-center text-white">
+            <h1 class="display-4 font-weight-bold glow-text">Booking Appointment</h1>
+            <p class="lead glow-text">Schedule your appointment with ease</p>
+            <!-- Breadcrumbs -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center bg-transparent p-0 mt-3">
+                    <li class="breadcrumb-item"><a href="{% url 'homepage' %}" class="text-white">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'appointment_scheduler' %}" class="text-white">Appointments</a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Book Appointment</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- APPOINTMENT SLOTS -->
+    <div class="container my-5">
+        <div class="text-center mb-4">
+            <h2 class="mb-2 glow-text">Faculty: {{ faculty.first_name }} {{ faculty.last_name }}</h2>
+            <h4 class="mb-2 text-muted">{{ faculty.designation }}, Department of {{ faculty.department }}</h4>
+        </div>
+
+        {% if message %}
+            <div class="alert alert-info text-center">{{ message }}</div>
+        {% endif %}
+
+        <form method="post" id="appointmentForm">
+            {% csrf_token %}
+            <div class="slots-container">
+                {% for avail in availabilities %}
+                    {% with is_booked=avail.appointments.count %}
+                        <div class="slot-card {% if is_booked %}booked{% endif %}"
+                             data-id="{{ avail.id }}"
+                             {% if is_booked %}data-booked="1"{% else %}data-booked="0"{% endif %}>
+                            <div class="slot-day">{{ avail.day_of_week }}</div>
+                            <div class="slot-time">{{ avail.start_time|time:"H:i" }} - {{ avail.end_time|time:"H:i" }}</div>
+                            {% if is_booked %}
+                                <div class="slot-student">Booked by: {{ avail.appointments.first.student.get_full_name }}</div>
+                            {% else %}
+                                <div class="slot-student">Available</div>
+                            {% endif %}
+                        </div>
+                    {% endwith %}
+                {% empty %}
+                    <p class="text-center text-muted">No slots available at the moment.</p>
+                {% endfor %}
+            </div>
+
+            <input type="hidden" name="availability_id" id="selectedSlot">
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-glow btn-lg">Confirm Booking</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- STYLES -->
+    <style>
+        /* General Glow Text */
+        .glow-text {
+            text-shadow: 0 0 8px #ffb347, 0 0 15px #ffcc33;
+        }
+
+        /* Slot Grid */
+        .slots-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 25px;
+            justify-items: center;
+            margin-top: 30px;
+        }
+
+        /* Slot Cards */
+        .slot-card {
+            border-radius: 15px;
+            border: 2px solid transparent;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: linear-gradient(145deg, #ff9a9e, #fad0c4);
+            color: #fff;
+            font-weight: 500;
+            transition: transform 0.3s, box-shadow 0.3s, background 0.5s, border 0.3s;
+            width: 100%;
+            max-width: 220px;
+            position: relative;
+        }
+
+        .slot-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 25px rgba(255, 165, 0, 0.5);
+            border: 2px solid #fff;
+        }
+
+        .slot-card.selected {
+            background: linear-gradient(145deg, #6a11cb, #2575fc);
+            box-shadow: 0 0 15px #6a11cb, 0 0 25px #2575fc;
+            color: #fff;
+        }
+
+        .slot-card.booked {
+            background: linear-gradient(145deg, #ff416c, #ff4b2b);
+            cursor: not-allowed;
+            box-shadow: 0 0 8px #ff4b2b;
+        }
+
+        /* Slot Text */
+        .slot-day {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .slot-time {
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .slot-student {
+            font-size: 0.85rem;
+            color: #fff;
+        }
+
+        /* Button Glow */
+        .btn-glow {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 0 8px #ff7e5f, 0 0 15px #feb47b;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px #ff7e5f, 0 0 25px #feb47b;
+        }
+
+        /* Breadcrumb hover effect */
+        .breadcrumb-item a:hover {
+            text-decoration: underline;
+            color: #ffd700 !important;
+        }
+    </style>
+
+    <!-- SCRIPTS -->
+    <script>
+        const slots = document.querySelectorAll('.slot-card');
+        const selectedInput = document.getElementById('selectedSlot');
+
+        slots.forEach(slot => {
+            if (slot.dataset.booked === "1") return; // skip booked
+            slot.addEventListener('click', () => {
+                slots.forEach(s => s.classList.remove('selected'));
+                slot.classList.add('selected');
+                selectedInput.value = slot.dataset.id;
+            });
+        });
+
+        document.getElementById('appointmentForm').addEventListener('submit', (e) => {
+            if (!selectedInput.value) {
+                e.preventDefault();
+                alert('Please select a slot!');
+            }
+        });
+    </script>
+
+    {% include 'expendable/footer.html' %}
+</div>
+{% include 'expendable/include.html' %}
+</body>
+</html>

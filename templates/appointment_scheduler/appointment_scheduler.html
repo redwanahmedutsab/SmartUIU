@@ -1,0 +1,220 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div>
+
+    {% include 'expendable/navbar.html' %}
+
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12 text-center">
+                    <h1 class="text-white font-weight-bold">Welcome to appointment scheduling section</h1>
+                    <p class="text-white font-weight-bold">Schedule appointments without hassle and with
+                        convenience!</p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-md-6 text-center">
+                        <div class="d-grid gap-3">
+
+                            {% if role == "student" %}
+                                <a href="{% url 'course_materials_add' %}"
+                                   class="btn btn-warning btn-lg custom-btn shadow-lg">Book Appointment</a>
+                                <a href="{% url 'student_bookings' %}"
+                                   class="btn btn-info btn-lg custom-btn shadow-lg">Edit Appointments</a>
+
+                            {% elif role == "faculty" %}
+                                <a href="{% url 'teacher_schedule' %}"
+                                   class="btn btn-success btn-lg custom-btn shadow-lg">Add Appointment</a>
+                                <a href="{% url 'manage_appointments' %}"
+                                   class="btn btn-info btn-lg custom-btn shadow-lg">Edit Appointments</a>
+
+                            {% elif role == "admin" %}
+                                <a href="{% url 'teacher_schedule' %}"
+                                   class="btn btn-success btn-lg custom-btn shadow-lg">Add Appointment</a>
+                                <a href="{% url 'manage_appointments' %}"
+                                   class="btn btn-info btn-lg custom-btn shadow-lg">Edit Appointments</a>
+
+                            {% else %}
+                                <p class="text-white">Your email domain is not recognized. Please contact support.</p>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .custom-btn {
+                font-size: 1.3rem;
+                padding: 15px 20px;
+                border-radius: 50px;
+                transition: transform 0.3s ease, background-color 0.3s ease;
+                letter-spacing: 1px;
+            }
+
+            .custom-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .btn-warning {
+                background-color: #e0c9a5;
+                border: none;
+            }
+
+            .btn-warning:hover {
+                background-color: #e68900;
+            }
+
+            .btn-info {
+                background-color: #17a2b8;
+                border: none;
+            }
+
+            .btn-info:hover {
+                background-color: #138496;
+            }
+
+            /* Shadow effect for a more impactful design */
+            .shadow-lg {
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+        </style>
+    </section>
+
+    <section class="site-section" id="next">
+        <div class="container">
+
+            <!-- Title -->
+            <div class="row mb-5 justify-content-center">
+                <div class="col-md-7 text-center">
+                    <h2 class="section-title mb-2">List of all faculties</h2>
+                </div>
+            </div>
+
+            <!-- Search Form -->
+            <div class="row mb-4 justify-content-center">
+                <div class="col-md-10">
+                    <form method="get" class="row g-2">
+                        <div class="col-md-4">
+                            <input type="text" name="name" class="form-control" placeholder="Faculty Name"
+                                   value="{{ query_name }}">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="designation" class="form-control" placeholder="Designation"
+                                   value="{{ query_designation }}">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="department" class="form-control" placeholder="Department"
+                                   value="{{ query_department }}">
+                        </div>
+                        <div class="col-md-12 text-center mt-2">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                            <a href="{% url 'appointment_scheduler' %}" class="btn btn-secondary">Reset</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Faculty Cards -->
+            <div class="row">
+                <style>
+                    .card {
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    }
+
+                    .card:hover {
+                        transform: translateY(-10px);
+                        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+                    }
+
+                    .card-title {
+                        font-size: 1.25rem;
+                        color: #007bff;
+                        margin-bottom: 0.5rem;
+                    }
+
+                    .card-text {
+                        font-size: 0.9rem;
+                        color: #6c757d;
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .btn-outline-primary {
+                        border-color: #007bff;
+                        color: #007bff;
+                    }
+
+                    .btn-outline-primary:hover {
+                        background-color: #007bff;
+                        color: #fff;
+                    }
+                </style>
+                {% for faculty in faculties %}
+                    <div class="col-md-4 mb-5">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-img-top">
+                                {% if faculty.image %}
+                                    <img src="{{ faculty.image.url }}"
+                                         alt="{{ faculty.first_name }} {{ faculty.last_name }}"
+                                         class="img-fluid rounded-top"
+                                         style="max-height: 180px; object-fit: cover; width: 100%;">
+                                {% else %}
+                                    <img src="{% static 'images/smartuiu.png' %}"
+                                         alt="{{ faculty.first_name }} {{ faculty.last_name }}"
+                                         class="img-fluid rounded-top"
+                                         style="max-height: 180px; object-fit: cover; width: 100%;">
+                                {% endif %}
+                            </div>
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <h5 class="card-title font-weight-bold text-primary mb-2">
+                                        {{ faculty.first_name }} {{ faculty.last_name }}
+                                    </h5>
+                                    <p class="card-text text-muted mb-4">
+                                        <strong>Department:</strong> {{ faculty.department }} <br>
+                                        <strong>Designation:</strong> {{ faculty.designation }}
+                                    </p>
+                                </div>
+                                <a href="{% url 'appointment_booking_student' faculty.id %}"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="fas icon-find_in_page"></i> Book Appointment
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center text-muted">No faculty profiles found.</p>
+                {% endfor %}
+            </div>
+
+        </div>
+    </section>
+
+    <section class="py-5 bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+    </section>
+    {% include 'expendable/footer.html' %}
+</div>
+{% include 'expendable/include.html' %}
+</body>
+</html>

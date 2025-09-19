@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'django_browser_reload',
     'events',
     'study_group_app',
+    'appointment_scheduler',
 ]
 
 MIDDLEWARE = [

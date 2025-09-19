@@ -13,6 +13,7 @@ urlpatterns = [
     path('course_materials_and_feedback/', include('course_materials_and_feedback.urls')),
     path('study_group_app/', include('study_group_app.urls')),
     path('internship_and_job/', include('internship_and_job.urls')),
+    path('appointment_scheduler/', include('appointment_scheduler.urls')),
     path('events/', include('events.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
 ]

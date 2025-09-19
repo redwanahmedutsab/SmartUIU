@@ -1,0 +1,123 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HERO SECTION -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static "images/hero_1.jpg" %}') no-repeat center center; background-size: cover;"
+             id="home-section">
+        <div class="container text-center text-white">
+            <h1 class="display-4 font-weight-bold glow-text">My Bookings</h1>
+            <p class="lead glow-text">View and manage your appointments</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center bg-transparent p-0 mt-3">
+                    <li class="breadcrumb-item"><a href="{% url 'homepage' %}" class="text-white">Home</a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">My Bookings</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- STUDENT BOOKINGS LIST -->
+    <div class="container my-5">
+        {% if bookings %}
+            <div class="list-container">
+                {% for booking in bookings %}
+                    <div class="booking-card">
+                        <div class="booking-info">
+                            <h5 class="glow-text">{{ booking.availability.faculty.first_name }} {{ booking.availability.faculty.last_name }}</h5>
+                            <p class="text-muted mb-1">
+                                <strong>Department:</strong> {{ booking.availability.faculty.department }} <br>
+                                <strong>Designation:</strong> {{ booking.availability.faculty.designation }} <br>
+                                <strong>Day:</strong> {{ booking.availability.day_of_week }} <br>
+                                <strong>Time:</strong> {{ booking.start_time|time:"H:i" }} - {{ booking.end_time|time:"H:i" }}
+                            </p>
+                        </div>
+                        <form method="post" class="remove-booking-form" action="{% url 'remove_booking' booking.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center text-muted">You have no bookings yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- STYLES -->
+    <style>
+        .glow-text {
+            text-shadow: 0 0 8px #ffb347, 0 0 15px #ffcc33;
+        }
+
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .booking-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #6a11cb, #2575fc);
+            color: #fff;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+        }
+
+        .booking-info h5 {
+            margin-bottom: 5px;
+        }
+
+        .booking-info p {
+            margin: 0;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            border: none;
+            border-radius: 50px;
+            padding: 8px 18px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-danger:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px #ff416c, 0 0 25px #ff4b2b;
+        }
+    </style>
+
+    <!-- CONFIRM REMOVE SCRIPT -->
+    <script>
+        const removeForms = document.querySelectorAll('.remove-booking-form');
+
+        removeForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const confirmed = confirm("Are you sure you want to remove this booking?");
+                if (!confirmed) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+
+    {% include 'expendable/footer.html' %}
+</div>
+{% include 'expendable/include.html' %}
+</body>
+</html>

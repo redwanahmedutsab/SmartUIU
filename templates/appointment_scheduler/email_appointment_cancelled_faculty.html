@@ -1,0 +1,4 @@
+<p>Dear {{ appointment.availability.faculty.first_name }},</p>
+<p>The appointment with {{ appointment.student.get_full_name }} on {{ appointment.availability.day_of_week }} at
+{{ appointment.start_time|time:"H:i" }} has been cancelled by the student.</p>
+<p>Thank you, <br>UIU Appointment Scheduler</p>

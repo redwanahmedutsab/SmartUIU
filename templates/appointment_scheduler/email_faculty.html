@@ -1,0 +1,6 @@
+<h2>New Appointment Booked</h2>
+<p>Dear {{ student.get_full_name }},</p>
+<p>{{ student.get_full_name }} has booked an appointment with you.</p>
+<p><strong>Day:</strong> {{ appointment.availability.day_of_week }}<br>
+<strong>Time:</strong> {{ appointment.start_time|time:"H:i" }} - {{ appointment.end_time|time:"H:i" }}</p>
+<p>Please be prepared for the meeting.</p>

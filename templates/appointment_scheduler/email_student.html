@@ -1,0 +1,6 @@
+<h2>Appointment Confirmed!</h2>
+<p>Dear {{ appointment.student.get_full_name }},</p>
+<p>Your appointment with {{ faculty.first_name }} {{ faculty.last_name }} has been confirmed.</p>
+<p><strong>Day:</strong> {{ appointment.availability.day_of_week }}<br>
+<strong>Time:</strong> {{ appointment.start_time|time:"H:i" }} - {{ appointment.end_time|time:"H:i" }}</p>
+<p>Thank you for using SmartUIU.</p>
