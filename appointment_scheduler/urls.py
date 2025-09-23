@@ -6,6 +6,8 @@ from . import views
 urlpatterns = [
     path('', views.home, name='appointment_scheduler'),
     path('faculty/set_schedule/', views.faculty_set_schedule, name='faculty_set_schedule'),
+    path('appointment_scheduler/faculty_data/', views.faculty_routine, name='faculty_data'),
+
     path('faculty/create_profile/', views.faculty_create_profile, name='faculty_profile_create'),
     path('faculty/manage_schedule/', views.faculty_manage_schedule, name='faculty_manage_schedule'),
 

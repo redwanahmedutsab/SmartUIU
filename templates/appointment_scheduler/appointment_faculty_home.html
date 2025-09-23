@@ -1,0 +1,259 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div>
+
+    {% include 'expendable/navbar.html' %}
+
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12 text-center">
+                    <h1 class="text-white font-weight-bold">Welcome to appointment scheduling section</h1>
+                    <p class="text-white font-weight-bold">Select your available times for students!</p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-md-6 text-center">
+                        <div class="d-grid gap-3">
+
+                            <!-- Existing Student Button -->
+                            <a href="{% url 'faculty_profile_create' %}"
+                               class="btn btn-lg custom-btn custom-btn-edit shadow-lg">Create a Faculty Profile</a>
+                            <a href="#"
+                               class="btn btn-lg custom-btn custom-btn-schedule shadow-lg"
+                               onclick="checkFacultyProfile('{% url 'faculty_set_schedule' %}')">
+                                Set Appointment Schedule
+                            </a>
+                            <script>
+                                function checkFacultyProfile(targetUrl) {
+                                    // Get status and message from Django context
+                                    const status = "{{ status }}";
+                                    const message = "{{ message }}";
+
+                                    if (status === "failed") {
+                                        // Show alert if no faculty profile
+                                        alert(message);
+                                    } else {
+                                        // Redirect if profile exists
+                                        window.location.href = targetUrl;
+                                    }
+                                }
+                            </script>
+
+                            <a href="{% url 'faculty_manage_schedule' %}"
+                               class="btn btn-lg custom-btn custom-btn-edit shadow-lg">Edit Schedule</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .custom-btn {
+                font-size: 1.3rem;
+                padding: 15px 20px;
+                border-radius: 50px;
+                transition: transform 0.3s ease, background-color 0.3s ease;
+                letter-spacing: 1px;
+            }
+
+            .custom-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .btn-warning {
+                background-color: #e0c9a5;
+                border: none;
+            }
+
+            .btn-warning:hover {
+                background-color: #e68900;
+            }
+
+            .btn-info {
+                background-color: #17a2b8;
+                border: none;
+            }
+
+            .btn-info:hover {
+                background-color: #138496;
+            }
+
+            /* Shadow effect for a more impactful design */
+            .shadow-lg {
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Faculty button styles */
+            .custom-btn-schedule {
+                background: linear-gradient(135deg, #6a11cb, #2575fc);
+                color: #fff;
+            }
+
+            .custom-btn-schedule:hover {
+                background: linear-gradient(135deg, #5a0fb5, #1f63d6);
+                color: #fff;
+            }
+
+            .custom-btn-edit {
+                background: linear-gradient(135deg, #ff7e5f, #feb47b);
+                color: #fff;
+            }
+
+            .custom-btn-edit:hover {
+                background: linear-gradient(135deg, #e76e50, #f7a45f);
+                color: #fff;
+            }
+        </style>
+    </section>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card routine-card p-4 shadow-lg">
+                <h4 class="text-center mb-4">Your Weekly Schedule</h4>
+                <table class="table table-bordered text-center" id="routine-table">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Day</th>
+                        <th>Available Slots</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- JS will populate rows here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .routine-card {
+            border-radius: 15px;
+            background-color: #f8f9fa;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .routine-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .slot-box {
+            display: inline-flex; /* flex for centering */
+            justify-content: center; /* horizontal center */
+            align-items: center; /* vertical center */
+            width: 100px; /* fixed width */
+            height: 100px; /* fixed height to make square */
+            margin: 5px;
+            border-radius: 10px; /* slightly rounded corners */
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #fff;
+            cursor: default;
+            text-align: center; /* center text if wrapped */
+            white-space: pre-wrap; /* wrap if needed */
+        }
+
+
+        .slot-available {
+            background-color: #0d6efd;
+        }
+
+        /* Blue for available */
+        .slot-booked {
+            background-color: #dc3545;
+        }
+
+        /* Red for booked */
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("{% url 'faculty_data' %}")
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.querySelector("#routine-table tbody");
+                    tbody.innerHTML = "";
+
+                    if (data.status === "success") {
+                        data.weekdays.forEach(day => {
+                            const row = document.createElement("tr");
+                            const dayCell = document.createElement("td");
+                            dayCell.textContent = day;
+                            const slotsCell = document.createElement("td");
+
+                            const slots = data.schedule_by_day[day];
+                            if (slots && slots.length > 0) {
+                                slots.forEach(slot => {
+                                    const span = document.createElement("span");
+                                    span.className = "slot-box " + (slot.booked ? "slot-booked" : "slot-available");
+
+                                    // Convert time to 12-hour format
+                                    const [start, end] = slot.time.split(' - ');
+                                    span.textContent = `${to12HourFormat(start)} - ${to12HourFormat(end)}`;
+
+                                    slotsCell.appendChild(span);
+                                });
+                            } else {
+                                slotsCell.textContent = "No slots";
+                            }
+
+                            row.appendChild(dayCell);
+                            row.appendChild(slotsCell);
+
+                            // Highlight current day
+                            const today = new Date().toLocaleDateString('en-US', {weekday: 'long'});
+                            if (day === today) row.style.backgroundColor = '#d1e7dd';
+
+                            tbody.appendChild(row);
+                        });
+                    } else {
+                        tbody.innerHTML = `<tr><td colspan="2">${data.message}</td></tr>`;
+                    }
+                })
+                .catch(error => console.error("Error fetching routine:", error));
+
+            function to12HourFormat(timeStr) {
+                let [hour, minute] = timeStr.split(':').map(Number);
+                const ampm = hour >= 12 ? ' PM' : ' AM';
+                hour = hour % 12;
+                if (hour === 0) hour = 12;
+                return `${hour}:${minute.toString().padStart(2, '0')}${ampm}`;
+            }
+        });
+    </script>
+
+
+    <!-- rest of your template unchanged -->
+    <section class="site-section" id="next">
+        <div class="container">
+            ...
+        </div>
+    </section>
+
+    <section class="py-5 bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+    </section>
+    {% include 'expendable/footer.html' %}
+</div>
+{% include 'expendable/include.html' %}
+</body>
+</html>

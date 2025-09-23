@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.db.models import Q
 from django.contrib import messages
 from datetime import datetime, timedelta
+from django.http import JsonResponse
 
 
 def home(request):
@@ -49,7 +50,7 @@ def home(request):
 
     # Decide which template
     if role == "student":
-        template = "appointment_scheduler/appointment_scheduler_student_home.html"
+        template = "appointment_scheduler/appointment_student_home.html"
         context = {
             "faculties": faculties,
             "query_name": query_name,
@@ -57,7 +58,7 @@ def home(request):
             "query_department": query_department,
         }
     else:
-        template = "appointment_scheduler/appointment_scheduler_faculty_home.html"
+        template = "appointment_scheduler/appointment_faculty_home.html"
         context = {}
 
     print(role)
@@ -167,18 +168,19 @@ def faculty_set_schedule(request):
         faculty = request.user.faculty_profile
     except FacultyProfile.DoesNotExist:
         messages.error(request, "You do not have a faculty profile. Contact admin.")
-        return redirect('homepage')
+        data = {
+            "status": "failed",
+            "message": "You have no faculty profile. Create a faculty profile first.",
+        }
+        return render(request, 'appointment_scheduler/appointment_faculty_home.html', data)
+
+    # Generate years for dropdown (2025 to 2035)
+    years = list(range(2025, 2036))
 
     if request.method == 'POST':
-        days = request.POST.getlist('days')
-        start_times = request.POST.getlist('start_time[]')
-        end_times = request.POST.getlist('end_time[]')
+        # Get selected days
+        days = request.POST.getlist('day[]')
         interval_str = request.POST.get('interval')
-
-        print(days)
-        print(start_times)
-        print(end_times)
-        print(interval_str)
 
         # Validate interval
         try:
@@ -189,21 +191,29 @@ def faculty_set_schedule(request):
 
         slots_created = 0
 
-        # Loop over each selected day and time range
-        for day in days:
+        # Loop through each day index
+        for idx, day in enumerate(days):
+            start_times = request.POST.getlist(f'start_time[{idx}][]')
+            end_times = request.POST.getlist(f'end_time[{idx}][]')
+
             for i in range(len(start_times)):
                 st = start_times[i]
                 et = end_times[i]
 
+                # Parse time from flatpickr (h:i K → 12h with AM/PM)
                 try:
-                    start_dt = datetime.strptime(st, "%H:%M")
-                    end_dt = datetime.strptime(et, "%H:%M")
+                    start_dt = datetime.strptime(st, "%I:%M %p")
+                    end_dt = datetime.strptime(et, "%I:%M %p")
                 except ValueError:
-                    messages.warning(request, f"Invalid time format for slot {i + 1}. Skipping.")
+                    messages.warning(
+                        request,
+                        f"Invalid time format for slot {i + 1} on {day}. Skipping."
+                    )
                     continue
 
                 current_time = start_dt
 
+                # Create slots with the given interval
                 while current_time + timedelta(minutes=interval) <= end_dt:
                     slot_start = current_time.time()
                     slot_end = (current_time + timedelta(minutes=interval)).time()
@@ -229,7 +239,14 @@ def faculty_set_schedule(request):
         messages.success(request, f"{slots_created} slots created successfully!")
         return redirect('faculty_manage_schedule')
 
-    return render(request, 'appointment_scheduler/appointment_schedule_teacher.html', {'faculty': faculty})
+    return render(
+        request,
+        'appointment_scheduler/appointment_faculty_make_schedule.html',
+        {
+            'faculty': faculty,
+            'years': years  # ✅ pass years for dropdown
+        }
+    )
 
 
 @login_required
@@ -242,7 +259,7 @@ def faculty_manage_schedule(request):
         return redirect('homepage')
 
     availabilities = faculty.availabilities.all().order_by('day_of_week', 'start_time')
-    return render(request, 'appointment_scheduler/appointment_schedule_teacher.html', {
+    return render(request, 'appointment_scheduler/appointment_faculty_make_schedule.html', {
         'availabilities': availabilities,
     })
 
@@ -272,3 +289,34 @@ def faculty_create_profile(request):
         'faculty': faculty
     }
     return render(request, 'appointment_scheduler/appointment_faculty_profile.html', context)
+
+
+def faculty_routine(request):
+    try:
+        faculty = request.user.faculty_profile
+        availabilities = FacultyAvailability.objects.filter(faculty=faculty)
+    except FacultyProfile.DoesNotExist:
+        return JsonResponse({
+            "status": "failed",
+            "message": "You have no faculty profile.",
+            "weekdays": []
+        })
+
+    weekdays = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
+    schedule_by_day = {}
+    for avail in availabilities:
+        # Check if this availability slot is booked
+        booked = Appointment.objects.filter(availability_id=avail.id, is_cancelled=False).exists()
+
+        # Store as dict with booked info
+        schedule_by_day.setdefault(avail.day_of_week, []).append({
+            "time": f"{avail.start_time} - {avail.end_time}",
+            "booked": booked
+        })
+
+    return JsonResponse({
+        "status": "success",
+        "weekdays": weekdays,
+        "schedule_by_day": schedule_by_day
+    })

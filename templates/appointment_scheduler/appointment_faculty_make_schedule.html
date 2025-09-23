@@ -1,0 +1,339 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<style>
+    /* --- General --- */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #f0f4f8;
+        color: #333;
+        scroll-behavior: smooth;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    /* --- Hero Section --- */
+    .section-hero {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .section-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .section-hero h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #fff;
+        z-index: 2;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        animation: glowText 2s infinite alternate;
+    }
+
+    .section-hero p {
+        font-size: 1.2rem;
+        color: #fff;
+        z-index: 2;
+        animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes glowText {
+        0% {
+            text-shadow: 0 0 10px #00c3ff, 0 0 20px #ff00d4;
+        }
+        50% {
+            text-shadow: 0 0 20px #00c3ff, 0 0 40px #ff00d4;
+        }
+        100% {
+            text-shadow: 0 0 30px #00c3ff, 0 0 60px #ff00d4;
+        }
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* --- Booking Form Card --- */
+    .booking-card {
+        max-width: 900px;
+        background: linear-gradient(145deg, #ffffff, #e0f7ff);
+        border-radius: 25px;
+        margin: 50px auto 3rem;
+        padding: 3rem;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 2;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    .booking-card h4 {
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        color: #00c3ff;
+        font-weight: 700;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        padding: 0.8rem 1rem;
+        border: 1px solid #ccc;
+        transition: all 0.3s;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #00c3ff;
+        box-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
+        outline: none;
+    }
+
+    .btn-glow {
+        background: linear-gradient(135deg, #00c3ff, #ff00d4);
+        color: #fff;
+        font-weight: 600;
+        border-radius: 50px;
+        padding: 0.7rem 2rem;
+        border: none;
+        box-shadow: 0 0 15px rgba(0, 195, 255, 0.5), 0 0 25px rgba(255, 0, 212, 0.5);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-glow:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 25px rgba(0, 195, 255, 0.8), 0 0 35px rgba(255, 0, 212, 0.8);
+    }
+
+    @media (max-width: 768px) {
+        .section-hero h1 {
+            font-size: 2.2rem;
+        }
+
+        .section-hero p {
+            font-size: 1rem;
+        }
+
+        .booking-card {
+            margin: -60px 1rem 2rem 1rem;
+            padding: 2rem;
+        }
+    }
+</style>
+
+<div class="site-wrap">
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HERO SECTION -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background: url('{% static "images/hero_1.jpg" %}') no-repeat center center; background-size: cover;">
+        <div class="container text-center">
+            <h1>Book Your Appointment</h1>
+            <p>Schedule your meeting with our faculty easily and quickly</p>
+
+            <!-- Breadcrumbs -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'appointment_scheduler' %}">Appointments</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Book Appointment</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Booking Form -->
+    <div class="booking-card">
+        <h4>Set Counseling Hour (Trimester Schedule)</h4>
+        <form method="post" id="scheduleForm" action="{% url 'faculty_set_schedule' %}">
+            {% csrf_token %}
+
+            <!-- Trimester & Year -->
+            <div class="mb-3 d-flex gap-3">
+                <div class="flex-fill">
+                    <label for="trimester" class="form-label">Trimester</label>
+                    <select id="trimester" name="trimester" class="form-control" required>
+                        <option value="">-- Select Trimester --</option>
+                        <option value="Spring">Spring</option>
+                        <option value="Summer">Summer</option>
+                        <option value="Fall">Fall</option>
+                    </select>
+                </div>
+                <div class="flex-fill">
+                    <label for="year" class="form-label">Year</label>
+                    <select id="year" name="year" class="form-control" required>
+                        {% for y in years %}
+                            <option value="{{ y }}">{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Start & End Dates -->
+            <div class="mb-3 d-flex gap-3">
+                <div class="flex-fill">
+                    <label for="start_date" class="form-label">Start Date</label>
+                    <input type="text" id="start_date" name="start_date" class="form-control" required>
+                </div>
+                <div class="flex-fill">
+                    <label for="end_date" class="form-label">End Date</label>
+                    <input type="text" id="end_date" name="end_date" class="form-control" required>
+                </div>
+            </div>
+
+            <!-- Weekly Schedule -->
+            <div id="weeklySchedule">
+                <label class="form-label">Weekly Schedule</label>
+                <div class="day-schedule mb-4 p-3 border rounded">
+                    <div class="mb-2">
+                        <select name="day[]" class="form-control day-select" required>
+                            <option value="">-- Select Day --</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                        </select>
+                    </div>
+                    <div class="timeSlotsContainer">
+                        <div class="time-slot-row mb-2 d-flex gap-2">
+                            <input type="text" name="start_time[0][]" class="form-control timepicker flex-fill"
+                                   placeholder="Start Time" required>
+                            <input type="text" name="end_time[0][]" class="form-control timepicker flex-fill"
+                                   placeholder="End Time" required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-glow mt-2" onclick="addTimeSlot(this)">+ Add Time Slot
+                    </button>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-outline-primary mb-3" onclick="addDaySchedule()">+ Add Another Day
+            </button>
+
+            <!-- Interval -->
+            <div class="mb-3">
+                <label for="interval" class="form-label">Appointment Slice (minutes)</label>
+                <input type="number" id="interval" name="interval" class="form-control" placeholder="e.g., 15" min="5"
+                       max="60" step="1" required>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-glow">Save Schedule</button>
+            </div>
+        </form>
+    </div>
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+<!-- JS Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+
+<script>
+    // Flatpickr for dates
+    flatpickr("#start_date", {dateFormat: "Y-m-d", minDate: "today"});
+    flatpickr("#end_date", {dateFormat: "Y-m-d", minDate: "today"});
+
+    // Initialize timepickers
+    function initTimePickers() {
+        flatpickr(".timepicker", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K",
+            time_24hr: false
+        });
+    }
+
+    initTimePickers();
+
+    // Add extra time slot under a day
+    function addTimeSlot(btn) {
+        const container = btn.previousElementSibling;
+        const row = document.createElement('div');
+        row.classList.add('time-slot-row', 'mb-2', 'd-flex', 'gap-2');
+        row.innerHTML = `
+            <input type="text" name="start_time[]" class="form-control timepicker flex-fill" placeholder="Start Time" required>
+            <input type="text" name="end_time[]" class="form-control timepicker flex-fill" placeholder="End Time" required>
+            <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">Remove</button>
+        `;
+        container.appendChild(row);
+        initTimePickers();
+    }
+
+    // Add new day block
+    function addDaySchedule() {
+        const scheduleDiv = document.getElementById('weeklySchedule');
+        const index = scheduleDiv.querySelectorAll('.day-schedule').length;
+        const block = document.createElement('div');
+        block.classList.add('day-schedule', 'mb-4', 'p-3', 'border', 'rounded');
+        block.innerHTML = `
+            <div class="mb-2">
+                <select name="day[]" class="form-control day-select" required>
+                    <option value="">-- Select Day --</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                </select>
+            </div>
+            <div class="timeSlotsContainer">
+                <div class="time-slot-row mb-2 d-flex gap-2">
+                    <input type="text" name="start_time[${index}][]" class="form-control timepicker flex-fill" placeholder="Start Time" required>
+                    <input type="text" name="end_time[${index}][]" class="form-control timepicker flex-fill" placeholder="End Time" required>
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-glow mt-2" onclick="addTimeSlot(this)">+ Add Time Slot</button>
+            <button type="button" class="btn btn-sm btn-danger mt-2 ms-2" onclick="this.parentElement.remove()">Remove Day</button>
+        `;
+        scheduleDiv.appendChild(block);
+        initTimePickers();
+    }
+
+    // Limit interval input to 2 digits
+    document.getElementById('interval').addEventListener('input', function () {
+        if (this.value.length > 2) {
+            this.value = this.value.slice(0, 2);
+        }
+    });
+</script>
+
+{% include 'expendable/include.html' %}
+</body>
+</html>
