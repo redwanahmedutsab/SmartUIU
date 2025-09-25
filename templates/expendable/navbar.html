@@ -29,10 +29,12 @@
                             Academic
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'course_materials' %}">Find Course Materials</a></li>
+                            <li><a class="dropdown-item" href="{% url 'course_materials' %}">Find Course Materials</a>
+                            </li>
                             <li><a class="dropdown-item" href="{% url 'study_group' %}">Create Study Group</a></li>
                             <li><a class="dropdown-item" href="{% url 'thesis_finder' %}">Find Thesis Member</a></li>
-                            <li><a class="dropdown-item" href="{% url 'appointment_scheduler' %}">Schedule Appointment</a></li>
+                            <li><a class="dropdown-item" href="{% url 'appointment_scheduler' %}">Schedule
+                                Appointment</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -51,6 +53,7 @@
                             Social
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'smart_bot_home' %}">SmartBOT</a></li>
                             <li><a class="dropdown-item" href="{% url 'blog' %}">Blogs</a></li>
                             <li><a class="dropdown-item" href="{% url 'event' %}">Events</a></li>
                         </ul>
@@ -76,7 +79,8 @@
                            aria-haspopup="true" aria-expanded="false">
                 <span class="user-icon position-relative">  <!-- Use position-relative for badge positioning -->
                     <i class="fas fa-user-circle fa-2x"></i>
-                    {% if notifications|length > 0 or notifications_study.count > 0%}  <!-- Check if there are new notifications -->
+                    {% if notifications|length > 0 or notifications_study.count > 0 %}
+                        <!-- Check if there are new notifications -->
                         <span class="badge badge-danger position-absolute"
                               style="top: 0; right: 0;">{{ notifications.count|add:notifications_study.count }}</span>
                     {% endif %}

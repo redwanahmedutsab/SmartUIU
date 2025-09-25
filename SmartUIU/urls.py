@@ -15,6 +15,7 @@ urlpatterns = [
     path('internship_and_job/', include('internship_and_job.urls')),
     path('appointment_scheduler/', include('appointment_scheduler.urls')),
     path('events/', include('events.urls')),
+    path('smart_bot/', include('smart_bot.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
 

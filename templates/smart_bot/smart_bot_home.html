@@ -1,0 +1,210 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div>
+
+    {% include 'expendable/navbar.html' %}
+
+    <!-- Hero Section -->
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12 text-center">
+                    <h1 class="text-white font-weight-bold hero-title">Welcome to the world of AI</h1>
+                    <p class="text-white hero-subtitle">Get all sorts of helps from lecturer summarization to project
+                        ideas each and everything you want to know!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% load static %}
+
+    <!-- Chat List Section -->
+    <div class="container py-5">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-dark section-title">Your All Chats</h2>
+            {% if user.is_authenticated %}
+                <a href="{% url 'new_chat' %}" class="btn btn-gradient btn-lg shadow-lg" id="newChatBtn">
+                    <span>+ New Chat</span>
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Chat List Card -->
+        <div class="card shadow-sm chat-card">
+            <div class="card-body">
+                {% if chats %}
+                    <ul class="list-group list-group-flush">
+                        {% for chat in chats %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center chat-item">
+                                <a href="{% url 'chat_detail' chat.id %}"
+                                   class="text-dark chat-link">{{ chat.title }}</a>
+                                <div class="d-flex align-items-center gap-2">
+                                    <small class="text-muted">{{ chat.created_at|date:"M d, Y H:i" }}</small>
+
+                                    <!-- Delete Button -->
+                                    <form method="POST" action="{% url 'delete_chat' chat.id %}"
+                                          style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-light shadow-sm delete-btn"
+                                                title="Delete Chat">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted mb-0">No chats yet. Click "New Chat" to start your first conversation.</p>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Background Accent Section -->
+    <section class="py-5 bg-image accent-bg"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+    </section>
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+{% include 'expendable/include.html' %}
+
+<!-- JavaScript for hover effects -->
+<script>
+    // Chat link underline effect
+    document.querySelectorAll('.chat-link').forEach(item => {
+        item.addEventListener('mouseover', () => item.style.textDecoration = 'underline');
+        item.addEventListener('mouseout', () => item.style.textDecoration = 'none');
+    });
+
+    // Smooth scroll for page sections (if needed)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({behavior: 'smooth'});
+        });
+    });
+</script>
+
+<!-- CSS Styling -->
+<style>
+    .delete-btn {
+        border: none;
+        background: #f8f9fa;
+        color: #dc3545;
+        margin-left: 10px;
+        border-radius: 8px;
+        padding: 6px 10px;
+        transition: all 0.2s ease;
+    }
+
+    .delete-btn i {
+        font-size: 0.95rem;
+    }
+
+    .delete-btn:hover {
+        background: #dc3545;
+        color: #fff;
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    }
+
+    /* Hero Section Enhancements */
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 800;
+        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        font-weight: 500;
+        text-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Gradient Button */
+    .btn-gradient {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-gradient:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Chat Card */
+    .chat-card {
+        border-radius: 15px;
+        background: #ffffffee;
+        backdrop-filter: blur(10px);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .chat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Chat Items */
+    .chat-item {
+        padding: 1rem 1.25rem;
+        border-radius: 10px;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .chat-item:hover {
+        background-color: #f0f4ff;
+        transform: translateX(5px);
+    }
+
+    /* Chat Links */
+    .chat-link {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    /* Background Accent Section */
+    .accent-bg {
+        background-size: cover;
+        background-position: center;
+        opacity: 0.85;
+        border-radius: 20px 20px 0 0;
+        margin-top: 50px;
+    }
+
+    /* Section Titles */
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+</style>
+</body>
+</html>

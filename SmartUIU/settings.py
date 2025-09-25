@@ -14,6 +14,7 @@ from pathlib import Path
 import pymysql
 import ssl
 import certifi
+from dotenv import load_dotenv
 
 # Create an SSL context using certifi’s certificate bundle
 ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -59,6 +60,7 @@ INSTALLED_APPS = [
     'events',
     'study_group_app',
     'appointment_scheduler',
+    'smart_bot',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +79,7 @@ ROOT_URLCONF = 'SmartUIU.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -149,6 +150,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # This should be a differen
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# BASE_DIR is already defined, make sure it's above this
+load_dotenv(os.path.join(BASE_DIR, ".env"))  # Load .env file
+
+# Now get the API key
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    raise Exception("OPENAI_API_KEY is not set! Please check your .env file.")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
