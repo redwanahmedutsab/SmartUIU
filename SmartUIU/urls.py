@@ -16,6 +16,7 @@ urlpatterns = [
     path('appointment_scheduler/', include('appointment_scheduler.urls')),
     path('events/', include('events.urls')),
     path('smart_bot/', include('smart_bot.urls')),
+    path('shuttle_tracker/', include('shuttle_tracker.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
 

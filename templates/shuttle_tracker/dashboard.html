@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shuttle Tracker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <style>
+        #map { height: 70vh; width: 100%; margin-top: 10px; }
+    </style>
+</head>
+<body class="container mt-3">
+
+<h2 class="mb-3">Shuttle Tracker</h2>
+
+<select id="route-select" class="form-select mb-2">
+    <option value="" disabled selected>Select Route</option>
+    {% for route in routes %}
+        <option value="{{ route.id }}">{{ route.name }}</option>
+    {% endfor %}
+</select>
+
+<div id="map"></div>
+<button id="toggle-share" class="btn btn-primary mt-2">Stop Sharing</button>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    var map = L.map('map').setView([23.7806, 90.2794], 13); // Example city center
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    var markers = {};
+    var sharing = true;
+    var routeId = null;
+    var watchId = null;
+
+    document.getElementById('route-select').addEventListener('change', function(){
+        routeId = this.value;
+        fetchLocations(); // initial fetch
+        if(watchId){ navigator.geolocation.clearWatch(watchId); }
+        startSharing();
+    });
+
+    function fetchLocations() {
+        if(!routeId) return;
+        fetch(`/live_locations/${routeId}/`)
+            .then(res => res.json())
+            .then(data => {
+                data.locations.forEach(loc => {
+                    if(markers[loc.user]){
+                        markers[loc.user].setLatLng([loc.latitude, loc.longitude]);
+                    } else {
+                        markers[loc.user] = L.marker([loc.latitude, loc.longitude]).addTo(map)
+                            .bindPopup(loc.user);
+                    }
+                });
+            });
+    }
+
+    setInterval(fetchLocations, 5000); // fallback polling every 5s
+
+    function startSharing(){
+        if(navigator.geolocation){
+            watchId = navigator.geolocation.watchPosition(function(position){
+                if(!sharing || !routeId) return;
+                fetch('/update_location/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&route_id=${routeId}`
+                });
+            });
+        } else {
+            alert("Geolocation not supported.");
+        }
+    }
+
+    document.getElementById('toggle-share').addEventListener('click', function(){
+        sharing = !sharing;
+        fetch('/toggle_sharing/', {
+            method: 'POST',
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            body: `is_sharing=${sharing}`
+        });
+        this.textContent = sharing ? "Stop Sharing" : "Start Sharing";
+    });
+</script>
+
+</body>
+</html>

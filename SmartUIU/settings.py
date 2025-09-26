@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'study_group_app',
     'appointment_scheduler',
     'smart_bot',
+    'shuttle_tracker',
 ]
 
 MIDDLEWARE = [
@@ -168,6 +169,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'uiujobbank@gmail.com'
-EMAIL_HOST_PASSWORD = 'uajvwbglayrweath'
+EMAIL_HOST_USER = 'smartuiu.ai@gmail.com'
+EMAIL_HOST_PASSWORD = 'asdAsD1@'
 DEFAULT_FROM_EMAIL = 'UIU JOB BANK <smartuiu@gmail.com>'
