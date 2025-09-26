@@ -10,17 +10,24 @@
     {% include 'expendable/navbar.html' %}
 
     <!-- Hero Section -->
-    <section class="section-hero home-section overlay inner-page bg-image"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
-        <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center">
-                    <h1 class="text-white font-weight-bold hero-title">Shuttle Tracker</h1>
-                    <p class="text-white hero-subtitle">Track and Share Shuttle Live Location</p>
-                </div>
-            </div>
+    <section class="section-hero overlay inner-page bg-image"
+             style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static "images/hero_1.jpg" %}') no-repeat center center; background-size: cover;"
+             id="home-section">
+        <div class="container text-center text-white">
+            <h1 class="display-4 font-weight-bold glow-text">Locations</h1>
+            <p class="lead glow-text">Solve your problems here</p>
+            <!-- Breadcrumbs -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center bg-transparent p-0 mt-3">
+                    <li class="breadcrumb-item"><a href="{% url 'homepage' %}" class="text-white">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'smart_bot_home' %}" class="text-white">Smart Bot</a>
+                    </li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Chats</li>
+                </ol>
+            </nav>
         </div>
     </section>
+
 
     <!-- Map & Start Sharing -->
     <div class="container py-5">

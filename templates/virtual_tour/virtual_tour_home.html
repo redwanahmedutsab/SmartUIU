@@ -1,0 +1,74 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    {% include 'expendable/navbar.html' %}
+
+    <!-- Hero Section -->
+    <section class="section-hero home-section overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12 text-center">
+                    <h1 class="text-white font-weight-bold hero-title">Welcome to Virtual Tour Section</h1>
+                    <p class="text-white hero-subtitle">Here you will be able to see and enjoy the beautiful campus!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Campus Locations Section -->
+    <div class="container py-5">
+        <h2 class="mb-4 text-center">Choose a Location to Explore</h2>
+        <div class="row">
+            {% for loc in locations %}
+                <div class="col-md-4">
+                    <a href="{% url 'virtual_tour' loc.id %}" class="title-card">
+                        <h5>{{ loc.name }}</h5>
+                        {% if loc.description %}
+                            <p>{{ loc.description|truncatewords:15 }}</p>
+                        {% endif %}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% include 'expendable/include.html' %}
+
+    <!-- CSS Styling -->
+    <style>
+        .title-card {
+            display: block;
+            background: #ffffffee;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid #ddd;
+            text-decoration: none;
+        }
+
+        .title-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 123, 255, 0.5);
+            border-color: #007bff;
+        }
+
+        .title-card h5 {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #333;
+            margin: 0;
+        }
+    </style>
+
+</body>
+</html>
