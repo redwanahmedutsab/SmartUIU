@@ -38,208 +38,166 @@
                     {% csrf_token %}
 
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <!-- Degree -->
+                        <div class="col-md-4 mb-3">
                             <label for="degree" class="form-label">Degree Name</label>
                             <select id="degree" name="degree" class="form-control" required
-                                    onchange="updateTrimester()">
-                                <option value="bscse" {% if course_material.degree == 'bscse' %}selected{% endif %}>
-                                    B.Sc. in Computer Science & Engineering
-                                </option>
-                                <option value="mscse" {% if course_material.degree == 'mscse' %}selected{% endif %}>
-                                    M.Sc. in Computer Science & Engineering
-                                </option>
-                                <option value="bsds" {% if course_material.degree == 'bsds' %}selected{% endif %}>B.Sc.
-                                    in Data Science
-                                </option>
-                                <option value="bseee" {% if course_material.degree == 'bseee' %}selected{% endif %}>
-                                    B.Sc. in Electrical & Electronics Engineering
-                                </option>
-                                <option value="bsce" {% if course_material.degree == 'bsce' %}selected{% endif %}>B.Sc.
-                                    in Civil Engineering
-                                </option>
-                                <option value="bt" {% if course_material.degree == 'bt' %}selected{% endif %}>B.Sc. in
-                                    Bio Technology & Genetic Engineering
-                                </option>
-                                <option value="msj" {% if course_material.degree == 'msj' %}selected{% endif %}>Media
-                                    and Journalism
-                                </option>
-                                <option value="bae" {% if course_material.degree == 'bae' %}selected{% endif %}>B.A. in
-                                    English
-                                </option>
-                                <option value="mba" {% if course_material.degree == 'mba' %}selected{% endif %}>Masters
-                                    of Business Administration
-                                </option>
-                                <option value="bba" {% if course_material.degree == 'bba' %}selected{% endif %}>Bachelor
-                                    of Business Administration
-                                </option>
-                                <option value="bp" {% if course_material.degree == 'bp' %}selected{% endif %}>B.
-                                    Pharma.
-                                </option>
-                                <option value="bse" {% if course_material.degree == 'bse' %}selected{% endif %}>B.Sc. in
-                                    Economics
-                                </option>
+                                    onchange="updateDropdowns()">
+                                <option value="">Select Degree</option>
+                                {% for dept in departments %}
+                                    <option value="{{ dept.slug }}"
+                                            data-type="{{ dept.trimester }}"
+                                            {% if course_material.degree == dept.slug %}selected{% endif %}>
+                                        {{ dept.name }}
+                                    </option>
+                                {% endfor %}
                             </select>
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <!-- Trimester -->
+                        <div class="col-md-4 mb-3">
                             <label for="trimester" class="form-label">Trimester/Semester</label>
                             <select id="trimester" name="trimester" class="form-control" required>
-                                <!-- Options will be populated by the script -->
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <!-- Term -->
+                        <div class="col-md-2 mb-3">
+                            <label for="material_description" class="form-label">Term</label>
+                            <select id="material_description" name="material_description" class="form-control" required>
+                                <option value="">Select Term</option>
+                            </select>
+                        </div>
+
+                        <!-- Year -->
+                        <div class="col-md-2 mb-3">
+                            <label for="year" class="form-label">Year</label>
+                            <select id="year" name="year" class="form-control" required>
+                                <!-- Populated dynamically -->
                             </select>
                         </div>
                     </div>
 
+                    <!-- Dynamic dropdown script -->
                     <script>
-                        function updateTrimester() {
-                            var degree = document.getElementById("degree").value;
-                            var trimesterSelect = document.getElementById("trimester");
+                        function updateDropdowns() {
+                            const degreeSelect = document.getElementById("degree");
+                            const trimesterSelect = document.getElementById("trimester");
+                            const termSelect = document.getElementById("material_description");
+
                             trimesterSelect.innerHTML = "";
+                            termSelect.innerHTML = "<option value=''>Select Term</option>";
 
-                            var trimesterOptions = [];
+                            if (!degreeSelect.value) return;
 
-                            // Adjust condition if needed based on the actual degree values
-                            if (['bscse', 'bseee', 'bsds', 'mscse', 'bba', 'mba'].includes(degree)) {
-                                trimesterOptions = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
-                            } else {
-                                trimesterOptions = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
-                            }
+                            const selectedOption = degreeSelect.options[degreeSelect.selectedIndex];
+                            const type = selectedOption.getAttribute("data-type").toLowerCase();
 
-                            // Populate the trimester dropdown
-                            trimesterOptions.forEach(function (value) {
-                                var option = document.createElement("option");
-                                option.value = value;
-                                option.text = value;
-                                if (value == "{{ course_material.trimester }}") {
-                                    option.selected = true; // Select the current trimester
+                            // Trimester/Semester options
+                            let total = (type === "trimester") ? 12 : 8;
+                            for (let i = 1; i <= total; i++) {
+                                const option = document.createElement("option");
+                                option.value = i + getOrdinal(i);
+                                option.text = i + getOrdinal(i);
+                                if (option.value === "{{ course_material.trimester }}") {
+                                    option.selected = true;
                                 }
                                 trimesterSelect.appendChild(option);
+                            }
+
+                            // Terms
+                            const terms = (type === "trimester") ? ["Spring", "Summer", "Fall"] : ["Spring", "Fall"];
+                            terms.forEach(term => {
+                                const option = document.createElement("option");
+                                option.value = term;
+                                option.text = term;
+                                if (option.value === "{{ course_material.material_description }}") {
+                                    option.selected = true;
+                                }
+                                termSelect.appendChild(option);
                             });
                         }
 
-                        window.onload = updateTrimester;
+                        function getOrdinal(n) {
+                            if (10 <= n % 100 && n % 100 <= 20) return "th";
+                            return {1: "st", 2: "nd", 3: "rd"}[n % 10] || "th";
+                        }
+
+                        window.onload = function () {
+                            updateDropdowns();
+
+                            // Year dropdown
+                            const yearSelect = document.getElementById("year");
+                            const currentYear = new Date().getFullYear();
+                            for (let y = currentYear; y >= 2000; y--) {
+                                const option = document.createElement("option");
+                                option.value = y;
+                                option.text = y;
+                                if (y == "{{ course_material.year }}") {
+                                    option.selected = true;
+                                }
+                                yearSelect.appendChild(option);
+                            }
+                        };
                     </script>
 
+                    <!-- Course Name & Code -->
                     <div class="mb-3">
-                        <label for="course_title" class="form-label">Course Name (Write full name)</label>
+                        <label for="course_title" class="form-label">Course Name</label>
                         <input type="text" id="course_title" name="course_title"
-                               placeholder="e.g. System Analysis & Design" class="form-control" required
-                               value="{{ course_material.course_title }}">
+                               class="form-control" required value="{{ course_material.course_title }}">
                     </div>
-
                     <div class="mb-3">
-                        <label for="course_code" class="form-label">Course Code (Follow the given format)</label>
-                        <input type="text" id="course_code" name="course_code" placeholder="e.g. CSE 3411"
+                        <label for="course_code" class="form-label">Course Code</label>
+                        <input type="text" id="course_code" name="course_code"
                                class="form-control" required value="{{ course_material.course_code }}">
                     </div>
 
+                    <!-- Material Type -->
                     <div class="mb-3">
                         <label for="material_type" class="form-label">Material Type</label>
                         <select id="material_type" name="material_type" class="form-control" required>
                             <option value="Class Test"
-                                    {% if course_material.material_type == 'Class Test' %}selected{% endif %}>Class Test
+                                    {% if course_material.material_type == "Class Test" %}selected{% endif %}>Class Test
                             </option>
                             <option value="Mid Question"
-                                    {% if course_material.material_type == 'Mid Question' %}selected{% endif %}>Mid
+                                    {% if course_material.material_type == "Mid Question" %}selected{% endif %}>Mid
                                 Question
                             </option>
                             <option value="Final Question"
-                                    {% if course_material.material_type == 'Final Question' %}selected{% endif %}>Final
+                                    {% if course_material.material_type == "Final Question" %}selected{% endif %}>Final
                                 Question
                             </option>
                             <option value="Assignment"
-                                    {% if course_material.material_type == 'Assignment' %}selected{% endif %}>Assignment
+                                    {% if course_material.material_type == "Assignment" %}selected{% endif %}>Assignment
                             </option>
                             <option value="Slides"
-                                    {% if course_material.material_type == 'Slides' %}selected{% endif %}>Slides
+                                    {% if course_material.material_type == "Slides" %}selected{% endif %}>Slides
                             </option>
-                            <option value="Notes" {% if course_material.material_type == 'Notes' %}selected{% endif %}>
+                            <option value="Notes" {% if course_material.material_type == "Notes" %}selected{% endif %}>
                                 Notes
                             </option>
                         </select>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="material_description" class="form-label">Term</label>
-                        <select id="material_description" name="material_description" class="form-control" required>
-                            <option value="">Select Term</option>
-                            <option value="Summer 2024"
-                                    {% if course_material.material_description == "Summer 2024" %}selected{% endif %}>
-                                Summer 2024
-                            </option>
-                            <option value="Spring 2024"
-                                    {% if course_material.material_description == "Spring 2024" %}selected{% endif %}>
-                                Spring 2024
-                            </option>
-                            <option value="Fall 2023"
-                                    {% if course_material.material_description == "Fall 2023" %}selected{% endif %}>Fall
-                                2023
-                            </option>
-                            <option value="Summer 2023"
-                                    {% if course_material.material_description == "Summer 2023" %}selected{% endif %}>
-                                Summer 2023
-                            </option>
-                            <option value="Spring 2023"
-                                    {% if course_material.material_description == "Spring 2023" %}selected{% endif %}>
-                                Spring 2023
-                            </option>
-                            <option value="Fall 2022"
-                                    {% if course_material.material_description == "Fall 2022" %}selected{% endif %}>Fall
-                                2022
-                            </option>
-                            <option value="Summer 2022"
-                                    {% if course_material.material_description == "Summer 2022" %}selected{% endif %}>
-                                Summer 2022
-                            </option>
-                            <option value="Spring 2022"
-                                    {% if course_material.material_description == "Spring 2022" %}selected{% endif %}>
-                                Spring 2022
-                            </option>
-                            <option value="Fall 2021"
-                                    {% if course_material.material_description == "Fall 2021" %}selected{% endif %}>Fall
-                                2021
-                            </option>
-                            <option value="Summer 2021"
-                                    {% if course_material.material_description == "Summer 2021" %}selected{% endif %}>
-                                Summer 2021
-                            </option>
-                            <option value="Spring 2021"
-                                    {% if course_material.material_description == "Spring 2021" %}selected{% endif %}>
-                                Spring 2021
-                            </option>
-                            <option value="Fall 2020"
-                                    {% if course_material.material_description == "Fall 2020" %}selected{% endif %}>Fall
-                                2020
-                            </option>
-                            <option value="Summer 2020"
-                                    {% if course_material.material_description == "Summer 2020" %}selected{% endif %}>
-                                Summer 2020
-                            </option>
-                            <option value="Spring 2020"
-                                    {% if course_material.material_description == "Spring 2020" %}selected{% endif %}>
-                                Spring 2020
-                            </option>
-                        </select>
-                    </div>
-
-
+                    <!-- File Upload -->
                     <div class="mb-3">
                         <label for="materials" class="form-label">Upload New Materials (Optional)</label>
                         <input type="file" id="materials" name="materials" class="form-control" multiple>
-                        <small class="form-text text-muted">You can upload new files here. Previous files will remain
-                            unchanged.</small>
+                        <small class="form-text text-muted">Existing files will remain unless replaced.</small>
                     </div>
 
                     <h5>Existing Files:</h5>
                     <ul>
                         {% for file in existing_files %}
-                            <li>
-                                <a href="{{ file.file.url }}">{{ file.file.name }}</a>
-                            </li>
+                            <li><a href="{{ file.file.url }}">{{ file.file.name }}</a></li>
                         {% empty %}
                             <li>No files uploaded.</li>
                         {% endfor %}
                     </ul>
 
+                    <!-- Admin Email -->
                     <div class="mb-3">
                         <label for="admin_email" class="form-label">Admin Email</label>
                         <input type="email" id="admin_email" name="admin_email" class="form-control"
@@ -254,29 +212,5 @@
 
     {% include 'expendable/footer.html' %}
 </div>
-
-<style>
-    body {
-        background-color: #f8f9fa; /* Light background */
-    }
-
-    .section-hero {
-        padding: 60px 0;
-    }
-
-    .form-control {
-        border-radius: 0.5rem; /* Rounded corners */
-    }
-
-    .btn-primary {
-        background-color: #007bff; /* Bootstrap primary color */
-    }
-
-    .btn-secondary {
-        margin-left: 10px;
-    }
-</style>
-
-{% include 'expendable/footer.html' %}
 </body>
 </html>

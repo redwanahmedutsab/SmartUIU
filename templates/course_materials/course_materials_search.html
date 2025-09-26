@@ -7,18 +7,10 @@
 
 <div class="site-wrap">
 
-    <div class="site-mobile-menu site-navbar-target">
-        <div class="site-mobile-menu-header">
-            <div class="site-mobile-menu-close mt-3">
-                <span class="icon-close2 js-menu-toggle"></span>
-            </div>
-        </div>
-        <div class="site-mobile-menu-body"></div>
-    </div> <!-- .site-mobile-menu -->
-
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
-    <!-- HOME -->
+
+    <!-- HERO SECTION -->
     <section class="section-hero overlay inner-page bg-image"
              style="background-image: url('{% static "images/hero_1.jpg" %}');"
              id="home-section">
@@ -36,143 +28,107 @@
         </div>
     </section>
 
+    <!-- SEARCH FORM -->
     <div class="container mt-5 mb-5">
-        <div class="container mt-5 mb-5">
-            <h2 class="text-center mb-4">Manage Course Materials</h2>
-            <form method="get" action="{% url 'course_materials_search' %}" class="search-jobs-form mb-4">
-                {% csrf_token %}
-                <div class="row mb-5 justify-content-center">
-
-                    <div class="col-md-4 mb-3">
-                        <label for="course_name" class="form-label">Course Name</label>
-                        <input type="text" name="course_name" class="form-control"
-                               placeholder="Search by course name..." value="{{ request.GET.course_name }}">
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label for="trimester" class="form-label">Trimester</label>
-                        <select name="trimester" id="trimester" class="form-control">
-                            <option value="">Select Trimester</option>
-                            {% for idx in trimester_range %}
-                                <option value="{{ idx }}"
-                                        {% if request.GET.trimester == idx %}selected{% endif %}>
-                                    {{ idx }} Trimester
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label for="material_type" class="form-label">Material Type</label>
-                        <select id="material_type" name="material_type" class="form-control">
-                            <option value="">Select Material Type</option>
-                            <option value="Class Test"{% if request.GET.material_type == "Class Test" %}
-                                    selected{% endif %}>Class Test
-                            </option>
-                            <option value="Mid Question"{% if request.GET.material_type == "Mid Question" %}
-                                    selected{% endif %}>Mid Question
-                            </option>
-                            <option value="Final Question"{% if request.GET.material_type == "Final Question" %}
-                                    selected{% endif %}>Final Question
-                            </option>
-                            <option value="Assignment"{% if request.GET.material_type == "Assignment" %}
-                                    selected{% endif %}>Assignment
-                            </option>
-                            <option value="Slides"{% if request.GET.material_type == "Slides" %} selected{% endif %}>
-                                Slides
-                            </option>
-                            <option value="Notes"{% if request.GET.material_type == "Notes" %} selected{% endif %}>
-                                Notes
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="col-2">
-                        <button type="submit" class="btn btn-primary btn-block text-white btn-search">
-                            <span class="icon-search icon mr-2"></span>Search
-                        </button>
-                    </div>
-                    <div class="col-2">
-                        <a href="{% url 'course_materials_search' %}?degree={{ request.GET.degree }}&course_name=&trimester=&material_type="
-                           class="btn btn-secondary btn-block text-white">
-                            Reset
-                        </a>
-                    </div>
+        <h2 class="text-center mb-4">Manage Course Materials</h2>
+        <form method="get" action="{% url 'course_materials_search' %}" class="search-jobs-form mb-4">
+            {% csrf_token %}
+            <div class="row mb-5 justify-content-center">
+                <div class="col-md-4 mb-3">
+                    <label for="course_name" class="form-label">Course Name</label>
+                    <input type="text" name="course_name" class="form-control"
+                           placeholder="Search by course name..." value="{{ request.GET.course_name }}">
                 </div>
-            </form>
-            <div class="card shadow-sm">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0">Course Materials List</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table table-hover table-wrap">
-                        <thead>
-                        <tr>
-                            <th>Degree Name</th>
-                            <th>Trimester/ Semester</th>
-                            <th>Term</th>
-                            <th>Course Title</th>
-                            <th>Material Type</th>
-                            <th>Admin</th>
-                            <th>Uploaded</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for material in materials %}
-                            <tr>
-                                <td>
-                                    {% if material.degree == "bscse" %}
-                                        B.Sc. in Computer Science & Engineering
-                                    {% elif material.degree == "mscse" %}
-                                        M.Sc. in Computer Science & Engineering
-                                    {% elif material.degree == "bsds" %}
-                                        B.Sc. in Data Science
-                                    {% elif material.degree == "bseee" %}
-                                        B.Sc. in Electrical & Electronics Engineering
-                                    {% elif material.degree == "bsce" %}
-                                        B.Sc. in Civil Engineering
-                                    {% elif material.degree == "bba" %}
-                                        BBA
-                                    {% elif material.degree == "mba" %}
-                                        MBA
-                                    {% elif material.degree == "bt" %}
-                                        B.Sc. in Bio Technology & Genetic Engineering
-                                    {% elif material.degree == "bp" %}
-                                        B. Pharma.
-                                    {% elif material.degree == "bse" %}
-                                        B.Sc. in Economics
-                                    {% elif material.degree == "ba" %}
-                                        B.A. in English
-                                    {% else %}
-                                        {{ material.degree }} <!-- Default if none match -->
-                                    {% endif %}
-                                </td>
-                                <td>{{ material.trimester }}</td>
-                                <td>{{ material.material_description }}</td>
-                                <td>{{ material.course_title }}</td>
-                                <td>{{ material.material_type }}</td>
-                                <td>{{ material.user.get_full_name }}</td>
-                                <td>{{ material.created_at }}</td>
-                                <td>
-                                    {% for file in material.files.all %}
-                                        <a href="{% url 'download_material_file' file.id %}"
-                                           class="btn btn-primary btn-sm mb-1">Download</a>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="7" class="text-center">No course materials available.</td>
-                            </tr>
+
+                <div class="col-md-4 mb-3">
+                    <label for="trimester" class="form-label">Trimester</label>
+                    <select name="trimester" id="trimester" class="form-control">
+                        <option value="">Select Trimester</option>
+                        {% for idx in trimester_range %}
+                            <option value="{{ idx }}"
+                                    {% if request.GET.trimester == idx %}selected{% endif %}>
+                                {{ idx }}
+                            </option>
                         {% endfor %}
-                        </tbody>
-                    </table>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label for="material_type" class="form-label">Material Type</label>
+                    <select id="material_type" name="material_type" class="form-control">
+                        <option value="">Select Material Type</option>
+                        <option value="Class Test"{% if request.GET.material_type == "Class Test" %}selected{% endif %}>Class Test</option>
+                        <option value="Mid Question"{% if request.GET.material_type == "Mid Question" %}selected{% endif %}>Mid Question</option>
+                        <option value="Final Question"{% if request.GET.material_type == "Final Question" %}selected{% endif %}>Final Question</option>
+                        <option value="Assignment"{% if request.GET.material_type == "Assignment" %}selected{% endif %}>Assignment</option>
+                        <option value="Slides"{% if request.GET.material_type == "Slides" %}selected{% endif %}>Slides</option>
+                        <option value="Notes"{% if request.GET.material_type == "Notes" %}selected{% endif %}>Notes</option>
+                    </select>
+                </div>
+
+                <div class="col-2">
+                    <button type="submit" class="btn btn-primary btn-block text-white btn-search">
+                        <span class="icon-search icon mr-2"></span>Search
+                    </button>
+                </div>
+                <div class="col-2">
+                    <a href="{% url 'course_materials_search' %}?degree={{ request.GET.degree }}&course_name=&trimester=&material_type="
+                       class="btn btn-secondary btn-block text-white">
+                        Reset
+                    </a>
                 </div>
             </div>
-        </div>
+        </form>
 
+        <!-- COURSE MATERIALS LIST -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Course Materials List</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover table-wrap">
+                    <thead>
+                    <tr>
+                        <th>Degree</th>
+                        <th>Trimester / Semester</th>
+                        <th>Term</th>
+                        <th>Year</th>
+                        <th>Course Title</th>
+                        <th>Material Type</th>
+                        <th>Admin</th>
+                        <th>Uploaded</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for material in materials %}
+                        <tr>
+                            <td>{{ material.degree }}</td>
+                            <td>{{ material.trimester }}</td>
+                            <td>{{ material.material_description }}</td>
+                            <td>{{ material.year }}</td>
+                            <td>{{ material.course_title }}</td>
+                            <td>{{ material.material_type }}</td>
+                            <td>{{ material.user.get_full_name }}</td>
+                            <td>{{ material.created_at|date:"Y-m-d H:i" }}</td>
+                            <td>
+                                {% for file in material.files.all %}
+                                    <a href="{% url 'download_material_file' file.id %}"
+                                       class="btn btn-primary btn-sm mb-1">Download</a>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center">No course materials available.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
     <section class="py-5 bg-image fixed overlay"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');">
     </section>
@@ -183,15 +139,14 @@
 
 <style>
     .table-wrap {
-        table-layout: auto; /* Allow the table to adjust column widths based on content */
+        table-layout: auto;
     }
 
     .table-wrap th, .table-wrap td {
-        word-wrap: break-word; /* Allow text to wrap within cells */
-        overflow-wrap: break-word; /* Support for different browsers */
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 </style>
-
 
 </body>
 </html>

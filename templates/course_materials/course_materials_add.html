@@ -18,7 +18,8 @@
 
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
-    <!-- HOME -->
+
+    <!-- HERO SECTION -->
     <section class="section-hero overlay inner-page bg-image"
              style="background-image: url('{% static "images/hero_1.jpg" %}');"
              id="home-section">
@@ -36,6 +37,7 @@
         </div>
     </section>
 
+    <!-- MAIN FORM -->
     <div class="container mt-5">
         <h2 class="text-center mb-4">Manage Course Materials</h2>
 
@@ -46,70 +48,115 @@
             <div class="card-body">
                 <form method="post" action="{% url 'course_materials_add' %}" enctype="multipart/form-data">
                     {% csrf_token %}
+
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <!-- Degree Dropdown -->
+                        <div class="col-md-4 mb-3">
                             <label for="degree" class="form-label">Degree Name</label>
                             <select id="degree" name="degree" class="form-control" required
-                                    onchange="updateTrimester()">
-                                <option value="bscse">B.Sc. in Computer Science & Engineering</option>
-                                <option value="mscse">M.Sc. in Computer Science & Engineering</option>
-                                <option value="bsds">B.Sc. in Data Science</option>
-                                <option value="bseee">B.Sc. in Electrical & Electronics Engineering</option>
-                                <option value="bsce">B.Sc. in Civil Engineering</option>
-                                <option value="bt">B.Sc. in Bio Technology & Genetic Engineering</option>
-                                <option value="msj">Media and Journalism</option>
-                                <option value="bae">B.A. in English</option>
-                                <option value="mba">Masters of Business Administration</option>
-                                <option value="bba">Bachelor of Business Administration</option>
-                                <option value="bp">B. Pharma.</option>
-                                <option value="bse">B.Sc. in Economics</option>
+                                    onchange="updateDropdowns()">
+                                <option value="">Select Degree</option>
+                                {% for dept in departments %}
+                                    <option value="{{ dept.slug }}"
+                                            data-type="{{ dept.trimester }}">{{ dept.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
+
+                        <!-- Trimester/Semester Dropdown -->
+                        <div class="col-md-4 mb-3">
                             <label for="trimester" class="form-label">Trimester/Semester</label>
                             <select id="trimester" name="trimester" class="form-control" required>
-                                <!-- Options will be populated by the script -->
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <!-- Term Dropdown -->
+                        <div class="col-md-2 mb-3">
+                            <label for="material_description" class="form-label">Term</label>
+                            <select id="material_description" name="material_description" class="form-control" required>
+                                <option value="">Select Term</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <!-- Year Dropdown -->
+                        <div class="col-md-2 mb-3">
+                            <label for="year" class="form-label">Year</label>
+                            <select id="year" name="year" class="form-control" required>
+                                <!-- Populated dynamically -->
                             </select>
                         </div>
                     </div>
 
+                    <!-- JavaScript for dynamic dropdowns -->
                     <script>
-                        function updateTrimester() {
-                            var degree = document.getElementById("degree").value;
-                            var trimesterSelect = document.getElementById("trimester");
+                        function updateDropdowns() {
+                            const degreeSelect = document.getElementById("degree");
+                            const trimesterSelect = document.getElementById("trimester");
+                            const termSelect = document.getElementById("material_description");
+
                             trimesterSelect.innerHTML = "";
+                            termSelect.innerHTML = "<option value=''>Select Term</option>";
 
-                            var trimesterOptions = [];
+                            if (!degreeSelect.value) return;
 
-                            // Adjust condition if needed based on the actual degree values
-                            if (['bscse', 'bseee', 'bsds', 'mscse', 'bba', 'mba'].includes(degree)) {
-                                trimesterOptions = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
-                            } else {
-                                trimesterOptions = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
+                            const selectedOption = degreeSelect.options[degreeSelect.selectedIndex];
+                            const type = selectedOption.getAttribute("data-type").toLowerCase(); // "trimester" or "semester"
+
+                            // Populate Trimester/Semester dropdown
+                            let total = (type === "trimester") ? 12 : 8;
+                            for (let i = 1; i <= total; i++) {
+                                const option = document.createElement("option");
+                                option.value = i + getOrdinal(i);
+                                option.text = i + getOrdinal(i);
+                                trimesterSelect.appendChild(option);
                             }
 
-                            // Populate the trimester dropdown
-                            trimesterOptions.forEach(function (value) {
-                                var option = document.createElement("option");
-                                option.value = value;
-                                option.text = value;
-                                trimesterSelect.appendChild(option);
+                            // Populate Term dropdown
+                            const terms = (type === "trimester") ? ["Spring", "Summer", "Fall"] : ["Spring", "Fall"];
+                            terms.forEach(term => {
+                                const option = document.createElement("option");
+                                option.value = term;
+                                option.text = term;
+                                termSelect.appendChild(option);
                             });
                         }
 
-                        window.onload = updateTrimester;
+                        function getOrdinal(n) {
+                            if (10 <= n % 100 && n % 100 <= 20) return "th";
+                            return {1: "st", 2: "nd", 3: "rd"}[n % 10] || "th";
+                        }
+
+                        // Populate on page load
+                        window.onload = function() {
+                            updateDropdowns();
+
+                            // Populate Year dropdown dynamically
+                            const yearSelect = document.getElementById("year");
+                            const currentYear = new Date().getFullYear();
+                            for (let y = currentYear; y >= 2000; y--) {
+                                const option = document.createElement("option");
+                                option.value = y;
+                                option.text = y;
+                                yearSelect.appendChild(option);
+                            }
+                        };
                     </script>
 
+                    <!-- Course Name & Code -->
                     <div class="mb-3">
                         <label for="course_title" class="form-label">Course Name (Write full name)</label>
                         <input type="text" id="course_title" name="course_title"
                                placeholder="e.g. System Analysis & Design" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label for="course_title" class="form-label">Course Code (Follow the given format)</label>
+                        <label for="course_code" class="form-label">Course Code (Follow the given format)</label>
                         <input type="text" id="course_code" name="course_code" placeholder="e.g. CSE 3411"
                                class="form-control" required>
                     </div>
+
+                    <!-- Material Type -->
                     <div class="mb-3">
                         <label for="material_type" class="form-label">Material Type</label>
                         <select id="material_type" name="material_type" class="form-control" required>
@@ -122,43 +169,27 @@
                             <option value="Notes">Notes</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="material_description" class="form-label">Term</label>
-                        <select id="material_description" name="material_description" class="form-control" required>
-                            <option value="">Select Term</option>
-                            <option value="Summer 2024">Summer 2024</option>
-                            <option value="Spring 2024">Spring 2024</option>
-                            <option value="Fall 2023">Fall 2023</option>
-                            <option value="Summer 2023">Summer 2023</option>
-                            <option value="Spring 2023">Spring 2023</option>
-                            <option value="Fall 2022">Fall 2022</option>
-                            <option value="Summer 2022">Summer 2022</option>
-                            <option value="Spring 2022">Spring 2022</option>
-                            <option value="Fall 2021">Fall 2021</option>
-                            <option value="Summer 2021">Summer 2021</option>
-                            <option value="Spring 2021">Spring 2021</option>
-                            <option value="Fall 2020">Fall 2020</option>
-                            <option value="Summer 2020">Summer 2020</option>
-                            <option value="Spring 2020">Spring 2020</option>
-                        </select>
-                    </div>
 
+                    <!-- File Upload -->
                     <div class="mb-3">
                         <label for="materials" class="form-label">Upload Materials</label>
                         <input type="file" id="materials" name="materials" class="form-control" multiple required>
                     </div>
+
+                    <!-- Admin Email -->
                     <div class="mb-3">
                         <label for="admin_email" class="form-label">Admin Email</label>
                         <input type="email" id="admin_email" name="admin_email" class="form-control"
                                value="{{ user.email }}" readonly required>
                     </div>
+
+                    <!-- Submit -->
                     <button type="submit" class="btn btn-primary">Upload Material</button>
                 </form>
             </div>
         </div>
-
-
     </div>
+
     <section class="py-5 bg-image fixed overlay"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');">
     </section>
@@ -167,7 +198,5 @@
 
 </div>
 {% include 'expendable/include.html' %}
-
-
 </body>
 </html>

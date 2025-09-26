@@ -1,19 +1,27 @@
 from django.contrib import messages
 from django.http import FileResponse
-
 from .models import CourseMaterial, MaterialFile
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from .models import CourseDepartment
 
 
 @login_required(login_url='/login')
 def home(request):
-    return render(request, 'course_materials/course_materials.html')
+    # Fetch all departments dynamically
+    departments = CourseDepartment.objects.all()
+    return render(request, 'course_materials/course_materials.html', {'departments': departments})
 
 
 @login_required(login_url='/login')
 def course_materials_add_view(request):
+    # Fetch all departments for the degree dropdown
+    departments = CourseDepartment.objects.all()
+
+    # Optional: years for term dropdown (if you want dynamic term-year selection)
+    years = list(range(2020, 2026))  # 2020 to 2025 inclusive
+
     if request.method == 'POST':
         degree = request.POST.get('degree')
         trimester = request.POST.get('trimester')
@@ -23,7 +31,9 @@ def course_materials_add_view(request):
         material_description = request.POST.get('material_description')
         admin_email = request.POST.get('admin_email')
         materials = request.FILES.getlist('materials')
+        year = request.POST.get('year')
 
+        # Create CourseMaterial instance
         course_material = CourseMaterial.objects.create(
             degree=degree,
             trimester=trimester,
@@ -32,9 +42,11 @@ def course_materials_add_view(request):
             material_type=material_type,
             material_description=material_description,
             admin_email=admin_email,
-            user=request.user
+            user=request.user,
+            year=year
         )
 
+        # Create MaterialFile entries for each uploaded file
         for material in materials:
             MaterialFile.objects.create(
                 course_material=course_material,
@@ -43,7 +55,11 @@ def course_materials_add_view(request):
 
         return redirect('course_materials')
 
-    return render(request, 'course_materials/course_materials_add.html')
+    return render(request, 'course_materials/course_materials_add.html', {
+        'departments': departments,
+        'years': years,
+        'user': request.user,
+    })
 
 
 @login_required(login_url='/login')
@@ -59,12 +75,12 @@ def edit_course_material(request, id):
     if request.method == 'POST':
         course_material.degree = request.POST.get('degree')
         course_material.trimester = request.POST.get('trimester')
+        course_material.year = request.POST.get('year')   # ✅ NEW
         course_material.course_title = request.POST.get('course_title')
         course_material.course_code = request.POST.get('course_code')
         course_material.material_type = request.POST.get('material_type')
         course_material.material_description = request.POST.get('material_description')
         course_material.admin_email = request.POST.get('admin_email')
-
         course_material.save()
 
         if request.FILES.getlist('materials'):
@@ -84,6 +100,7 @@ def edit_course_material(request, id):
     return render(request, 'course_materials/course_materials_edit.html', {
         'course_material': course_material,
         'existing_files': existing_files,
+        'departments': CourseDepartment.objects.all(),  # ✅ pass dept for dropdown
     })
 
 

@@ -18,68 +18,26 @@
 
     {% include 'expendable/navbar.html' %}
 
+    <!-- Hero Section -->
     <section class="section-hero home-section overlay inner-page bg-image"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
-
-        <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center">
-                    <h1 class="text-white font-weight-bold">Welcome to the course material section</h1>
-                    <p class="text-white font-weight-bold">Find course materials and questions that you need!</p>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-md-6 text-center">
-                        <div class="d-grid gap-3">
-                            <a href="{% url 'course_materials_add' %}" class="btn btn-warning btn-lg custom-btn shadow-lg">Add
-                                Material</a>
-                            <a href="{% url 'course_materials_my_materials' %}" class="btn btn-info btn-lg custom-btn shadow-lg">Edit
-                                Material</a>
-                        </div>
+        <div class="container text-center">
+            <h1 class="text-white font-weight-bold">Welcome to the course material section</h1>
+            <p class="text-white font-weight-bold">Find course materials and questions that you need!</p>
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-6">
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'course_materials_add' %}" class="btn btn-warning btn-lg custom-btn shadow-lg">Add
+                            Material</a>
+                        <a href="{% url 'course_materials_my_materials' %}"
+                           class="btn btn-info btn-lg custom-btn shadow-lg">Edit Material</a>
                     </div>
                 </div>
             </div>
         </div>
-        <style>
-            .custom-btn {
-                font-size: 1.3rem;
-                padding: 15px 20px;
-                border-radius: 50px;
-                transition: transform 0.3s ease, background-color 0.3s ease;
-                letter-spacing: 1px;
-            }
-
-            .custom-btn:hover {
-                transform: scale(1.05);
-                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-            }
-
-            .btn-warning {
-                background-color: #e0c9a5;
-                border: none;
-            }
-
-            .btn-warning:hover {
-                background-color: #e68900;
-            }
-
-            .btn-info {
-                background-color: #17a2b8;
-                border: none;
-            }
-
-            .btn-info:hover {
-                background-color: #138496;
-            }
-
-            /* Shadow effect for a more impactful design */
-            .shadow-lg {
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            }
-        </style>
     </section>
 
+    <!-- Select Program Section -->
     <section class="site-section" id="next">
         <div class="container">
 
@@ -90,353 +48,124 @@
                 </div>
             </div>
 
+            <!-- Cards -->
             <div class="row">
-                <style>
-                    .card {
-                        transition: transform 0.3s ease, box-shadow 0.3s ease;
-                    }
-
-                    .card:hover {
-                        transform: translateY(-10px);
-                        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-                    }
-
-                    .card-title {
-                        font-size: 1.25rem;
-                        color: #007bff;
-                        margin-bottom: 0.5rem; /* Reduced bottom margin */
-                    }
-
-                    .card-text {
-                        font-size: 0.9rem;
-                        color: #6c757d;
-                        margin-bottom: 1.5rem; /* Adjust as needed */
-                    }
-
-                    .btn-outline-primary {
-                        border-color: #007bff;
-                        color: #007bff;
-                    }
-
-                    .btn-outline-primary:hover {
-                        background-color: #007bff;
-                        color: #fff;
-                    }
-                </style>
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/cse.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">B.Sc. in Computer Science &
-                                    Engineering</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Computer Science & Engineering</strong>
-                                </p>
+                {% for dept in departments %}
+                    <div class="col-md-4 mb-5">
+                        <div class="card h-100 shadow-sm border-0">
+                            {% if dept.image %}
+                                <img src="{{ dept.image.url }}" alt="{{ dept.name }}" class="card-img-top">
+                            {% else %}
+                                <img src="{% static 'images/smartuiu.png' %}" alt="{{ dept.name }}"
+                                     class="card-img-top">
+                            {% endif %}
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <h5 class="card-title font-weight-bold text-primary mb-2">{{ dept.name }}</h5>
+                                    <p class="card-text text-muted mb-4"><strong>{{ dept.department }}</strong></p>
+                                </div>
+                                <a href="{% url 'course_materials_search' %}?degree={{ dept.slug }}"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="fas icon-find_in_page"></i> Find Materials
+                                </a>
                             </div>
-                            <a href="{% url 'course_materials_search' %}?degree=bscse"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/bsds.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">B.Sc. in Data Science
-                                    Engineering</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Computer Science & Engineering</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=bsds"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/cse.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 300px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">M.Sc. in Computer Science &
-                                    Engineering</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Computer Science & Engineering</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=mscse"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/eee.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">B.Sc. in Electrical &
-                                    Electronics Engineering</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Electrical & Electronics Engineering</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=bseee"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/civil.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">B.Sc. in Civil
-                                    Engineering</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Civil Engineering</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=bsce"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/pharmacy.webp' %}" alt="Blog Image 1"
-                                 class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">B. Pharma.</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Pharmacy</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=bp"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/genetic.jpg' %}" alt="Blog Image 1"
-                                 class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">B.Sc. in Biotechnology &
-                                    Genetic Engineering</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Biotechnology & Genetic Engineering</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=bt"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/english.jpg' %}" alt="Blog Image 1"
-                                 class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">B.A. English</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of English</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=bae"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/bba.webp' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">BBA</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Business Administration</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=bba"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/mba.jpg' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">MBA</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Business Administration</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=mba"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/msj.png' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">B.S.S. Media & Journalism</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Media & Journalism</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=msj"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-img-top">
-                            <img src="{% static 'images/eco.webp' %}" alt="Blog Image 1" class="img-fluid rounded-top"
-                                 style="max-height: 180px; object-fit: cover; width: 100%;">
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title font-weight-bold text-primary mb-2">B.Sc. in Economics</h5>
-                                <p class="card-text text-muted mb-4">
-                                    <strong>Department of Business Studies</strong>
-                                </p>
-                            </div>
-                            <a href="{% url 'course_materials_search' %}?degree=bse"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas icon-find_in_page"></i> Find Materials
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-
+                {% endfor %}
             </div>
 
-
-            <!-- CSS Styles -->
-            <style>
-                .card:hover {
-                    transform: translateY(-10px);
-                    transition: transform 0.3s ease-in-out;
-                }
-
-                .card-title {
-                    color: #007bff;
-                    font-size: 1.25rem;
-                    text-transform: capitalize;
-                }
-
-                .card-footer {
-                    border-top: 1px solid #f0f0f0;
-                    padding: 0.75rem 1.25rem;
-                }
-
-                .card-body p {
-                    font-size: 0.9rem;
-                    color: #6c757d;
-                }
-
-                .btn-outline-primary {
-                    border-color: #007bff;
-                    color: #007bff;
-                }
-
-                .btn-outline-primary:hover {
-                    background-color: #007bff;
-                    color: #fff;
-                }
-            </style>
         </div>
-
-
     </section>
 
-    <section class="py-5 bg-image"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
-    </section>
+    <!-- Footer Background Section -->
+    <section class="py-5 bg-image" style="background-image: url('{% static 'images/hero_1.jpg' %}');"></section>
+
     {% include 'expendable/footer.html' %}
 </div>
+
 {% include 'expendable/include.html' %}
+
+<!-- Styles -->
+<style>
+    /* Buttons */
+    .custom-btn {
+        font-size: 1.3rem;
+        padding: 15px 20px;
+        border-radius: 50px;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        letter-spacing: 1px;
+    }
+
+    .custom-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-warning {
+        background-color: #e0c9a5;
+        border: none;
+    }
+
+    .btn-warning:hover {
+        background-color: #e68900;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border: none;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Cards */
+    .card {
+        height: 350px; /* fixed height */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        height: 180px; /* fixed image height */
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        color: #007bff;
+        margin-bottom: 0.5rem;
+        text-transform: capitalize;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 1rem;
+    }
+
+    .btn-outline-primary {
+        border-color: #007bff;
+        color: #007bff;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+</style>
+
 </body>
 </html>

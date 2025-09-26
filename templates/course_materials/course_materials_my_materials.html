@@ -18,7 +18,7 @@
 
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
-    <!-- HOME -->
+    <!-- HERO -->
     <section class="section-hero overlay inner-page bg-image"
              style="background-image: url('{% static "images/hero_1.jpg" %}');"
              id="home-section">
@@ -47,10 +47,12 @@
                 <table class="table table-hover table-wrap">
                     <thead>
                     <tr>
-                        <th>Degree Name</th>
-                        <th>Trimester/ Semester</th>
+                        <th>Degree</th>
+                        <th>Trimester / Semester</th>
+                        <th>Year</th>
                         <th>Term</th>
                         <th>Course Title</th>
+                        <th>Course Code</th>
                         <th>Material Type</th>
                         <th>Admin</th>
                         <th>Uploaded</th>
@@ -60,39 +62,15 @@
                     <tbody>
                     {% for material in materials %}
                         <tr>
-                            <td>
-                                {% if material.degree == "bscse" %}
-                                    B.Sc. in Computer Science & Engineering
-                                {% elif material.degree == "mscse" %}
-                                    M.Sc. in Computer Science & Engineering
-                                {% elif material.degree == "bsds" %}
-                                    B.Sc. in Data Science
-                                {% elif material.degree == "bseee" %}
-                                    B.Sc. in Electrical & Electronics Engineering
-                                {% elif material.degree == "bsce" %}
-                                    B.Sc. in Civil Engineering
-                                {% elif material.degree == "bba" %}
-                                    BBA
-                                {% elif material.degree == "mba" %}
-                                    MBA
-                                {% elif material.degree == "bt" %}
-                                    B.Sc. in Bio Technology & Genetic Engineering
-                                {% elif material.degree == "bp" %}
-                                    B. Pharma.
-                                {% elif material.degree == "bse" %}
-                                    B.Sc. in Economics
-                                {% elif material.degree == "ba" %}
-                                    B.A. in English
-                                {% else %}
-                                    {{ material.degree }} <!-- Default if none match -->
-                                {% endif %}
-                            </td>
+                            <td>{{ material.degree }}</td>
                             <td>{{ material.trimester }}</td>
+                            <td>{{ material.year }}</td>
                             <td>{{ material.material_description }}</td>
                             <td>{{ material.course_title }}</td>
+                            <td>{{ material.course_code }}</td>
                             <td>{{ material.material_type }}</td>
                             <td>{{ material.user.get_full_name }}</td>
-                            <td>{{ material.created_at }}</td>
+                            <td>{{ material.created_at|date:"Y-m-d H:i" }}</td>
                             <td>
                                 <a href="{% url 'edit_course_material' material.id %}" class="btn btn-primary btn-sm mb-1">Edit</a>
                                 <a href="{% url 'delete_course_material' material.id %}" class="btn btn-danger btn-sm"
@@ -101,7 +79,7 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="8" class="text-center">No course materials available.</td>
+                            <td colspan="10" class="text-center">No course materials available.</td>
                         </tr>
                     {% endfor %}
                     </tbody>
