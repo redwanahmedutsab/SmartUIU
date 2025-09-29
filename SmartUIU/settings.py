@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'smart_bot',
     'shuttle_tracker',
     'virtual_tour',
+    'digital_desk'
 ]
 
 MIDDLEWARE = [

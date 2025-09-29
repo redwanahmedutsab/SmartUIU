@@ -18,6 +18,7 @@ urlpatterns = [
     path('smart_bot/', include('smart_bot.urls')),
     path('shuttle_tracker/', include('shuttle_tracker.urls')),
     path('virtual_tour/', include('virtual_tour.urls')),
+    path('digital_desk/', include('digital_desk.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
 
