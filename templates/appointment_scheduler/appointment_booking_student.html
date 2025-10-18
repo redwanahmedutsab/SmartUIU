@@ -10,19 +10,18 @@
 
     <!-- HERO SECTION -->
     <section class="section-hero overlay inner-page bg-image"
-             style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static "images/hero_1.jpg" %}') no-repeat center center; background-size: cover;"
-             id="home-section">
-        <div class="container text-center text-white">
-            <h1 class="display-4 font-weight-bold glow-text">Booking Appointment</h1>
-            <p class="lead glow-text">Schedule your appointment with ease</p>
-            <!-- Breadcrumbs -->
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb justify-content-center bg-transparent p-0 mt-3">
-                    <li class="breadcrumb-item"><a href="{% url 'homepage' %}" class="text-white">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'appointment_scheduler' %}" class="text-white">Appointments</a></li>
-                    <li class="breadcrumb-item active text-white" aria-current="page">Book Appointment</li>
-                </ol>
-            </nav>
+             style="background-image: url('{% static "images/hero_1.jpg" %}');" id="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">Book Appointments</h1>
+                    <div class="custom-breadcrumbs">
+                        <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                        <a href="{% url 'appointment_scheduler' %}">Appointments</a> <span class="mx-2 slash">/</span>
+                        <span class="text-white"><strong>Book Appointments</strong></span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -42,13 +41,17 @@
             <div class="slots-container">
                 {% for avail in availabilities %}
                     {% with is_booked=avail.appointments.count %}
-                        <div class="slot-card {% if is_booked %}booked{% endif %}"
+                        <div class="slot-card
+                                    {% if is_booked %}booked{% elif avail.is_blocked %}blocked{% endif %}"
                              data-id="{{ avail.id }}"
-                             {% if is_booked %}data-booked="1"{% else %}data-booked="0"{% endif %}>
+                             {% if is_booked %}data-booked="1"{% else %}data-booked="0"{% endif %}
+                             {% if avail.is_blocked %}data-blocked="1"{% else %}data-blocked="0"{% endif %}>
                             <div class="slot-day">{{ avail.day_of_week }}</div>
                             <div class="slot-time">{{ avail.start_time|time:"H:i" }} - {{ avail.end_time|time:"H:i" }}</div>
                             {% if is_booked %}
                                 <div class="slot-student">Booked by: {{ avail.appointments.first.student.get_full_name }}</div>
+                            {% elif avail.is_blocked %}
+                                <div class="slot-student">Blocked</div>
                             {% else %}
                                 <div class="slot-student">Available</div>
                             {% endif %}
@@ -98,7 +101,7 @@
             position: relative;
         }
 
-        .slot-card:hover {
+        .slot-card:hover:not(.booked):not(.blocked) {
             transform: translateY(-8px) scale(1.05);
             box-shadow: 0 15px 25px rgba(255, 165, 0, 0.5);
             border: 2px solid #fff;
@@ -114,6 +117,12 @@
             background: linear-gradient(145deg, #ff416c, #ff4b2b);
             cursor: not-allowed;
             box-shadow: 0 0 8px #ff4b2b;
+        }
+
+        .slot-card.blocked {
+            background: linear-gradient(145deg, #6c757d, #495057);
+            cursor: not-allowed;
+            box-shadow: 0 0 8px #343a40;
         }
 
         /* Slot Text */
@@ -165,7 +174,8 @@
         const selectedInput = document.getElementById('selectedSlot');
 
         slots.forEach(slot => {
-            if (slot.dataset.booked === "1") return; // skip booked
+            if (slot.dataset.booked === "1" || slot.dataset.blocked === "1") return; // skip booked/blocked
+
             slot.addEventListener('click', () => {
                 slots.forEach(s => s.classList.remove('selected'));
                 slot.classList.add('selected');
@@ -173,10 +183,11 @@
             });
         });
 
+        // Prevent submission if no slot or blocked slot is selected
         document.getElementById('appointmentForm').addEventListener('submit', (e) => {
             if (!selectedInput.value) {
                 e.preventDefault();
-                alert('Please select a slot!');
+                alert('Please select a valid slot!');
             }
         });
     </script>

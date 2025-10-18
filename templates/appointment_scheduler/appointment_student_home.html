@@ -155,10 +155,12 @@
                         <div class="card h-100 shadow-sm border-0">
                             <div class="card-img-top">
                                 {% if faculty.image %}
-                                    <img src="{{ faculty.image.url }}"
-                                         alt="{{ faculty.first_name }} {{ faculty.last_name }}"
-                                         class="img-fluid rounded-top"
-                                         style="max-height: 180px; object-fit: cover; width: 100%;">
+                                    <div class="text-center">
+                                        <img src="{{ faculty.image.url }}"
+                                             alt="{{ faculty.first_name }} {{ faculty.last_name }}"
+                                             class="img-fluid rounded-circle mx-auto d-block"
+                                             style="width: 200px; height: 200px; object-fit: cover;">
+                                    </div>
                                 {% else %}
                                     <img src="{% static 'images/smartuiu.png' %}"
                                          alt="{{ faculty.first_name }} {{ faculty.last_name }}"

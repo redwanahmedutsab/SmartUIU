@@ -3,18 +3,55 @@ from django.contrib.auth.models import User
 from .models import ThesisMemberProfile
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.shortcuts import render
+from django.db.models import Q
+from .models import ThesisMemberProfile
 
 
 @login_required(login_url='/login')
 def home(request):
     current_user_id = request.user.id
+
+    # Get search parameters from GET request
+    department_query = request.GET.get('department', '').strip()
+    skills_query = request.GET.get('skills', '').strip()
+    research_query = request.GET.get('research', '').strip()
+    availability_query = request.GET.get('availability', '').strip()
+
+    # Base queryset excluding the current user
     thesis_profiles = ThesisMemberProfile.objects.exclude(user_id=current_user_id)
+
+    # Dynamic filtering based on the fields provided
+    filters = Q()
+    if department_query:
+        filters &= Q(department__icontains=department_query)
+    if skills_query:
+        filters &= Q(skills__icontains=skills_query)
+    if research_query:
+        filters &= Q(research_interests__icontains=research_query)
+    if availability_query:
+        if availability_query.lower() in ['available', '1', 'true']:
+            filters &= Q(availability=True)
+        elif availability_query.lower() in ['not available', '0', 'false']:
+            filters &= Q(availability=False)
+
+    # Apply filters
+    thesis_profiles = thesis_profiles.filter(filters)
+
+    # Check if current user already has a profile
     user_profile_exists = ThesisMemberProfile.objects.filter(user_id=current_user_id).exists()
 
-    return render(request, 'thesis_finder/thesis_finder.html', {
+    # Pass context to template
+    context = {
         'thesis': thesis_profiles,
-        'user': user_profile_exists
-    })
+        'user': user_profile_exists,
+        'department_query': department_query,
+        'skills_query': skills_query,
+        'research_query': research_query,
+        'availability_query': availability_query,
+    }
+
+    return render(request, 'thesis_finder/thesis_finder.html', context)
 
 
 @login_required(login_url='/login')
@@ -58,7 +95,7 @@ def thesis_member_create_profile_view(request):
         skills = request.POST.get('skills')
         research_interests = request.POST.get('research_interests')
         thesis_supervisor = request.POST.get('thesis_supervisor', None)
-        availability = request.POST.get('availability', False) == 'on'
+        availability = request.POST.get('availability')
         contact_info = request.POST.get('contact_info', None)
         thesis_topic = request.POST.get('thesis_topic', None)
         profile_picture = request.FILES.get('profile_picture', None)

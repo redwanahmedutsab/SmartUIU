@@ -104,7 +104,7 @@ def blog_single_view(request, id):
                 # Notify blog author
                 Notification.objects.create(
                     user=blog.author,
-                    message=f"{request.user.username} commented on your blog '{blog.title}'",
+                    message=f"{request.user.first_name} {request.user.last_name} commented on you blog '{blog.title}'",
                     blog=blog
                 )
 
@@ -346,7 +346,7 @@ def toggle_reaction(request, blog_id):
         # Notify blog author
         Notification.objects.create(
             user=blog.author,
-            message=f"{request.user.username} reacted to your blog '{blog.title}'",
+            message=f"{request.user.first_name} {request.user.last_name} reacted to your blog '{blog.title}'",
             blog=blog
         )
 

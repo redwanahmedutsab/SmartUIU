@@ -319,6 +319,7 @@ def study_group_chat_view(request, id):
             for member in group_members:
                 NotificationStudy.objects.create(
                     user=member.user,
+                    group_name=group.name,
                     group_id=group.id,
                     group=group,
                     message_content=message_content

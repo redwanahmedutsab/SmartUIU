@@ -2,73 +2,211 @@
 <!doctype html>
 <html lang="en">
 {% include 'expendable/head.html' %}
-<body id="top">
+
+<body id="top" class="bg-dark text-light">
 {% include 'expendable/chatbot_and_loading.html' %}
 
 <div class="site-wrap">
 
     {% include 'expendable/navbar.html' %}
 
-    <!-- Hero Section -->
-    <section class="section-hero home-section overlay inner-page bg-image"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
-        <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center">
-                    <h1 class="text-white font-weight-bold hero-title">Welcome to Virtual Tour Section</h1>
-                    <p class="text-white hero-subtitle">Here you will be able to see and enjoy the beautiful campus!</p>
-                </div>
+    <!-- 🌌 Hero Section -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background: linear-gradient(135deg, rgba(20,20,60,0.8), rgba(0,0,30,0.85)),
+                     url('{% static "images/hero_1.jpg" %}') no-repeat center center/cover;
+                    background-attachment: fixed;"
+             id="home-section">
+        <div class="container text-center py-5">
+            <h1 class="display-4 fw-bold text-white neon-text mb-3 animate-fadein">
+                🎓 Virtual Campus Tour
+            </h1>
+            <p class="lead text-light glow-text">
+                Explore every corner of our vibrant university in immersive 360°!
+            </p>
+            <div class="mt-4">
+                <a href="#locations" class="scroll-btn">Start Exploring ↓</a>
             </div>
         </div>
     </section>
 
-    <!-- Campus Locations Section -->
-    <div class="container py-5">
-        <h2 class="mb-4 text-center">Choose a Location to Explore</h2>
-        <div class="row">
+    <!-- ✨ Locations Section -->
+    <section id="locations" class="container py-5">
+        <h2 class="text-center mb-5 section-title">Choose a Location to Explore</h2>
+
+        <div class="row g-4 justify-content-center">
             {% for loc in locations %}
-                <div class="col-md-4">
-                    <a href="{% url 'virtual_tour' loc.id %}" class="title-card">
-                        <h5>{{ loc.name }}</h5>
-                        {% if loc.description %}
-                            <p>{{ loc.description|truncatewords:15 }}</p>
-                        {% endif %}
+                <div class="col-lg-10 col-md-12 mx-auto">
+                    <a href="{% url 'virtual_tour' loc.id %}" class="location-card-horizontal d-flex align-items-center text-decoration-none">
+                        <!-- Fixed Image -->
+                        <div class="image-container">
+                            <img src="{{ loc.image_360.url }}" alt="{{ loc.name }}" class="location-img-fixed">
+                        </div>
+                        <!-- Text Content -->
+                        <div class="content-container p-4">
+                            <h5 class="location-title mb-2">{{ loc.name }}</h5>
+                            {% if loc.description %}
+                                <p class="location-desc mb-3">{{ loc.description|truncatewords:25 }}</p>
+                            {% endif %}
+                            <div class="explore-btn">Explore →</div>
+                        </div>
                     </a>
                 </div>
             {% endfor %}
         </div>
-    </div>
+    </section>
 
+    {% include 'expendable/footer.html' %}
     {% include 'expendable/include.html' %}
+</div>
 
-    <!-- CSS Styling -->
-    <style>
-        .title-card {
-            display: block;
-            background: #ffffffee;
-            border-radius: 15px;
-            padding: 20px;
+<!-- 🌈 Custom Styles -->
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: radial-gradient(circle at top left, #0a0f29, #000);
+        overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .neon-text {
+        color: #fff;
+        text-shadow:
+            0 0 10px #007bff,
+            0 0 20px #007bff,
+            0 0 40px #6610f2;
+    }
+
+    .glow-text {
+        color: #b0c4ff;
+        text-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+    }
+
+    .scroll-btn {
+        background: linear-gradient(135deg, #007bff, #6610f2);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+        transition: all 0.3s ease;
+    }
+
+    .scroll-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(102, 16, 242, 0.8);
+    }
+
+    /* Section Title */
+    .section-title {
+        font-weight: 700;
+        font-size: 2rem;
+        color: #fff;
+        text-shadow: 0 0 10px #007bff;
+    }
+
+    /* 🌌 Horizontal Location Card */
+    .location-card-horizontal {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        min-height: 180px;
+    }
+
+    .location-card-horizontal:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 0 25px rgba(0, 123, 255, 0.6);
+    }
+
+    /* Fixed-size image */
+    .image-container {
+        flex: 0 0 250px; /* fixed width */
+        height: 180px;   /* fixed height */
+        overflow: hidden;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .location-img-fixed {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.4s ease;
+        filter: brightness(0.85);
+    }
+
+    .location-card-horizontal:hover .location-img-fixed {
+        transform: scale(1.05);
+        filter: brightness(1);
+    }
+
+    /* Text Container */
+    .content-container {
+        flex: 1;
+    }
+
+    .location-title {
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(0,123,255,0.7);
+        margin-bottom: 10px;
+    }
+
+    .location-desc {
+        color: #cfcfcf;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+
+    .explore-btn {
+        display: inline-block;
+        background: linear-gradient(135deg, #007bff, #6610f2);
+        padding: 8px 18px;
+        border-radius: 30px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.9rem;
+        align-self: flex-start;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        transition: all 0.3s ease;
+    }
+
+    .explore-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(102, 16, 242, 0.8);
+    }
+
+    /* Animations */
+    @keyframes fadein {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadein { animation: fadein 1s ease-in-out; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .location-card-horizontal {
+            flex-direction: column;
             text-align: center;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 2px solid #ddd;
-            text-decoration: none;
+            min-height: auto;
         }
-
-        .title-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 123, 255, 0.5);
-            border-color: #007bff;
+        .image-container {
+            width: 100%;
+            height: 200px;
+            border-right: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .title-card h5 {
-            font-weight: 600;
-            font-size: 1.2rem;
-            color: #333;
-            margin: 0;
+        .content-container {
+            padding: 20px;
         }
-    </style>
+    }
+</style>
 
 </body>
 </html>

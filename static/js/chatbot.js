@@ -112,78 +112,6 @@ userInput.addEventListener('keyup', function (event) {
     }
 });
 
-// function sendMessage() {
-//     const userInput = document.getElementById('user-input');
-//     const chatBox = document.getElementById('chat-box');
-//
-//     const userMessage = userInput.value.trim();
-//     if (userMessage !== '') {
-//         const userMsgDiv = document.createElement('div');
-//         userMsgDiv.classList.add('user-msg');
-//         userMsgDiv.textContent = userMessage;
-//         chatBox.appendChild(userMsgDiv);
-//
-//         let botMessage = "I'm sorry, I don't understand.";
-//         let matchedResponse = false;
-//
-//         for (const query in responses) {
-//             const lcsLength = longestCommonSubsequence(userMessage.toLowerCase(), query.toLowerCase());
-//             const similarity = lcsLength / Math.max(userMessage.length, query.length);
-//             if (similarity > 0.3) {
-//                 botMessage = responses[query];
-//                 matchedResponse = true;
-//                 break;
-//             }
-//         }
-//
-//         setTimeout(function () {
-//             const botMsgDiv = document.createElement('div');
-//             botMsgDiv.classList.add('bot-msg');
-//             chatBox.appendChild(botMsgDiv);
-//
-//             if (!matchedResponse) {
-//                 botMsgDiv.textContent = "I couldn't find an exact answer. Would you like to contact a person for help?";
-//
-//                 // Create Yes and No buttons
-//                 const yesButton = document.createElement('button');
-//                 yesButton.textContent = 'Yes';
-//                 yesButton.classList.add('yes-button');
-//
-//                 const noButton = document.createElement('button');
-//                 noButton.textContent = 'No';
-//                 noButton.classList.add('no-button');
-//
-//                 chatBox.appendChild(yesButton);
-//                 chatBox.appendChild(noButton);
-//
-//                 // Handle Yes button click
-//                 yesButton.addEventListener('click', function () {
-//                     startCrispChat();
-//                     botMsgDiv.textContent = "Starting the chat with a representative...";
-//                     chatBox.removeChild(yesButton);
-//                     chatBox.removeChild(noButton);
-//                 });
-//
-//                 // Handle No button click
-//                 noButton.addEventListener('click', function () {
-//                     botMsgDiv.textContent = "Okay, feel free to ask me anything else!";
-//                     chatBox.removeChild(yesButton);
-//                     chatBox.removeChild(noButton);
-//                 });
-//
-//                 chatBox.scrollTop = chatBox.scrollHeight;
-//             } else {
-//                 botMsgDiv.textContent = botMessage;
-//             }
-//
-//             chatBox.scrollTop = chatBox.scrollHeight;
-//         }, 500);
-//
-//         userInput.value = ''; // Clear input field after sending message
-//     }
-// }
-
-
 function sendMessage() {
     const userInput = document.getElementById('user-input');
     const chatBox = document.getElementById('chat-box');
@@ -274,7 +202,7 @@ function startCrispChat() {
     }
 
     // Set the Crisp Website ID
-    window.CRISP_WEBSITE_ID = "8f0f07ca-031f-4302-aaf0-1adf43a2856e";
+    window.CRISP_WEBSITE_ID = "e8ba9554-4837-4d81-a4f6-dc853721d551";
 
     // Load the Crisp chat widget
     (function () {
@@ -288,3 +216,5 @@ function startCrispChat() {
     // Optionally, open the chat window automatically
     window.$crisp.push(['do', 'chat:open']);
 }
+
+

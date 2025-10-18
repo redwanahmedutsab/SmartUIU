@@ -65,6 +65,7 @@ def course_materials_add_view(request):
 @login_required(login_url='/login')
 def course_materials_my_materials_view(request):
     materials = CourseMaterial.objects.filter(user_id=request.user)
+    print(materials)
     return render(request, 'course_materials/course_materials_my_materials.html', {'materials': materials})
 
 
@@ -75,7 +76,7 @@ def edit_course_material(request, id):
     if request.method == 'POST':
         course_material.degree = request.POST.get('degree')
         course_material.trimester = request.POST.get('trimester')
-        course_material.year = request.POST.get('year')   # ✅ NEW
+        course_material.year = request.POST.get('year')  # ✅ NEW
         course_material.course_title = request.POST.get('course_title')
         course_material.course_code = request.POST.get('course_code')
         course_material.material_type = request.POST.get('material_type')
@@ -148,6 +149,8 @@ def course_materials_search_view(request):
         materials = materials.filter(material_type=material_type)
 
     ordinal_trimester_range = [to_ordinal(i) for i in range(1, 13)]
+
+    degree = CourseDepartment.objects.get(slug=degree)
 
     context = {
         'materials': materials,

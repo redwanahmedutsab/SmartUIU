@@ -17,96 +17,75 @@
         <div class="site-mobile-menu-body"></div>
     </div> <!-- .site-mobile-menu -->
 
-
     <!-- NAVBAR -->
     {% include 'expendable/navbar.html' %}
 
-    <!-- HOME -->
+    <!-- HERO SECTION -->
     <section class="section-hero home-section overlay inner-page bg-image"
              style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+        <div class="container text-center">
+            <h1 class="text-white font-weight-bold">Welcome to the Thesis Finder Section</h1>
+            <p class="text-white font-weight-bold">Find members for your thesis group to achieve your career goals!</p>
 
-        <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center">
-                    <h1 class="text-white font-weight-bold">Welcome to the thesis finder section</h1>
-                    <p class="text-white font-weight-bold">Find members for your thesis group to achieve your career
-                        goals!</p>
-                </div>
-                <div class="container mt-5">
-                    <div class="row align-items-center justify-content-center">
-                        <div class="col-md-6 text-center">
-                            <div class="d-grid gap-3">
-                                {% if user %}
-                                    <a href="{% url 'thesis_finder_profile' %}"
-                                       class="btn btn-warning btn-lg mb-1 custom-btn shadow-lg">Edit
-                                        My Profile</a>
-                                {% else %}
-                                    <a href="{% url 'thesis_finder_create_profile' %}"
-                                       class="btn btn-warning btn-lg mb-1 custom-btn shadow-lg">Create Profile</a>
-                                {% endif %}
-                                <a href="{% url 'thesis_finder_group' %}"
-                                   class="btn btn-info btn-lg mb-1 custom-btn shadow-lg">Thesis Group</a>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="d-grid gap-3 mt-4" style="max-width: 400px; margin: auto;">
+                {% if user %}
+                    <a href="{% url 'thesis_finder_profile' %}" class="btn btn-warning btn-lg shadow-lg custom-btn">Edit
+                        My Profile</a>
+                {% else %}
+                    <a href="{% url 'thesis_finder_create_profile' %}"
+                       class="btn btn-warning btn-lg shadow-lg custom-btn">Create Profile</a>
+                {% endif %}
+                <a href="{% url 'thesis_finder_group' %}" class="btn btn-info btn-lg shadow-lg custom-btn">Thesis
+                    Group</a>
             </div>
-
-            <!-- Additional CSS for better visual design -->
-            <style>
-                .custom-btn {
-                    font-size: 1.3rem;
-                    padding: 15px 20px;
-                    border-radius: 50px;
-                    transition: transform 0.3s ease, background-color 0.3s ease;
-                    letter-spacing: 1px;
-                }
-
-                .custom-btn:hover {
-                    transform: scale(1.05);
-                    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-                }
-
-                .btn-warning {
-                    background-color: #e0c9a5;
-                    border: none;
-                }
-
-                .btn-warning:hover {
-                    background-color: #e68900;
-                }
-
-                .btn-info {
-                    background-color: #17a2b8;
-                    border: none;
-                }
-
-                .btn-info:hover {
-                    background-color: #138496;
-                }
-
-                .btn-success {
-                    background-color: #28a745;
-                    border: none;
-                }
-
-                .btn-success:hover {
-                    background-color: #218838;
-                }
-
-                /* Shadow effect for a more impactful design */
-                .shadow-lg {
-                    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-                }
-            </style>
         </div>
     </section>
 
+    <!-- SEARCH FORM -->
+    <div class="container mt-5 mb-4">
+        <div class="card shadow-lg p-4">
+            <h3 class="mb-3 text-center">Search Thesis Members</h3>
+            <form method="get" action="{% url 'thesis_finder' %}">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <input type="text" name="department" class="form-control"
+                               placeholder="Department" value="{{ department_query }}">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="skills" class="form-control"
+                               placeholder="Skills" value="{{ skills_query }}">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="research" class="form-control"
+                               placeholder="Research Interests" value="{{ research_query }}">
+                    </div>
+                    <div class="col-md-2">
+                        <select name="availability" class="form-control">
+                            <option value="">Availability</option>
+                            <option value="available" {% if availability_query == 'available' %}selected{% endif %}>
+                                Available
+                            </option>
+                            <option value="not available"
+                                    {% if availability_query == 'not available' %}selected{% endif %}>Not Available
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 d-grid">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+                {% if department_query or skills_query or research_query or availability_query %}
+                    <div class="mt-2 text-end">
+                        <a href="{% url 'thesis_finder' %}" class="btn btn-secondary btn-sm">Reset</a>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
 
-    <section class="site-section" id="next">
+    <!-- MEMBERS LIST -->
+    <section class="site-section" id="members">
         <div class="container">
-
             <div class="row mb-5 justify-content-center">
                 <div class="col-md-7 text-center">
                     {% if thesis.count > 1 %}
@@ -119,58 +98,191 @@
 
             <ul class="job-listings mb-5">
                 {% for profile in thesis %}
-                    <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
-                        <a href="{% url 'thesis_finder_single' profile.id %}"></a>
-                        <div class="job-listing-logo">
-                            {% if profile.profile_picture %}
-                                <img src="{{ profile.profile_picture.url }}" alt="Item Image" class="img-fluid">
-                            {% else %}
-                                <img src="{% static 'images/smartuiu.png' %}" alt="Default Image"
-                                     class="img-fluid">
-                            {% endif %}
-                        </div>
-
-                        <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
-                            <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
-                                <h2>{{ profile.name }}</h2>
-                                <p>{{ profile.department }}<br>{{ profile.university_id }}</p>
-
-                            </div>
-
-                            <div class="mb-3">
-                                {% if profile.availability == 1 %}
-                                    <span class="badge badge-success">Available</span>
+                    <a href="{% url 'thesis_finder_single' profile.id %}" class="card-link">
+                        <li class="job-listing d-block d-sm-flex align-items-center shadow-hover rounded p-4 mb-4">
+                            <div class="job-listing-logo me-4">
+                                {% if profile.profile_picture %}
+                                    <img src="{{ profile.profile_picture.url }}" alt="Profile Image">
                                 {% else %}
-                                    <span class="badge badge-success">Not Available</span>
+                                    <img src="{% static 'images/smartuiu.png' %}" alt="Default Image">
                                 {% endif %}
-                                <br>
-                                <span class="badge badge-success">
-                        {{ profile.skills }}
-                    </span>
-                                <br>
-                                <span class="badge badge-success">
-                        {{ profile.research_interests }}
-                    </span>
                             </div>
-                        </div>
-                    </li>
+
+                            <div class="job-listing-about d-flex flex-column w-100">
+                                <div class="mb-3">
+                                    <h5 class="member-name">{{ profile.name|default:"N/A" }}</h5>
+                                    <p class="mb-1"><strong>Department:</strong> {{ profile.department|default:"N/A" }}
+                                    </p>
+                                    <p class="mb-1"><strong>University
+                                        ID:</strong> {{ profile.university_id|default:"N/A" }}</p>
+                                    <p class="mb-1"><strong>Skills:</strong> {{ profile.skills|default:"N/A" }}</p>
+                                    <p class="mb-1"><strong>Research
+                                        Interests:</strong> {{ profile.research_interests|default:"N/A" }}</p>
+                                    <p>
+                                        <strong>Availability:</strong>
+                                        {% if profile.availability %}
+                                            <span class="badge badge-success">Available</span>
+                                        {% else %}
+                                            <span class="badge badge-secondary">Not Available</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    </a>
+                {% empty %}
+                    <li class="text-center text-muted">No members found matching your search.</li>
                 {% endfor %}
             </ul>
-
         </div>
     </section>
 
-    <section class="py-5 bg-image"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
-
-    </section>
+    <section class="py-5 bg-image" style="background-image: url('{% static 'images/hero_1.jpg' %}');"></section>
 
     {% include 'expendable/footer.html' %}
-
-
 </div>
 
 {% include 'expendable/include.html' %}
+
+<!-- Custom CSS -->
+<style>
+    /* Hero Buttons */
+    .custom-btn {
+        font-size: 1.2rem;
+        padding: 12px 20px;
+        border-radius: 50px;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        letter-spacing: 1px;
+    }
+
+    .custom-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-warning {
+        background-color: #e0c9a5;
+        border: none;
+    }
+
+    .btn-warning:hover {
+        background-color: #e68900;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border: none;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+    }
+
+    /* Member Card */
+    .shadow-hover {
+        border-radius: 25px;
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+        padding: 20px;
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .shadow-hover::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 0;
+        width: 100%;
+        height: 30px;
+        background: #fff;
+        border-bottom-left-radius: 25px;
+        border-bottom-right-radius: 25px;
+        z-index: 0;
+    }
+
+    .shadow-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Profile Image */
+    .job-listing-logo img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ddd;
+        transition: transform 0.3s ease;
+    }
+
+    .job-listing-logo img:hover {
+        transform: scale(1.05);
+    }
+
+    /* Typography */
+    .member-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #333;
+    }
+
+    .job-listing-about p {
+        font-size: 0.95rem;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    /* Badges */
+    .badge-success {
+        background-color: #28a745;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+    }
+
+    .badge-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+    }
+
+    /* View Profile Button */
+    .btn-view-profile {
+        display: inline-block;
+        background: linear-gradient(90deg, #f6b93b, #e55039);
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-view-profile:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Make entire card clickable */
+    .card-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+        .job-listing-logo img {
+            width: 90px;
+            height: 90px;
+        }
+    }
+</style>
 
 </body>
 </html>

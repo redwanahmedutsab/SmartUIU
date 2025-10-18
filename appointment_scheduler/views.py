@@ -1,16 +1,20 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import FacultyProfile, FacultyAvailability, Appointment
-from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
+from django.shortcuts import get_object_or_404, redirect
+from .models import FacultyProfile
 from django.utils.html import strip_tags
 from django.shortcuts import render
 from django.db.models import Q
 from django.contrib import messages
 from datetime import datetime, timedelta
+from django.views.decorators.http import require_POST
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import FacultyAvailability, Appointment
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+import json
 
 
+@login_required(login_url='/login')
 def home(request):
     email = request.user.email.lower() if request.user.is_authenticated else ""
 
@@ -66,7 +70,7 @@ def home(request):
     return render(request, template, context)
 
 
-@login_required
+@login_required(login_url='/login')
 def book_appointment_student(request, faculty_id):
     faculty = get_object_or_404(FacultyProfile, id=faculty_id)
     availabilities = faculty.availabilities.all()
@@ -122,13 +126,13 @@ def book_appointment_student(request, faculty_id):
     })
 
 
-@login_required
+@login_required(login_url='/login')
 def student_bookings(request):
     bookings = Appointment.objects.filter(student=request.user, is_cancelled=False).order_by('start_time')
     return render(request, 'appointment_scheduler/appointment_remove_student.html', {'bookings': bookings})
 
 
-@login_required
+@login_required(login_url='/login')
 def remove_booking(request, booking_id):
     booking = get_object_or_404(Appointment, id=booking_id, student=request.user)
 
@@ -157,11 +161,12 @@ def remove_booking(request, booking_id):
         send_mail(subject_faculty, plain_message_faculty, None,
                   [booking.availability.faculty.user.email], html_message=html_message_faculty)
 
+        booking.delete()
         # Redirect back to bookings page
         return redirect('student_bookings')
 
 
-@login_required
+@login_required(login_url='/login')
 def faculty_set_schedule(request):
     # Get faculty profile safely
     try:
@@ -249,7 +254,7 @@ def faculty_set_schedule(request):
     )
 
 
-@login_required
+@login_required(login_url='/login')
 def faculty_manage_schedule(request):
     # Handle missing faculty profile safely
     try:
@@ -264,7 +269,7 @@ def faculty_manage_schedule(request):
     })
 
 
-@login_required
+@login_required(login_url='/login')
 def faculty_create_profile(request):
     # Try to get existing profile or None
     faculty, created = FacultyProfile.objects.get_or_create(user=request.user)
@@ -291,6 +296,7 @@ def faculty_create_profile(request):
     return render(request, 'appointment_scheduler/appointment_faculty_profile.html', context)
 
 
+@login_required(login_url='/login')
 def faculty_routine(request):
     try:
         faculty = request.user.faculty_profile
@@ -311,12 +317,67 @@ def faculty_routine(request):
 
         # Store as dict with booked info
         schedule_by_day.setdefault(avail.day_of_week, []).append({
-            "time": f"{avail.start_time} - {avail.end_time}",
-            "booked": booked
+            "id": avail.id,
+            "time": f"{avail.start_time.strftime('%H:%M')} - {avail.end_time.strftime('%H:%M')}",
+            "booked": Appointment.objects.filter(availability_id=avail.id, is_cancelled=False).exists(),
+            "blocked": avail.is_blocked,
         })
-
     return JsonResponse({
         "status": "success",
         "weekdays": weekdays,
         "schedule_by_day": schedule_by_day
     })
+
+
+@login_required(login_url='/login')
+@require_POST
+def toggle_slot(request):
+    data = json.loads(request.body)
+    slot_id = data.get("slotId")
+    action = data.get("action")  # "cancel", "block", "unblock"
+
+    try:
+        slot = FacultyAvailability.objects.get(id=slot_id, faculty=request.user.faculty_profile)
+    except FacultyAvailability.DoesNotExist:
+        return JsonResponse({"status": "failed", "message": "Slot not found"})
+
+    if action == "cancel":
+        appointment = Appointment.objects.filter(availability=slot, is_cancelled=False).first()
+        if appointment:
+            appointment.is_cancelled = True
+            appointment.save()
+
+            # Send email notifications
+            subject_student = f"Appointment Cancelled with {slot.faculty.first_name} {slot.faculty.last_name}"
+            html_student = render_to_string(
+                'appointment_scheduler/email_appointment_cancelled_student.html',
+                {'appointment': appointment}
+            )
+            send_mail(subject_student, html_student, None,
+                      [appointment.student.email], html_message=html_student)
+
+            subject_faculty = f"Appointment with {appointment.student.get_full_name()} cancelled"
+            html_faculty = render_to_string(
+                'appointment_scheduler/email_appointment_cancelled_faculty.html',
+                {'appointment': appointment}
+            )
+            send_mail(subject_faculty, html_faculty, None,
+                      [request.user.email], html_message=html_faculty)
+
+            appointment.delete()
+
+            return JsonResponse({"status": "success", "message": "Appointment cancelled"})
+        else:
+            return JsonResponse({"status": "failed", "message": "No active appointment found"})
+
+    elif action == "block":
+        slot.is_blocked = True
+        slot.save()
+        return JsonResponse({"status": "success", "message": "Slot blocked"})
+
+    elif action == "unblock":
+        slot.is_blocked = False
+        slot.save()
+        return JsonResponse({"status": "success", "message": "Slot unblocked"})
+
+    return JsonResponse({"status": "failed", "message": "Invalid action"})

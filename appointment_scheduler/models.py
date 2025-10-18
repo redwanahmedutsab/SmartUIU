@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # -----------------------------
 # Faculty Profile (Manual Info + optional image)
 # -----------------------------
@@ -14,6 +15,7 @@ class FacultyProfile(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.department})"
+
 
 # -----------------------------
 # Faculty Availability (Time Ranges for Each Day)
@@ -32,8 +34,9 @@ class FacultyAvailability(models.Model):
     faculty = models.ForeignKey(FacultyProfile, on_delete=models.CASCADE, related_name="availabilities")
     day_of_week = models.CharField(max_length=10, choices=DAY_CHOICES)
     start_time = models.TimeField()  # Range start
-    end_time = models.TimeField()    # Range end
+    end_time = models.TimeField()  # Range end
     duration_minutes = models.PositiveIntegerField(default=15)  # Duration of each appointment
+    is_blocked = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -43,6 +46,7 @@ class FacultyAvailability(models.Model):
     def __str__(self):
         return f"{self.faculty.first_name} {self.faculty.last_name} - {self.day_of_week} {self.start_time}-{self.end_time}"
 
+
 # -----------------------------
 # Appointment Booked by Student
 # -----------------------------
@@ -50,7 +54,7 @@ class Appointment(models.Model):
     availability = models.ForeignKey(FacultyAvailability, on_delete=models.CASCADE, related_name="appointments")
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="appointments")
     start_time = models.TimeField()  # Exact start time
-    end_time = models.TimeField()    # Calculated from duration
+    end_time = models.TimeField()  # Calculated from duration
     booked_at = models.DateTimeField(auto_now_add=True)
     is_cancelled = models.BooleanField(default=False)
 
@@ -59,6 +63,7 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.availability.faculty.first_name} {self.availability.faculty.last_name} - {self.start_time}-{self.end_time} by {self.student.username}"
+
 
 # -----------------------------
 # Optional: Appointment Notifications

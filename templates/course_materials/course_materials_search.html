@@ -57,12 +57,23 @@
                     <label for="material_type" class="form-label">Material Type</label>
                     <select id="material_type" name="material_type" class="form-control">
                         <option value="">Select Material Type</option>
-                        <option value="Class Test"{% if request.GET.material_type == "Class Test" %}selected{% endif %}>Class Test</option>
-                        <option value="Mid Question"{% if request.GET.material_type == "Mid Question" %}selected{% endif %}>Mid Question</option>
-                        <option value="Final Question"{% if request.GET.material_type == "Final Question" %}selected{% endif %}>Final Question</option>
-                        <option value="Assignment"{% if request.GET.material_type == "Assignment" %}selected{% endif %}>Assignment</option>
-                        <option value="Slides"{% if request.GET.material_type == "Slides" %}selected{% endif %}>Slides</option>
-                        <option value="Notes"{% if request.GET.material_type == "Notes" %}selected{% endif %}>Notes</option>
+                        <option value="Class Test"
+                                {% if request.GET.material_type == "Class Test" %}selected{% endif %}>Class Test
+                        </option>
+                        <option value="Mid Question"
+                                {% if request.GET.material_type == "Mid Question" %}selected{% endif %}>Mid Question
+                        </option>
+                        <option value="Final Question"
+                                {% if request.GET.material_type == "Final Question" %}selected{% endif %}>Final Question
+                        </option>
+                        <option value="Assignment"
+                                {% if request.GET.material_type == "Assignment" %}selected{% endif %}>Assignment
+                        </option>
+                        <option value="Slides" {% if request.GET.material_type == "Slides" %}selected{% endif %}>
+                            Slides
+                        </option>
+                        <option value="Notes" {% if request.GET.material_type == "Notes" %}selected{% endif %}>Notes
+                        </option>
                     </select>
                 </div>
 
@@ -103,7 +114,7 @@
                     <tbody>
                     {% for material in materials %}
                         <tr>
-                            <td>{{ material.degree }}</td>
+                            <td>{{ degree }}</td>
                             <td>{{ material.trimester }}</td>
                             <td>{{ material.material_description }}</td>
                             <td>{{ material.year }}</td>

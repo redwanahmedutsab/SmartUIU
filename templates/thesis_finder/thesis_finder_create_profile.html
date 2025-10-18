@@ -91,27 +91,27 @@
                 </div>
 
                 <!-- University ID -->
-<div class="form-group">
-    <label for="university_id">University ID</label>
-    <input type="text" class="form-control" id="university_id" name="university_id"
-           placeholder="Enter your university ID"
-           maxlength="10"
-           pattern="0\d{9}"
-           title="University ID must start with '0' and contain exactly 10 digits"
-           required>
-</div>
+                <div class="form-group">
+                    <label for="university_id">University ID</label>
+                    <input type="text" class="form-control" id="university_id" name="university_id"
+                           placeholder="Enter your university ID"
+                           maxlength="10"
+                           pattern="0\d{9}"
+                           title="University ID must start with '0' and contain exactly 10 digits"
+                           required>
+                </div>
 
-<script>
-    document.getElementById('thesisProfileForm').addEventListener('submit', function(event) {
-        var universityIdInput = document.getElementById('university_id');
-        var universityIdPattern = /^0\d{9}$/;  // Regular expression for validating the university ID
+                <script>
+                    document.getElementById('thesisProfileForm').addEventListener('submit', function (event) {
+                        var universityIdInput = document.getElementById('university_id');
+                        var universityIdPattern = /^0\d{9}$/;  // Regular expression for validating the university ID
 
-        if (!universityIdPattern.test(universityIdInput.value)) {
-            alert("Please enter a valid University ID starting with '0' and containing exactly 10 digits.");
-            event.preventDefault();  // Prevent form submission if validation fails
-        }
-    });
-</script>
+                        if (!universityIdPattern.test(universityIdInput.value)) {
+                            alert("Please enter a valid University ID starting with '0' and containing exactly 10 digits.");
+                            event.preventDefault();  // Prevent form submission if validation fails
+                        }
+                    });
+                </script>
 
                 <!-- Skills -->
                 <div class="form-group">
@@ -156,26 +156,26 @@
 
                 <!-- Contact Information -->
                 <div class="form-group">
-    <label for="contact_info">Phone Number</label>
-    <input type="tel" class="form-control" id="contact_info" name="contact_info"
-           placeholder="Enter your phone number"
-           maxlength="11"
-           pattern="01[0-9]{9}"
-           title="Phone number must start with '01' and contain exactly 11 digits"
-           required>
-</div>
+                    <label for="contact_info">Phone Number</label>
+                    <input type="tel" class="form-control" id="contact_info" name="contact_info"
+                           placeholder="Enter your phone number"
+                           maxlength="11"
+                           pattern="01[0-9]{9}"
+                           title="Phone number must start with '01' and contain exactly 11 digits"
+                           required>
+                </div>
 
-<script>
-    document.getElementById('thesisProfileForm').addEventListener('submit', function(event) {
-        var phoneInput = document.getElementById('contact_info');
-        var phonePattern = /^01\d{9}$/;  // Regular expression for validating the phone number
+                <script>
+                    document.getElementById('thesisProfileForm').addEventListener('submit', function (event) {
+                        var phoneInput = document.getElementById('contact_info');
+                        var phonePattern = /^01\d{9}$/;  // Regular expression for validating the phone number
 
-        if (!phonePattern.test(phoneInput.value)) {
-            alert("Please enter a valid phone number starting with '01' and containing exactly 11 digits.");
-            event.preventDefault();  // Prevent form submission if validation fails
-        }
-    });
-</script>
+                        if (!phonePattern.test(phoneInput.value)) {
+                            alert("Please enter a valid phone number starting with '01' and containing exactly 11 digits.");
+                            event.preventDefault();  // Prevent form submission if validation fails
+                        }
+                    });
+                </script>
 
 
                 <!-- Thesis Topic -->

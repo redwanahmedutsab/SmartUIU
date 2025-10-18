@@ -2,120 +2,144 @@
 <!doctype html>
 <html lang="en">
 {% include 'expendable/head.html' %}
-<body id="top">
+
+<body id="top" class="bg-dark text-light">
 {% include 'expendable/chatbot_and_loading.html' %}
 
 <div class="site-wrap">
 
     {% include 'expendable/navbar.html' %}
 
-    <!-- Hero Section -->
+    <!-- 🌌 Hero Section -->
     <section class="section-hero overlay inner-page bg-image"
-             style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static "images/hero_1.jpg" %}') no-repeat center center; background-size: cover;"
+             style="background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.8)),
+                    url('{% static "images/hero_1.jpg" %}') no-repeat center center/cover;
+                    background-attachment: fixed;"
              id="home-section">
-        <div class="container text-center text-white">
-            <h1 class="display-4 font-weight-bold glow-text">Locations</h1>
-            <p class="lead glow-text">Solve your problems here</p>
-            <!-- Breadcrumbs -->
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb justify-content-center bg-transparent p-0 mt-3">
-                    <li class="breadcrumb-item"><a href="{% url 'homepage' %}" class="text-white">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'smart_bot_home' %}" class="text-white">Smart Bot</a>
-                    </li>
-                    <li class="breadcrumb-item active text-white" aria-current="page">Chats</li>
-                </ol>
-            </nav>
+        <div class="container text-center py-5">
+            <h1 class="display-4 fw-bold neon-text mb-2">{{ location.name }}</h1>
+            {% if location.description %}
+            <p class="lead glow-text">{{ location.description }}</p>
+            {% endif %}
+            <div class="mt-3">
+                <a href="{% url 'virtual_tour_home' %}" class="back-button">← Back to Locations</a>
+            </div>
         </div>
     </section>
 
+    <!-- 🌌 Panellum 360 Viewer -->
+    <section class="container py-5">
+        <div class="panorama-container">
+            <div id="panorama"></div>
+        </div>
+    </section>
 
+    {% include 'expendable/footer.html' %}
+    {% include 'expendable/include.html' %}
 
-    <!-- Panellum CSS & JS -->
-    <link rel="stylesheet" href="{% static 'pannellum/pannellum.css' %}">
-    <script src="{% static 'pannellum/pannellum.js' %}"></script>
+</div>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+<!-- Panellum CSS & JS -->
+<link rel="stylesheet" href="{% static 'pannellum/pannellum.css' %}">
+<script src="{% static 'pannellum/pannellum.js' %}"></script>
 
-        .tour-header {
-            text-align: center;
-            padding: 30px 15px 10px 15px;
-            background-color: #007bff;
-            color: white;
+<!-- Custom Styles -->
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #0a0f29;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Hero & Text */
+    .neon-text {
+        color: #fff;
+        text-shadow:
+            0 0 10px #007bff,
+            0 0 20px #007bff,
+            0 0 40px #6610f2;
+    }
+
+    .glow-text {
+        color: #b0c4ff;
+        text-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+    }
+
+    .back-button {
+        display: inline-block;
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(135deg, #007bff, #6610f2);
+        text-decoration: none;
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+        transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(102, 16, 242, 0.8);
+    }
+
+    /* Panellum Viewer */
+    .panorama-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 0 30px rgba(0,123,255,0.5);
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+    }
+
+    #panorama {
+        width: 100%;
+        height: 80vh;
+        background-color: #000;
+    }
+
+    /* Description box if separate */
+    .tour-description {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 20px 25px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 20px rgba(0,123,255,0.4);
+        text-align: center;
+        color: #f0f0f0;
+    }
+
+    .tour-description p {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+        #panorama {
+            height: 60vh;
         }
 
         .tour-description {
-            text-align: center;
-            padding: 10px 15px;
-            font-size: 1rem;
-            color: #333;
+            padding: 15px 20px;
         }
+    }
+</style>
 
-        #panorama {
-            width: 100%;
-            height: 80vh;
-            background-color: #000;
-        }
-
-        .back-button {
-            display: inline-block;
-            margin: 15px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        .back-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Header -->
-    <div class="tour-header">
-        <h1>{{ location.name }}</h1>
-    </div>
-
-    <!-- Description -->
-    {% if location.description %}
-    <div class="tour-description">
-        <p>{{ location.description }}</p>
-    </div>
-    {% endif %}
-
-    <!-- Panellum Viewer -->
-    <div id="panorama"></div>
-
-    <!-- Back to Locations -->
-    <div style="text-align:center;">
-        <a href="{% url 'virtual_tour_home' %}" class="back-button">Back to Locations</a>
-    </div>
-
-    <!-- Panellum Initialization -->
-    <script>
-        pannellum.viewer('panorama', {
-            "type": "equirectangular",
-            "panorama": "{{ location.image_360.url }}",
-            "autoLoad": true,
-            "compass": true,
-            "showControls": true
-        });
-    </script>
-
-
-    {% include 'expendable/footer.html' %}
-</div>
-
-{% include 'expendable/include.html' %}
-
+<!-- Panellum Initialization -->
+<script>
+    pannellum.viewer('panorama', {
+        "type": "equirectangular",
+        "panorama": "{{ location.image_360.url }}",
+        "autoLoad": true,
+        "compass": true,
+        "showControls": true
+    });
+</script>
 
 </body>
 </html>

@@ -17,14 +17,12 @@ client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 # --- CHAT HOME ---
 def chat_home(request):
-    """List all chat sessions for the logged-in user"""
     chats = ChatSession.objects.filter(user=request.user).order_by("-created_at")
     return render(request, "smart_bot/smart_bot_home.html", {"chats": chats})
 
 
 # --- CREATE NEW CHAT ---
 def new_chat(request):
-    """Create a new chat session"""
     chat = ChatSession.objects.create(
         user=request.user,
         session_id=str(uuid.uuid4()),
@@ -35,7 +33,6 @@ def new_chat(request):
 
 # --- CHAT DETAIL ---
 def chat_detail(request, chat_id):
-    """Open a specific chat session with message history"""
     chat = get_object_or_404(ChatSession, id=chat_id, user=request.user)
     messages = ChatMessage.objects.filter(chat=chat).order_by("created_at")
     return render(request, "smart_bot/chat_detail.html", {"chat": chat, "messages": messages})
@@ -44,7 +41,6 @@ def chat_detail(request, chat_id):
 # --- SEND MESSAGE & GET AI RESPONSE ---
 @csrf_exempt
 def chat_message(request, chat_id):
-    """Handle user message + AI response"""
     if request.method == "POST":
         chat = get_object_or_404(ChatSession, id=chat_id, user=request.user)
         user_text = request.POST.get("message", "").strip()
