@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #333;
+            text-align: left;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<h1>Payment Receipt</h1>
+<p><strong>Student:</strong> {{ payment.student.username }}</p>
+<p><strong>Event:</strong> {{ payment.event.name }}</p>
+<p><strong>Date:</strong> {{ payment.created_at }}</p>
+<p><strong>Transaction ID:</strong> {{ payment.transaction_id }}</p>
+<p><strong>Amount Paid:</strong> ৳{{ payment.amount }}</p>
+
+<div class="footer">
+    University Payment System
+</div>
+</body>
+</html>

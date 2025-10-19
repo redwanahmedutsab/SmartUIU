@@ -1,0 +1,126 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body id="top">
+{% include 'expendable/chatbot_and_loading.html' %}
+
+<div class="site-wrap">
+
+    <!-- Mobile Menu -->
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    {% include 'expendable/navbar.html' %}
+
+    <!-- HERO SECTION -->
+    <section class="section-hero overlay inner-page bg-image"
+             style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+        <div class="container text-center">
+            <h1 class="text-white font-weight-bold">Welcome to payment/registration system</h1>
+            <h2 class="text-white font-weight-bold">Pay your fees flawlessly</h2>
+        </div>
+    </section>
+
+    <!-- EVENTS LIST -->
+    <section class="site-section">
+        <div class="container">
+            <div class="row mb-5 justify-content-center">
+                <div class="col-md-7 text-center">
+                    <h2 class="section-title mb-2">{{ events.count }} Upcoming Events</h2>
+                    <p class="text-muted">Select an event and complete your registration with secure Bkash payment.</p>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for event in events %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-img-top">
+                                {% if event.image %}
+                                    <img src="{{ event.image.url }}" class="img-fluid rounded-top"
+                                         style="height: 250px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{% static 'images/smartuiu.png' %}" class="img-fluid rounded-top"
+                                         style="height: 250px; object-fit: cover;">
+                                {% endif %}
+                            </div>
+                            <div class="card-body p-3">
+                                <h5 class="card-title font-weight-bold text-primary">{{ event.name }}</h5>
+                                <p class="card-text">{{ event.details|truncatewords:20 }}</p>
+                                <p class="text-muted"><strong>Fee:</strong> ৳{{ event.fee_amount }}</p>
+                                <a href="{% url 'event_detail' event.id %}" class="btn btn-warning btn-lg custom-btn w-100">
+                                    Register / Pay
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center">
+                        <p class="text-muted">No upcoming events available.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- STYLES -->
+    <style>
+        .hover-card:hover {
+            transform: translateY(-10px);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            text-transform: capitalize;
+        }
+
+        .btn-warning {
+            background-color: #e0c9a5;
+            border: none;
+        }
+
+        .btn-warning:hover {
+            background-color: #e68900;
+            color: #fff;
+        }
+
+        .custom-btn {
+            font-size: 1.1rem;
+            padding: 12px 15px;
+            border-radius: 50px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .custom-breadcrumbs a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .custom-breadcrumbs .slash {
+            color: #fff;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    {% include 'expendable/footer.html' %}
+</div>
+
+{% include 'expendable/include.html' %}
+</body>
+</html>

@@ -1,0 +1,101 @@
+{% load static %}
+<html lang="en">
+{% include 'expendable/head.html' %}
+<body>
+{% include 'expendable/navbar.html' %}
+
+<section class="section-hero overlay inner-page bg-image"
+         style="background-image: url('{% static 'images/hero_1.jpg' %}');"
+         id="home-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <h1 class="text-white font-weight-bold">Payment</h1>
+                <div class="custom-breadcrumbs">
+                    <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
+                    <a href="{% url 'payer_home' %}">Events</a> <span class="mx-2 slash">/</span>
+                    <span class="text-white"><strong>Payment</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6">
+            {% if event.image %}
+                <img src="{{ event.image.url }}" class="img-fluid rounded" alt="{{ event.name }}">
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h3>{{ event.name }}</h3>
+            <p>{{ event.description }}</p>
+            <p><strong>Event Date:</strong> {{ event.date }}</p>
+            <p><strong>Fee:</strong> ৳{{ event.fee_amount }}</p>
+
+            {% if payment_success %}
+                <div class="alert alert-success">
+                    <strong>Payment Completed!</strong>
+                </div>
+                <a href="{% url 'generate_receipt' payment.id %}" class="btn btn-primary mt-3">Download Receipt</a>
+            {% else %}
+                <form id="bkashPaymentForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="event_id" value="{{ event.id }}">
+                    <button type="submit" class="btn btn-success btn-lg">Pay</button>
+                </form>
+
+                <div id="paymentMessage" class="mt-3"></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% include 'expendable/footer.html' %}
+
+<script>
+    const form = document.getElementById('bkashPaymentForm');
+    const paymentMessage = document.getElementById('paymentMessage');
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            paymentMessage.innerHTML = '<span class="text-info">Redirecting to Bkash...</span>';
+
+            const formData = new FormData(form);
+
+            try {
+                const res = await fetch("{% url 'bkash_payment' %}", {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.checkout_url) {
+                    window.location.href = data.checkout_url;
+                } else if (data.error) {
+                    paymentMessage.innerHTML = `<span class="text-danger">${data.error}</span>`;
+                }
+            } catch (err) {
+                paymentMessage.innerHTML = '<span class="text-danger">Something went wrong. Try again.</span>';
+            }
+        });
+    }
+</script>
+
+<style>
+    .section-hero {
+        background-size: cover;
+        background-position: center;
+        display: flex;
+    }
+
+    .btn-success {
+        font-size: 1.2rem;
+        padding: 10px 20px;
+    }
+</style>
+
+</body>
+</html>
