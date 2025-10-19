@@ -8,170 +8,291 @@
 <div class="site-wrap">
     {% include 'expendable/navbar.html' %}
 
-    <section class="section-hero home-section overlay inner-page bg-image"
-             style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+    <!-- HERO SECTION -->
+    <section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+        <div class="container text-center text-white">
+            <h1 class="display-4 fw-bold">Welcome to Appointment Scheduling</h1>
+            <p class="lead">Select your available times for students!</p>
 
-        <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-12 text-center">
-                    <h1 class="text-white font-weight-bold">Welcome to appointment scheduling section</h1>
-                    <p class="text-white font-weight-bold">Select your available times for students!</p>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-md-6 text-center">
-                        <div class="d-grid gap-3">
-                            <a href="{% url 'faculty_profile_create' %}"
-                               class="btn btn-lg custom-btn custom-btn-edit shadow-lg">Create a Faculty Profile</a>
-                            <a href="#"
-                               class="btn btn-lg custom-btn custom-btn-schedule shadow-lg"
-                               onclick="checkFacultyProfile('{% url 'faculty_set_schedule' %}')">
-                                Set Appointment Schedule
-                            </a>
-                            <a href="{% url 'faculty_manage_schedule' %}"
-                               class="btn btn-lg custom-btn custom-btn-edit shadow-lg">Edit Schedule</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="d-flex justify-content-center flex-wrap mt-4 gap-3">
+                <a href="{% url 'faculty_profile_create' %}" class="btn btn-lg btn-create"><i class="fas fa-user-plus"></i> Create Faculty Profile</a>
+                <a href="#" class="btn btn-lg btn-schedule" onclick="checkFacultyProfile('{% url 'faculty_set_schedule' %}')"><i class="fas fa-calendar-alt"></i> Set Appointment Schedule</a>
+                <a href="{% url 'faculty_manage_schedule' %}" class="btn btn-lg btn-edit"><i class="fas fa-edit"></i> Edit Schedule</a>
             </div>
         </div>
-
-        <script>
-            function checkFacultyProfile(targetUrl) {
-                const status = "{{ status }}";
-                const message = "{{ message }}";
-
-                if (status === "failed") {
-                    alert(message);
-                } else {
-                    window.location.href = targetUrl;
-                }
-            }
-        </script>
-
-        <style>
-            .custom-btn { font-size: 1.3rem; padding: 15px 20px; border-radius: 50px; transition: transform 0.3s ease, background-color 0.3s ease; letter-spacing: 1px; }
-            .custom-btn:hover { transform: scale(1.05); box-shadow: 0 8px 15px rgba(0,0,0,0.3); }
-            .custom-btn-schedule { background: linear-gradient(135deg,#6a11cb,#2575fc); color:#fff; }
-            .custom-btn-schedule:hover { background: linear-gradient(135deg,#5a0fb5,#1f63d6); color:#fff; }
-            .custom-btn-edit { background: linear-gradient(135deg,#ff7e5f,#feb47b); color:#fff; }
-            .custom-btn-edit:hover { background: linear-gradient(135deg,#e76e50,#f7a45f); color:#fff; }
-        </style>
     </section>
 
-    <!-- Weekly Schedule Table -->
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-8">
-            <div class="card routine-card p-4 shadow-lg">
-                <h4 class="text-center mb-4">Your Weekly Schedule</h4>
-                <table class="table table-bordered text-center" id="routine-table">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Day</th>
-                            <th>Available Slots</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    <!-- WEEKLY SCHEDULE SECTION -->
+    <section class="section-schedule py-5">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">Your Weekly Schedule</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div id="routine-cards" class="d-grid gap-3"></div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <style>
-        .routine-card { border-radius: 15px; background-color: #f8f9fa; transition: transform 0.3s, box-shadow 0.3s; }
-        .routine-card:hover { transform: translateY(-5px); box-shadow: 0 15px 25px rgba(0,0,0,0.2); }
+    {% include 'expendable/footer.html' %}
+</div>
 
-        .slot-box { display:inline-flex; justify-content:center; align-items:center; width:100px; height:100px; margin:5px; border-radius:10px; font-weight:500; font-size:0.9rem; cursor:pointer; text-align:center; white-space:pre-wrap; }
+{% include 'expendable/include.html' %}
 
-        .slot-available { background-color: #0d6efd; color:#fff; }
-        .slot-booked { background-color: #dc3545; color:#fff; }
-        .slot-blocked { background-color: #fff; color:#000; border:1px solid #6c757d; }
-    </style>
+<style>
+/* ================= HERO SECTION ================= */
+.section-hero {
+    position: relative;
+    padding: 120px 0 80px;
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+    color: #ffffff; /* Ensure text is white */
+}
 
-    <!-- JavaScript -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            fetch("{% url 'faculty_data' %}")
-            .then(res => res.json())
-            .then(data => {
-                const tbody = document.querySelector("#routine-table tbody");
-                tbody.innerHTML = "";
+.section-hero::before {
+    content: '';
+    position: absolute;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.45); /* Dark overlay for contrast */
+    z-index: 1;
+}
 
-                if (data.status === "success") {
-                    data.weekdays.forEach(day => {
-                        const row = document.createElement("tr");
-                        const dayCell = document.createElement("td");
-                        dayCell.textContent = day;
-                        const slotsCell = document.createElement("td");
+.section-hero .container {
+    position: relative;
+    z-index: 2; /* Ensure text and buttons are above overlay */
+}
 
-                        const slots = data.schedule_by_day[day] || [];
-                        slots.forEach(slot => {
-                            const span = document.createElement("span");
+.section-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+}
 
-                            if(slot.booked) span.className="slot-box slot-booked";
-                            else if(slot.blocked) span.className="slot-box slot-blocked";
-                            else span.className="slot-box slot-available";
+.section-hero p {
+    font-size: 1.25rem;
+    color: #ffffff;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+}
 
-                            const [start,end] = slot.time.split(' - ');
-                            span.textContent = `${to12Hour(start)} - ${to12Hour(end)}`;
+/* ================= BUTTONS ================= */
+.btn-lg {
+    padding: 15px 25px;
+    font-size: 1.2rem;
+    border-radius: 50px; /* Pill shape */
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    text-decoration: none;
+    border: none;
+}
 
-                            span.addEventListener("click", function() {
-                                if(slot.booked && confirm("Booked. Cancel?")) updateSlot(slot.id,"cancel");
-                                else if(slot.blocked && confirm("Blocked. Unblock?")) updateSlot(slot.id,"unblock");
-                                else if(confirm("Available. Block it?")) updateSlot(slot.id,"block");
-                            });
+.btn-lg i {
+    font-size: 1.1rem;
+}
 
-                            slotsCell.appendChild(span);
+/* Create Profile Button */
+.btn-create {
+    background: linear-gradient(135deg,#ff7e5f,#feb47b);
+    color: #fff;
+}
+.btn-create:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg,#e76e50,#f7a45f);
+}
+
+/* Set Schedule Button */
+.btn-schedule {
+    background: linear-gradient(135deg,#6a11cb,#2575fc);
+    color: #fff;
+}
+.btn-schedule:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg,#5a0fb5,#1f63d6);
+}
+
+/* Edit Schedule Button */
+.btn-edit {
+    background: linear-gradient(135deg,#28c76f,#20b98f);
+    color: #fff;
+}
+.btn-edit:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg,#1fa35d,#15965a);
+}
+
+/* Button Active State */
+.btn-lg:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+/* ================= WEEKLY SCHEDULE CARDS ================= */
+.slot-card {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 15px;
+    border-radius: 15px;
+    background: #f8f9fa;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+}
+.slot-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.slot-day {
+    flex-basis: 120px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #007bff;
+    display: flex;
+    align-items: center;
+}
+
+.slot-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+/* Slot Boxes */
+.slot-box {
+    flex: 0 0 100px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    white-space: pre-wrap;
+}
+.slot-box:hover {
+    transform: scale(1.05);
+}
+
+/* Slot Status Colors */
+.slot-available { background: #0d6efd; color:#fff; }
+.slot-booked { background: #dc3545; color:#fff; }
+.slot-blocked { background: #fff; border:1px solid #6c757d; color:#000; }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .section-hero h1 { font-size: 2.2rem; }
+    .section-hero p { font-size: 1rem; }
+    .slot-box { flex: 0 0 80px; height: 60px; font-size: 0.8rem; }
+    .slot-day { flex-basis: 100%; margin-bottom: 10px; }
+}
+
+@media (max-width: 576px) {
+    .btn-lg { font-size: 1rem; padding: 12px 20px; }
+    .slot-box { flex: 0 0 70px; height: 50px; font-size: 0.75rem; }
+}
+</style>
+<script>
+    function checkFacultyProfile(targetUrl) {
+        const status = "{{ status }}";
+        const message = "{{ message }}";
+        if (status === "failed") { alert(message); }
+        else { window.location.href = targetUrl; }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.getElementById("routine-cards");
+
+        fetch("{% url 'faculty_data' %}")
+        .then(res => res.json())
+        .then(data => {
+            container.innerHTML = "";
+            if(data.status === "success"){
+                data.weekdays.forEach(day=>{
+                    const card = document.createElement("div");
+                    card.className = "slot-card";
+
+                    const dayDiv = document.createElement("div");
+                    dayDiv.className = "slot-day";
+                    dayDiv.textContent = day;
+                    card.appendChild(dayDiv);
+
+                    const slotsDiv = document.createElement("div");
+                    slotsDiv.className = "slot-container";
+
+                    const slots = data.schedule_by_day[day] || [];
+                    slots.forEach(slot=>{
+                        const span = document.createElement("span");
+                        const [start,end] = slot.time.split(' - ');
+                        span.textContent = `${to12Hour(start)} - ${to12Hour(end)}`;
+
+                        if(slot.booked) span.className="slot-box slot-booked";
+                        else if(slot.blocked) span.className="slot-box slot-blocked";
+                        else span.className="slot-box slot-available";
+
+                        span.addEventListener("click", function() {
+                            if(slot.booked && confirm("Booked. Cancel?")) updateSlot(slot.id,"cancel");
+                            else if(slot.blocked && confirm("Blocked. Unblock?")) updateSlot(slot.id,"unblock");
+                            else if(confirm("Available. Block it?")) updateSlot(slot.id,"block");
                         });
 
-                        row.appendChild(dayCell);
-                        row.appendChild(slotsCell);
-                        const today = new Date().toLocaleDateString('en-US',{weekday:'long'});
-                        if(day===today) row.style.backgroundColor="#d1e7dd";
-                        tbody.appendChild(row);
+                        slotsDiv.appendChild(span);
                     });
-                } else {
-                    tbody.innerHTML=`<tr><td colspan="2">${data.message}</td></tr>`;
-                }
-            });
 
-            function to12Hour(timeStr){
-                let [h,m] = timeStr.split(':').map(Number);
-                let ampm = h>=12?' PM':' AM';
-                h=h%12||12;
-                return `${h}:${m.toString().padStart(2,'0')}${ampm}`;
-            }
-
-            function updateSlot(slotId,action){
-                fetch("{% url 'toggle_slot' %}",{
-                    method:"POST",
-                    headers:{"Content-Type":"application/json","X-CSRFToken":getCookie("csrftoken")},
-                    body:JSON.stringify({slotId:slotId, action:action})
-                })
-                .then(res=>res.json())
-                .then(data=>{alert(data.message); location.reload();})
-                .catch(err=>console.error(err));
-            }
-
-            function getCookie(name){
-                let cookieValue=null;
-                if(document.cookie && document.cookie!==""){
-                    const cookies=document.cookie.split(";");
-                    for(let i=0;i<cookies.length;i++){
-                        const cookie=cookies[i].trim();
-                        if(cookie.substring(0,name.length+1)===(name+"=")){
-                            cookieValue=decodeURIComponent(cookie.substring(name.length+1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
+                    card.appendChild(slotsDiv);
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = `<p class="text-center text-muted">${data.message}</p>`;
             }
         });
-    </script>
 
-</div>
-{% include 'expendable/include.html' %}
+        function to12Hour(timeStr){
+            let [h,m]=timeStr.split(":").map(Number);
+            let ampm=h>=12?' PM':' AM';
+            h=h%12||12;
+            return `${h}:${m.toString().padStart(2,'0')}${ampm}`;
+        }
+
+        function updateSlot(slotId,action){
+            fetch("{% url 'toggle_slot' %}",{
+                method:"POST",
+                headers:{"Content-Type":"application/json","X-CSRFToken":getCookie("csrftoken")},
+                body:JSON.stringify({slotId:slotId, action:action})
+            })
+            .then(res=>res.json())
+            .then(data=>{alert(data.message); location.reload();})
+            .catch(err=>console.error(err));
+        }
+
+        function getCookie(name){
+            let cookieValue=null;
+            if(document.cookie && document.cookie!==""){
+                const cookies=document.cookie.split(";");
+                for(let i=0;i<cookies.length;i++){
+                    const cookie=cookies[i].trim();
+                    if(cookie.substring(0,name.length+1)===(name+"=")){
+                        cookieValue=decodeURIComponent(cookie.substring(name.length+1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
+
 </body>
 </html>

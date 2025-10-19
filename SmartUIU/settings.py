@@ -175,3 +175,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'smartuiu.ai@gmail.com'
 EMAIL_HOST_PASSWORD = 'zpnz bida muek lxht'
 DEFAULT_FROM_EMAIL = 'SMART UIU <smartuiu.ai@gmail.com>'
+
+# settings.py
+SSL_STORE_ID = os.getenv("SSL_STORE_ID")
+SSL_STORE_PASSWORD = os.getenv("SSL_STORE_PASSWORD")
+SSL_SANDBOX_URL = os.getenv("SSL_SANDBOX_URL")
+SSL_VALID_URL = os.getenv("SSL_VALID_URL")

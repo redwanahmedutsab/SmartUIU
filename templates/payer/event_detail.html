@@ -1,23 +1,12 @@
 {% load static %}
-<html lang="en">
 {% include 'expendable/head.html' %}
 <body>
 {% include 'expendable/navbar.html' %}
 
 <section class="section-hero overlay inner-page bg-image"
-         style="background-image: url('{% static 'images/hero_1.jpg' %}');"
-         id="home-section">
+         style="background-image: url('{% static 'images/hero_1.jpg' %}');">
     <div class="container">
-        <div class="row">
-            <div class="col-md-7">
-                <h1 class="text-white font-weight-bold">Payment</h1>
-                <div class="custom-breadcrumbs">
-                    <a href="{% url 'homepage' %}">Home</a> <span class="mx-2 slash">/</span>
-                    <a href="{% url 'payer_home' %}">Events</a> <span class="mx-2 slash">/</span>
-                    <span class="text-white"><strong>Payment</strong></span>
-                </div>
-            </div>
-        </div>
+        <h1 class="text-white font-weight-bold">{{ event.name }}</h1>
     </div>
 </section>
 
@@ -25,7 +14,7 @@
     <div class="row">
         <div class="col-md-6">
             {% if event.image %}
-                <img src="{{ event.image.url }}" class="img-fluid rounded" alt="{{ event.name }}">
+            <img src="{{ event.image.url }}" class="img-fluid rounded" alt="{{ event.name }}">
             {% endif %}
         </div>
         <div class="col-md-6">
@@ -40,10 +29,11 @@
                 </div>
                 <a href="{% url 'generate_receipt' payment.id %}" class="btn btn-primary mt-3">Download Receipt</a>
             {% else %}
-                <form id="bkashPaymentForm">
+                <!-- SSLCommerz Payment Button -->
+                <form id="sslPaymentForm">
                     {% csrf_token %}
                     <input type="hidden" name="event_id" value="{{ event.id }}">
-                    <button type="submit" class="btn btn-success btn-lg">Pay</button>
+                    <button type="submit" class="btn btn-primary btn-lg">Pay with SSLCommerz</button>
                 </form>
 
                 <div id="paymentMessage" class="mt-3"></div>
@@ -55,47 +45,72 @@
 {% include 'expendable/footer.html' %}
 
 <script>
-    const form = document.getElementById('bkashPaymentForm');
+    // --- SSLCommerz Debugging ---
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const sslForm = document.getElementById('sslPaymentForm');
     const paymentMessage = document.getElementById('paymentMessage');
 
-    if (form) {
-        form.addEventListener('submit', async (e) => {
+    if (sslForm) {
+        sslForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            paymentMessage.innerHTML = '<span class="text-info">Redirecting to Bkash...</span>';
 
-            const formData = new FormData(form);
+            // --- Debug Logs ---
+            console.log("Form submitted!");
+            console.log("Event ID:", sslForm.querySelector('[name="event_id"]').value);
+
+            const csrftoken = getCookie('csrftoken');
+            console.log("CSRF Token:", csrftoken);
+
+            paymentMessage.innerHTML = '<span class="text-info">Redirecting to SSLCommerz...</span>';
+            const formData = new FormData(sslForm);
+
+            // Show all FormData values for debugging
+            for (let pair of formData.entries()) {
+                console.log(pair[0]+ ': '+ pair[1]);
+            }
 
             try {
-                const res = await fetch("{% url 'bkash_payment' %}", {
-                    method: 'POST',
-                    body: formData
+                const res = await fetch("{% url 'ssl_payment_init' %}", {
+                    method:'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    }
                 });
-                const data = await res.json();
+
+                console.log("Raw response:", res);
+
+                const data = await res.json().catch(err => {
+                    console.error("Failed to parse JSON:", err);
+                    return {};
+                });
+
+                console.log("Response JSON:", data);
 
                 if (data.checkout_url) {
+                    console.log("Redirecting to:", data.checkout_url);
                     window.location.href = data.checkout_url;
-                } else if (data.error) {
-                    paymentMessage.innerHTML = `<span class="text-danger">${data.error}</span>`;
+                } else {
+                    paymentMessage.innerHTML = `<span class="text-danger">${data.error || 'Unknown error'}</span>`;
                 }
-            } catch (err) {
-                paymentMessage.innerHTML = '<span class="text-danger">Something went wrong. Try again.</span>';
+            } catch(err) {
+                console.error("Fetch error:", err);
+                paymentMessage.innerHTML = '<span class="text-danger">Something went wrong. Check console logs.</span>';
             }
         });
     }
 </script>
-
-<style>
-    .section-hero {
-        background-size: cover;
-        background-position: center;
-        display: flex;
-    }
-
-    .btn-success {
-        font-size: 1.2rem;
-        padding: 10px 20px;
-    }
-</style>
-
-</body>
-</html>

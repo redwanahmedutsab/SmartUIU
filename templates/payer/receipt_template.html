@@ -1,48 +1,146 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Receipt</title>
+    <title>Receipt #{{ payment.id }} - UIU</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 20px;
+            font-size: 14px;
         }
 
-        h1 {
+        .container {
+            width: 90%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background: #fff;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            height: 60px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .header p {
+            margin: 2px 0;
+            font-size: 12px;
+        }
+
+        h2 {
             text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         th, td {
-            padding: 10px;
-            border: 1px solid #333;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
             text-align: left;
         }
 
+        th {
+            background-color: #f4f4f4;
+            width: 35%;
+        }
+
+        .paid {
+            color: #fff;
+            background-color: #28a745;
+            padding: 5px 10px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .unpaid {
+            color: #fff;
+            background-color: #dc3545;
+            padding: 5px 10px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
         .footer {
-            margin-top: 30px;
             text-align: center;
-            font-size: 0.9rem;
-            color: #555;
+            font-size: 12px;
+            color: #666;
+            margin-top: 25px;
         }
     </style>
 </head>
 <body>
-<h1>Payment Receipt</h1>
-<p><strong>Student:</strong> {{ payment.student.username }}</p>
-<p><strong>Event:</strong> {{ payment.event.name }}</p>
-<p><strong>Date:</strong> {{ payment.created_at }}</p>
-<p><strong>Transaction ID:</strong> {{ payment.transaction_id }}</p>
-<p><strong>Amount Paid:</strong> ৳{{ payment.amount }}</p>
+<div class="container">
+    <div class="header">
+        <img src="{{ logo_path }}" alt="UIU Logo">
+        <div>
+            <h1>United International University</h1>
+            <p>House # 2, Road # 2, Sector # 16, Uttara, Dhaka</p>
+        </div>
+    </div>
 
-<div class="footer">
-    University Payment System
+    <h2>Payment Receipt</h2>
+
+    {% if payment.status == "Success" %}
+        <div class="paid">PAID</div>
+    {% else %}
+        <div class="unpaid">{{ payment.status|upper }}</div>
+    {% endif %}
+
+    <table>
+        <tr>
+            <th>Receipt ID</th>
+            <td>{{ payment.id }}</td>
+        </tr>
+        <tr>
+            <th>Event</th>
+            <td>{{ payment.event.name }}</td>
+        </tr>
+        <tr>
+            <th>Student</th>
+            <td>{{ payment.student.get_full_name|default:payment.student.username }}</td>
+        </tr>
+        <tr>
+            <th>Amount Paid</th>
+            <td>{{ payment.amount }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>{{ payment.status }}</td>
+        </tr>
+        <tr>
+            <th>Transaction ID</th>
+            <td>{{ payment.transaction_id }}</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>{{ payment.created_at|date:"d-m-Y H:i" }}</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <p>Thank you for your payment. This receipt is generated electronically and does not require a signature.</p>
+        <p>United International University © {{ now|date:"Y" }}</p>
+    </div>
 </div>
 </body>
 </html>
